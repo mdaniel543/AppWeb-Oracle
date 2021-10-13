@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 
 
-class login extends Component{
-    render(){
-        return <div>
+class aForm extends Component{
+    render( ){
+        return <div className="login">
             <div class="wrapper fadeInDown">
             <div id="formContent">
                 <h2 class="active"> Datos personales </h2>
@@ -24,4 +24,4 @@ class login extends Component{
     }
 }
 
-export default login;
+export default aForm;

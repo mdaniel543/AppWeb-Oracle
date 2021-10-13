@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Api",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdaniel543/-MIA-Proyecto2.git"
+  },
+  "author": "Daniel Rodriguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdaniel543/-MIA-Proyecto2/issues"
+  },
+  "homepage": "https://github.com/mdaniel543/-MIA-Proyecto2#readme",
+  "dependencies": {
+    "oracledb": "^5.2.0"
+  }
+}

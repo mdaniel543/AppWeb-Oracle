@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import '../styles/login.css'
 
 
 class login extends Component{
     render(){
-        return <div >
+        return <div className="login">
             <div class="wrapper fadeInDown">
             <div id="formContent">
                 <h2 class="active"> Iniciar sesion </h2>
