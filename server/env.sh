@@ -1,3 +1,2 @@
-export TNS_ADMIN=/tmp/node-example/oci
-export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib 
-export PATH=$PATH:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/home/daniel/Escritorio/ApoyoProyecto2/instantclient_21_3:$LD_LIBRARY_PATH
+

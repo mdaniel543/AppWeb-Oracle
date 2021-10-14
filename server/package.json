@@ -17,6 +17,11 @@
   },
   "homepage": "https://github.com/mdaniel543/-MIA-Proyecto2#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.13",
     "oracledb": "^5.2.0"
   }
 }
