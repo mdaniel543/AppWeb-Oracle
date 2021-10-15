@@ -141,14 +141,14 @@ Insert Into login(Usuario, Contrasenia, RolID) Select 'AU', 'U', RolID From Rol 
 Select Usuario, Contrasenia, Nombre From login l, Rol r WHere l.RolID = r.RolID;
 
 Insert Into Departamento(Nombre, CapitalTotal) Values ();
-Insert Into Departamento(Nombre, CapitalTotal, DepartamentoID) Select '','', DepaID From Departamento Where DepaID = ;
+Insert Into Departamento(Nombre, CapitalTotal, DepartamentoID) Select '','', DepaID From Departamento Where Nombre = ;
 --
 Insert Into Puesto(Nombre, Salario) Select '','' From dual Where NOT EXISTS (Select * From Puesto Where Nombre = '' AND Salario = '')
 Insert Into Puesto(Nombre, Salario, Imagen) Select '','','' From dual Where NOT EXISTS (Select * From Puesto Where Nombre = '' AND Salario = '')
 
-Insert Into Depa_Puesto(DepartamentoID, PuestoID) Select DepartamentoID, PuestoID From Departamento d, Puesto p, WHere d.Nombre = '' AND p.Nombre = '';
+Insert Into Depa_Puesto(DepartamentoID, PuestoID) Select DepaID, PuestoID From Departamento d, Puesto p, WHere d.Nombre = '' AND p.Nombre = '';
 
-Insert Into Requisito(Nombre, Tamanio, Obligatorio) Select '','','' From dual WHere NOT EXISTS (Select * FROM Where Nombre = '' AND Tamanio = '' AND Obligatorio = '');
+Insert Into Requisito(Nombre, Tamanio, Obligatorio) Select '','','' From dual WHere NOT EXISTS (Select * FROM Requisito Where Nombre = '' AND Tamanio = '' AND Obligatorio = '');
 
 Insert Into Puesto_Requisito(RequisitoID, PuestoID) Select RequisitoID, PuestoID From Puesto p, Requisito r, WHERE  p.Nombre = '' AND r.Nombre = ''; 
 
@@ -159,3 +159,24 @@ Insert Into Requisito_Formato(FormatoID, RequisitoID) Select FormatoID, Requisit
 Insert Into Categoria(Nombre) Select '' From dual Where NOT EXISTS (Select * From Categoria WHERE Nombre = '');
 
 Insert Into Puesto_Cate(CategoriaID, PuestoID) Select CategoriaID, PuestoID FROM Categoria c, Puesto p Where c.Nombre = ''AND p.Nombre = '';
+
+
+Select * From Departamento;
+Select * From Puesto;
+Select * From Depa_Puesto;
+Select * From Requisito;
+Select * From Puesto_Requisito;
+Select * From Formato;
+Select * From Requisito_Formato;
+Select * From Categoria;
+Select * From Puesto_Cate;
+
+Delete From Departamento;
+Delete From Puesto;
+Delete From Depa_Puesto;
+Delete From Requisito;
+Delete From Puesto_Requisito;
+Delete From Formato;
+Delete From Requisito_Formato;
+Delete From Categoria;
+Delete From Puesto_Cate;
