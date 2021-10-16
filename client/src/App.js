@@ -6,7 +6,8 @@ import {
 import Guest from './components/guest';
 import Login from './components/login';
 import Form from './components/Aform';
-import AdminSystem from "./components/system";
+import AdminSystem from "./components/Asys";
+import AdminUser from "./components/Auser";
 
 function App() {
   return( 
@@ -18,8 +19,11 @@ function App() {
         <Route path= "/form">
           <Form/>
         </Route>
-        <Route path="/As">
+        <Route path="/Asystem">
           <AdminSystem/>
+        </Route>
+        <Route path="/userA">
+          <AdminUser/>
         </Route>
         <Route path="/">
           <Guest/>
