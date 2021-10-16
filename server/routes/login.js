@@ -1,22 +1,18 @@
 const BD = require('../dbconfig');
 
 async function login(req, res) {
-    sql = "Select Usuario, Contrasenia, Nombre From login l, Rol r WHere l.RolID = r.RolID";
-
-    let result = await BD.Open(sql, [], false);
+    const { user, pass} = req.body;
+    sql = "Select r.Nombre From login l Inner Join Rol r ON l.RolID = r.RolID Where l.Usuario = :usuario AND l.Contrasenia = :contrasenia";
+    let result = await BD.Open(sql, [user, pass], false);
     console.log(result.rows)
-    Users = [];
-
-    result.rows.map(user => {
-        let userSchema = {
-            "Usuario": user[0],
-            "Contaseña": user[1],
-            "Rol": user[2]
+    let userSchema = {};
+    for (const user of result.rows){
+        userSchema  = {
+            "Rol" : user
         }
-        Users.push(userSchema);
-    })
-
-    res.json(Users);
+    }
+    console.log(userSchema)
+    res.send(userSchema);
 }
 
 module.exports = login;

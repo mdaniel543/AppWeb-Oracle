@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
 import '../styles/guest.css';
 
-import tasks from '../task.json';
-
 class guest extends Component{
 
-    state = {
-        tasks: tasks
+    constructor() {
+        super();
+        this.state = {
+            tasks: []
+        };
+        this.fetchTasks()
     }
+    fetchTasks() {
+        fetch('/guest')
+          .then(res => res.json())
+          .then(data => {
+            this.setState({tasks: data});
+          });
+      }
 
     render(){
         return <div> 
@@ -39,6 +48,60 @@ function Main(){
     );
 }
 
+function Ifblock(props){
+    return (
+        <div class="card text-center" style={{backgroundImage: `url(${props.e.Imagen})`, backgroundSize: 'cover'}}>
+        <div class="title">
+        <h2>{props.e.Puesto}</h2>
+        </div>
+        <div class="option">
+            <ul>
+            <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>
+            <li> <i class="fa fa-check" aria-hidden="true"></i>Nombre Departamento: {props.e.Departamento} </li>                    
+            <li> <i class="fa fa-check" aria-hidden="true"></i>Categorias: </li>                    
+            <ul>
+                {
+                    props.e.Categorias.map(dsa =>
+                        <li> <i class="fa fa-times" aria-hidden="true"></i>{dsa.nombre} </li>
+
+                    )
+                }
+            </ul>
+            </ul>
+        </div>
+        <a href= "/form">Seleccionar </a>
+        </div>
+    );
+}
+
+function Elseblock(props){
+    return (
+        <div class="card text-center">
+        <div class="title">
+        <h2>{props.e.Puesto}</h2>
+        </div>
+        <div class="option">
+            <ul>
+            <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>
+            <li> <i class="fa fa-check" aria-hidden="true"></i>Nombre Departamento: {props.e.Departamento} </li>                    
+            <li> <i class="fa fa-check" aria-hidden="true"></i>Categorias: </li>                    
+            <ul>
+                {
+                    props.e.Categorias.map(dsa =>
+                        <li> <i class="fa fa-times" aria-hidden="true"></i>{dsa.nombre} </li>
+
+                    )
+                }
+            </ul>
+            </ul>
+        </div>
+        <a href= "/form">Seleccionar </a>
+        </div>
+    );
+}
+
+
+
 function Carrousel(props){
     return(
         <body>
@@ -50,30 +113,15 @@ function Carrousel(props){
                     props.tasks.map(e => 
                         <div>
                         {
-                            e.departamento.puestos.puesto.map(er =>
-                                <div class="col-sm-4">
-                                <div class="card text-center">
-                                    <div class="title">
-                                    <h2>{er.nombre}</h2>
-                                    </div>
-                                    <div class="option">
-                                        <ul>
-                                        <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {er.salario} </li>
-                                        <li> <i class="fa fa-check" aria-hidden="true"></i>Nombre Departamento: {e.departamento.nombre} </li>                    
-                                        <ul>
-                                        {
-                                            er.categorias.categoria.map(dsa =>
-                                                <li> <i class="fa fa-check" aria-hidden="true"></i>Categoria: {dsa.nombre} </li>
-
-                                            )
-                                        }
-                                        </ul>
-                                        </ul>
-                                    </div>
-                                    <a href= "/form">Seleccionar </a>
-                                </div>
-                                </div>                
-                            )
+                            <div class="col-sm-4">
+                            {(() => {
+                                if(e.Imagen != null){
+                                    return <Ifblock e = {e}/>
+                                }else{
+                                    return <Elseblock e = {e}/>
+                                }
+                            })()}
+                            </div>                
                         } 
                         </div>
                     )
@@ -86,6 +134,7 @@ function Carrousel(props){
     );
 
 }
+
 
 function Search(){
     return(

@@ -138,7 +138,8 @@ Insert Into Rol(Nombre) Values ('Admin Usuario');
 Insert Into login(Usuario, Contrasenia, RolID) Select 'AS', 'S', RolID From Rol Where Nombre = 'Admin Sistema';
 Insert Into login(Usuario, Contrasenia, RolID) Select 'AU', 'U', RolID From Rol Where Nombre = 'Admin Usuario';
 
-Select Usuario, Contrasenia, Nombre From login l, Rol r WHere l.RolID = r.RolID;
+Select Usuario, Contrasenia, Nombre From login l, Rol r Where l.RolID = r.RolID;
+Select Nombre From login l Inner Join Rol r ON l.RolID = r.RolID Where l.Usuario = '' AND l.Contrasenia = '';
 
 Insert Into Departamento(Nombre, CapitalTotal) Values ();
 Insert Into Departamento(Nombre, CapitalTotal, DepartamentoID) Select '','', DepaID From Departamento Where Nombre = ;
@@ -180,3 +181,7 @@ Delete From Formato;
 Delete From Requisito_Formato;
 Delete From Categoria;
 Delete From Puesto_Cate;
+
+Select d.Nombre, p.Nombre, p.Salario From Depa_Puesto dp Inner Join Departamento d ON d.DepaID = dp.DepartamentoID Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
+
+Select c.Nombre From Puesto_Cate pc Inner Join Puesto p ON p.PuestoID = pc.PuestoID AND p.Nombre = '' Inner Join Categoria c On C.CategoriaID = pc.CategoriaID;

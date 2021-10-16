@@ -6,6 +6,7 @@ import {
 import Guest from './components/guest';
 import Login from './components/login';
 import Form from './components/Aform';
+import AdminSystem from "./components/system";
 
 function App() {
   return( 
@@ -16,6 +17,9 @@ function App() {
         </Route>
         <Route path= "/form">
           <Form/>
+        </Route>
+        <Route path="/As">
+          <AdminSystem/>
         </Route>
         <Route path="/">
           <Guest/>
