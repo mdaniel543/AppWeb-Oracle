@@ -15,7 +15,6 @@ class login extends Component{
           tasks: []
         };
         this.handleChange = this.handleChange.bind(this);
-        cookies.set('Rol', '', {path: "/"});
         this.prob = this.prob.bind(this);
     }
     handleChange(e) {
@@ -41,18 +40,21 @@ class login extends Component{
         .then(res => res.json())
         .then(data => {
             console.log(data)
-            if(data.Rol === undefined){
-                console.log("NADA")
+            if(data === undefined){
                 window.alert("Usuario y/o Contraseña incorrecta");
-                this.setState({bol: false});
             }else{
-                switch(data.Rol[0]){
+                switch(data.Rol){
                     case "Admin Sistema":
-                        cookies.set('Rol', data.Rol[0], {path: "/"});
+                        cookies.set('Rol', data.Rol, {path: "/"});
                         window.location.href="./Asystem";
                         break;
                     case "Admin Usuario":
+                        cookies.set('Rol', data.Rol, {path: "/"});
                         window.location.href="./userA";
+                        break;
+                    case undefined:
+                        console.log("NADA")
+                        window.alert("Usuario y/o Contraseña incorrecta");
                         break;
                     default:
                         break;

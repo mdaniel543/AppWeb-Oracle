@@ -16,7 +16,7 @@ class guest extends Component{
           .then(data => {
             this.setState({tasks: data});
           });
-      }
+    }
 
     render(){
         return <div> 

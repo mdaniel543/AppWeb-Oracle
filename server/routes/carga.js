@@ -5,9 +5,9 @@ const e = require('cors');
 
 
 async function carga(req, res) {
-    var data =  fs.readFileSync( './entrada.xml', 'utf8') 
+    var data = req.body.xml;
     var jsons = JSON.parse(parser.toJson(data, {reversible: true}));
-    var departamentos = jsons["departamentos"]["departamento"];
+    /*var departamentos = jsons["departamentos"]["departamento"];
     for (var i = 0; i < departamentos.length; i++) {
         var departamento = departamentos[i];
         var nombre = departamento["nombre"]["$t"]; 
@@ -15,8 +15,9 @@ async function carga(req, res) {
         sql = "Insert Into Departamento(Nombre, CapitalTotal) Values (:nombre, :capital)";
         await BD.Open(sql, [nombre, capital], true);
         val(departamento, nombre);
-    }
-    res.json(jsons)
+    }*/
+    console.log(jsons)
+    res.json({"msg": "datos cargados correctamente"})
 }
 
 
