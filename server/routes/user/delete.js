@@ -1,10 +1,12 @@
 const BD = require('../../dbconfig');
 
-async function insert(req, res) {
-    const { id, fin} = req.body;
-    sql = "Update Personal Set Estado = '0', Fecha_Fin = :fin WHERE PersonalID = :id"   
-    await BD.Open(sql, [id, fin], true);
-    res.json({"msg": "Usuario creado correctamente"});
+async function deleteU(req, res) {
+    const {idP, fin} = req.body;
+    const fins = fin.replace(/[']/g, "");
+    console.log(fins)
+    sql = "Update Personal Set Fecha_Fin = TO_DATE('" + fins + "', 'YYYY-MM-DD'), Estado = '0' WHERE PersonalID = :idPs";   
+    await BD.Open(sql, [idP], true);
+    res.json({"msg": "Usuario eliminado correctamente"});
 }
 
-module.exports = insert;
+module.exports = deleteU;

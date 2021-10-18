@@ -1,7 +1,7 @@
 const BD = require('../../dbconfig');
 
 async function user(req, res) {
-    sql = "Select PersonalID, Usuario, Contraseña, Estado, TO_CHAR(Fecha_Inicio, 'DD/MM/YYYY' ) Fecha_Inicio, Fecha_Fin, r.Nombre, d.Nombre From Personal p Inner Join Rol r ON r.RolID = p.RolID Inner Join Departamento d ON d.DepaID = p.DepartamentoID ";
+    sql = "Select PersonalID, Usuario, Contraseña, Estado, TO_CHAR(Fecha_Inicio, 'DD/MM/YYYY' ) Fecha_Inicio, TO_CHAR(Fecha_Fin, 'DD/MM/YYYY' ) Fecha_Fin, r.Nombre, d.Nombre From Personal p Inner Join Rol r ON r.RolID = p.RolID Inner Join Departamento d ON d.DepaID = p.DepartamentoID ";
     let result = await BD.Open(sql, [], false);
     Users = [];
     result.rows.map(user => {
