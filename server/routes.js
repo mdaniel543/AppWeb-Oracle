@@ -19,6 +19,6 @@ Router.post('/insertU', insertU);
 Router.put('/updateU', updateU);
 Router.get('/selectU', selectU);
 Router.put('/deleteU', deleteU);
-Router.get('/depa', depa);
+Router.get('/depas', depa);
 
 module.exports = Router;

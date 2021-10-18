@@ -185,10 +185,14 @@ Delete From Puesto_Cate;
 Select d.Nombre, p.Nombre, p.Salario From Depa_Puesto dp Inner Join Departamento d ON d.DepaID = dp.DepartamentoID Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
 Select c.Nombre From Puesto_Cate pc Inner Join Puesto p ON p.PuestoID = pc.PuestoID AND p.Nombre = '' Inner Join Categoria c On C.CategoriaID = pc.CategoriaID;
 
-Insert Into Personal(Usuario, Contraseña, Estado, Fecha_Inicio, RolID, DepartamentoID) Select '', '', '', '', RolID, DepartamentoID FROM Rol r, Departamento d Where r.Nombre = '' AND d.Nombre = '';
-Select PersonalID, Usuario, Contraseña, Estado, Fecha_Inicio, Fecha_Fin, r.Nombre, d.Nombre From Personal p Inner Join Rol r ON r.RolID = p.RolID Inner Join Departamento d Inner Join d.DepaID = p.DepartamentoID;
-Update Personal Set Usuario = '', Contraseña = '', RolID = (Select RolID From Rol WHERE Nombre = ''), DepartamentoID = (Select DepaID From Departamento WHERE Nombre = '') WHERE PersonalID = '';   
-Update Personal Set Estado = '', Fecha_Fin = '' WHERE PersonalID = '';   
+Insert Into Rol(Nombre) Values ('Coordinador');
+Insert Into Rol(Nombre) Values ('Reclutador');
+Insert Into Rol(Nombre) Values ('Revisor');
 
-Select Count(*) FROM Personal p Inner Join Departamento d ON d.DepaID = p.DepartamentoID AND d.Nombre = "" Inner Join Rol r On r.RolID = p.RolID AND r.Nombre = 'Coordinador';
+Insert Into Personal(Usuario, Contraseña, Estado, Fecha_Inicio, RolID, DepartamentoID) Select '', '', '', DATE '', RolID, DepartamentoID FROM Rol r, Departamento d Where r.Nombre = '' AND d.Nombre = '';
+Select PersonalID, Usuario, Contraseña, Estado, Fecha_Inicio, Fecha_Fin, r.Nombre, d.Nombre From Personal p Inner Join Rol r ON r.RolID = p.RolID Inner Join Departamento d ON d.DepaID = p.DepartamentoID;
+Update Personal Set Usuario = '', Contraseña = '', RolID = (Select RolID From Rol WHERE Nombre = ''), DepartamentoID = (Select DepaID From Departamento WHERE Nombre = '') WHERE PersonalID = '';   
+Update Personal Set Estado = '', Fecha_Fin = DATE '' WHERE PersonalID = '';   
+
+Select Count(*) FROM Personal p Inner Join Departamento d ON d.DepaID = p.DepartamentoID AND d.Nombre = "" Inner Join Rol r On r.RolID = p.RolID AND r.Nombre = 'Coordinador' WHERE Estado = '1';
 Select Nombre From Departamento;
