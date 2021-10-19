@@ -182,7 +182,7 @@ Delete From Requisito_Formato;
 Delete From Categoria;
 Delete From Puesto_Cate;
 
-Select d.Nombre, p.Nombre, p.Salario From Depa_Puesto dp Inner Join Departamento d ON d.DepaID = dp.DepartamentoID Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
+Select d.DepaID, p.PuestoID, d.Nombre, p.Nombre, p.Salario From Depa_Puesto dp Inner Join Departamento d ON d.DepaID = dp.DepartamentoID Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
 Select c.Nombre From Puesto_Cate pc Inner Join Puesto p ON p.PuestoID = pc.PuestoID AND p.Nombre = '' Inner Join Categoria c On C.CategoriaID = pc.CategoriaID;
 
 Insert Into Rol(Nombre) Values ('Coordinador');

@@ -104,10 +104,6 @@ class AdminUser extends Component{
             .catch(err => console.error(err));
         this.cerrarModalActualizar();
         this.fetchTasks();
-        this.fetchTasks();
-        this.fetchTasks();
-        this.fetchTasks();
-        
     }
     eliminar(dato){
         console.log(this.state.data)
@@ -128,7 +124,6 @@ class AdminUser extends Component{
                 this.fetchTasks();
             })
             .catch(err => console.error(err));
-        this.fetchTasks();
         this.fetchTasks();
     }
     insertar(){
@@ -184,9 +179,27 @@ class AdminUser extends Component{
         });
     }
 
+    cerrarSesion=()=>{
+        window.location.href='./';
+    }
+
     render (){
         return(
             <div className="crud">
+            <nav role="navigation">
+            <div id="menuToggle">
+            <input type="checkbox"/>
+            <span></span>
+            <span></span>
+            <span></span>
+            <ul id="menu">
+            <button onClick={()=>this.cerrarSesion()}><li>Cerrar Sesion</li></button>
+            </ul>
+            </div>
+            </nav>
+            <div className='xml'>
+            <h1>Usuarios</h1>
+            </div>
             <Container>
             <br />
             <Button color="primary" onClick={()=>this.mostrarModalInsertar()}>Crear Usuario</Button>

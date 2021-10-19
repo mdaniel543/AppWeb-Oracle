@@ -1,7 +1,7 @@
 const BD = require('../dbconfig');
 
 async function guest(req, res) {
-    sql = "Select d.Nombre, p.Nombre, p.salario, p.imagen From Depa_Puesto dp Inner Join Departamento d ON d.DepaID = dp.DepartamentoID Inner Join Puesto p ON p.PuestoID = dp.PuestoID ";
+    sql = "Select d.Nombre, p.Nombre, p.salario, p.imagen, d.DepaID, p.PuestoID From Depa_Puesto dp Inner Join Departamento d ON d.DepaID = dp.DepartamentoID Inner Join Puesto p ON p.PuestoID = dp.PuestoID ";
     let result = await BD.Open(sql, [], false);
     Puestos = [];
     for(const user of result.rows){
@@ -24,7 +24,9 @@ async function guest(req, res) {
             "Puesto": puesto,
             "Salario": user[2],
             "Imagen" : user[3],
-            "Categorias": categorias
+            "Categorias": categorias,
+            "idD": user[4],
+            "idP": user[5]
         }
         Puestos.push(userSchema);
     }

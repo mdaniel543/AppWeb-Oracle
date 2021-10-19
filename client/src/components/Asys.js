@@ -77,7 +77,7 @@ class AdminSystem extends Component{
             </div>
             </nav>
             <div className="xml">
-                <h1>Informacion Cargada</h1>
+                <h1>Informacion a Cargar</h1>
                 <section>
                     <input type="file" 
                         multiple={false}

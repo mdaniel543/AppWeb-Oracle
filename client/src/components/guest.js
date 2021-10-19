@@ -1,13 +1,31 @@
 import React, { Component } from 'react';
 import '../styles/guest.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
+import {getCurrentDate} from '../utils/date'
 
+import {
+    Table,
+    Button,
+    Container,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    FormGroup,
+    ModalFooter
+} from "reactstrap";
 class guest extends Component{
 
     constructor() {
         super();
         this.state = {
-            tasks: []
+            tasks: [],
+            modalBuscar: false,
+            modalSelect: false,
+            date : getCurrentDate()
         };
+
         this.fetchTasks()
     }
     fetchTasks() {
@@ -15,36 +33,63 @@ class guest extends Component{
           .then(res => res.json())
           .then(data => {
             this.setState({tasks: data});
-          });
+            console.log(this.state.tasks)
+        });
+        
+    }
+
+    buscar(){
+
+    }
+    mostrarModalBuscar(){
+        this.setState({modalBuscar: true})
+    }
+    cerrarModalBuscar(){
+        this.setState({modalBuscar: false})
+        //this.fetchTasks();
+    }
+    aplicar(){
+
+    }
+    mostrarModalSelect(dato){
+        this.setState({modalSelect: true})
+    }
+    cerrarModalSelect(){
+        this.setState({modalSelect: false})
+    }
+    Sesion=()=>{
+        window.location.href='./login';
     }
 
     render(){
         return <div> 
-        <Main/>
-        <div class = "box"></div>
-        <Search/>    
-        <Carrousel tasks = {this.state.tasks} />
+        <Main this={this}/>
+        <div className='xml'>
+            <h1>Puestos</h1>
+        </div>
+        <Search this = {this}/>    
+        <Select this = {this}/>    
+        <Carrousel tasks = {this.state.tasks} this = {this} />
         </div>
     }
 }
 
-function Main(){
+function Main(props){
     return(
-        <header>
-        <div class="padre-sup">
-            <div class="hijo-sup">
-                <div class="logo-titulo">		
-                    <h1 id="titulo-h"><a class="hipervinculo-h" href="/">TOTONET S.A</a></h1>
-                </div>
-                <nav id="menu-header">
-                    <ul id="lista">
-                        <a class="item hipervinculo-h" href="/login"><li> INICIAR SESION</li></a>
-                    </ul>
-                </nav>
+        <nav role="navigation">
+            <div id="menuToggle">
+            <input type="checkbox"/>
+            <span></span>
+            <span></span>
+            <span></span>
+            <ul id="menu">
+            <button onClick={()=>props.this.mostrarModalBuscar()}><li>Buscar Puesto</li></button>
+            <div className='boxer'/>
+            <button onClick={()=>props.this.Sesion()}><li>Iniciar Sesion</li></button>
+            </ul>
             </div>
-        </div>
-        <div id="franja-amarilla-h"></div>  
-    </header> 
+        </nav>
+       
     );
 }
 
@@ -57,7 +102,7 @@ function Ifblock(props){
         <div class="option">
             <ul>
             <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>
-            <li> <i class="fa fa-check" aria-hidden="true"></i>Nombre Departamento: {props.e.Departamento} </li>                    
+            <li> <i class="fa fa-check" aria-hidden="true"></i>Departamento: {props.e.Departamento} </li>                    
             <li> <i class="fa fa-check" aria-hidden="true"></i>Categorias: </li>                    
             <ul>
                 {
@@ -69,7 +114,8 @@ function Ifblock(props){
             </ul>
             </ul>
         </div>
-        <a href= "/form">Seleccionar </a>
+        <a onClick={()=>props.this.mostrarModalSelect()}>Seleccionar</a>
+
         </div>
     );
 }
@@ -83,7 +129,7 @@ function Elseblock(props){
         <div class="option">
             <ul>
             <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>
-            <li> <i class="fa fa-check" aria-hidden="true"></i>Nombre Departamento: {props.e.Departamento} </li>                    
+            <li> <i class="fa fa-check" aria-hidden="true"></i>Departamento: {props.e.Departamento} </li>                    
             <li> <i class="fa fa-check" aria-hidden="true"></i>Categorias: </li>                    
             <ul>
                 {
@@ -95,12 +141,11 @@ function Elseblock(props){
             </ul>
             </ul>
         </div>
-        <a href= "/form">Seleccionar </a>
+        <a onClick={()=>props.this.mostrarModalSelect(props.e)}>Seleccionar</a>
+
         </div>
     );
 }
-
-
 
 function Carrousel(props){
     return(
@@ -110,21 +155,23 @@ function Carrousel(props){
                 <div class="container">
                 <div class="row">
                 {               
-                    props.tasks.map(e => 
+                    props.tasks.map((e, index) => 
                         <div>
                         {
                             <div class="col-sm-4">
                             {(() => {
+                                console.log(index);
                                 if(e.Imagen != null){
-                                    return <Ifblock e = {e}/>
+                                    return <Ifblock e = {e} this = {props.this}/>
                                 }else{
-                                    return <Elseblock e = {e}/>
+                                    return <Elseblock e = {e} this = {props.this}/>
                                 }
                             })()}
+                             <div class = "box"></div>
                             </div>                
                         } 
                         </div>
-                    )
+                    )   
                 }
                 </div>
                 </div>
@@ -136,61 +183,167 @@ function Carrousel(props){
 }
 
 
-function Search(){
+function Search(props){
     return(
-    <form class="category-page-faceted-search">
-        <div class="category-page-faceted-search-element-container category-page-faceted-search-text-container">
-        <label class="category-page-faceted-search-label" for="plant_name">Buscar por plaza</label>
-        <input type="text" name="plant_name" id="plant_name" placeholder="Plaza..." class="category-page-faceted-search-text" />
-         </div>
-        <div class="category-page-faceted-search-element-container category-page-faceted-search-select-container dropdown-container">
-            <label class="category-page-faceted-search-label" for="plant_type">Salario</label>
-            <div class="category-page-faceted-search-select-wrapper dropdown-wrap">
-            <select class="category-page-faceted-search-select-input dropdown" id="plant_type">
-                <option >--</option>
-                <option>Lota</option>
-                <option>Coronel</option>
-                <option>Concepción</option>
-            </select> 
-            </div>
-        </div>
-        <div class="category-page-faceted-search-element-container category-page-faceted-search-select-container dropdown-container">
-            <label class="category-page-faceted-search-label" for="plant_type">Departamento</label>
-            <div class="category-page-faceted-search-select-wrapper dropdown-wrap">
-            <select class="category-page-faceted-search-select-input dropdown" id="plant_type">
-                <option >--</option>
-                <option>Lota</option>
-                <option>Coronel</option>
-                <option>Concepción</option>
-            </select> 
-            </div>
-        </div>
-        <div class="category-page-faceted-search-element-container category-page-faceted-search-select-container dropdown-container">
-            <label class="category-page-faceted-search-label" for="plant_type">Categoria</label>
-            <div class="category-page-faceted-search-select-wrapper dropdown-wrap">
-            <select class="category-page-faceted-search-select-input dropdown" id="plant_type">
-                <option >--</option>
-                <option>Lota</option>
-                <option>Coronel</option>
-                <option>Concepción</option>
-            </select> 
-            </div>
-        </div>
-        <div class="category-page-faceted-search-element-container category-page-faceted-search-select-container dropdown-container">
-            <label class="category-page-faceted-search-label" for="plant_type">Puntuacion</label>
-            <div class="category-page-faceted-search-select-wrapper dropdown-wrap">
-            <select class="category-page-faceted-search-select-input dropdown" id="plant_type">
-                <option >--</option>
-                <option>Lota</option>
-                <option>Coronel</option>
-                <option>Concepción</option>
-            </select> 
-            </div>
-        </div>
-        <div class="category-page-faceted-search-element-container category-page-faceted-search-submit-container">
-            <input type="submit" value="Search" class="category-page-faceted-search-submit" />
-        </div>
-    </form>
+        <Modal isOpen={props.this.state.modalBuscar} fade={false}>
+            <ModalHeader>
+            <div><h3>Buscar</h3></div>
+            </ModalHeader>
+            <ModalBody>
+                <FormGroup>
+                <label>
+                    Nombre: 
+                </label>
+                <input
+                    className="form-control"
+                    name="user"
+                    type="text"
+                    onChange={props.this.handleChange}
+                />
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    Salario: 
+                </label>
+                <input
+                    className="form-control"
+                    name="pass"
+                    type="text"
+                    onChange={props.this.handleChange}
+                />
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    Categoria
+                </label>
+                <Dropdown name = "rol" placeholder="Selecciona Categoria" />
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    Departamento
+                </label>
+                <Dropdown name = "depa"  placeholder="Selecciona Departamento" />
+                </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+                <Button
+                color="primary"
+                onClick={() => props.this.Buscar()}
+                >
+                Buscar
+                </Button>
+                <Button
+                className="btn btn-danger"
+                onClick={() => props.this.cerrarModalBuscar()}
+                >
+                Cancelar
+                </Button>
+            </ModalFooter>
+            </Modal>
+    );
+}
+
+
+function Select(props){
+    return(
+        <Modal isOpen={props.this.state.modalSelect} fade={false}>
+        <ModalHeader>
+        <div><h3>Aplicar para puesto</h3></div>
+        </ModalHeader>
+        <ModalBody>
+            <FormGroup>
+            <label>
+                CUI: 
+            </label>
+            <input
+                className="form-control"
+                name="user"
+                type="text"
+                onChange={props.this.handleChange}
+            />
+            </FormGroup>
+            <FormGroup>
+            <label>
+                Nombres: 
+            </label>
+            <input
+                className="form-control"
+                name="pass"
+                type="text"
+                onChange={props.this.handleChange}
+            />
+            </FormGroup>
+            <FormGroup>
+            <label>
+                Apellidos: 
+            </label>
+            <input
+                className="form-control"
+                name="pass"
+                type="text"
+                onChange={props.this.handleChange}
+            />
+            </FormGroup>
+            <FormGroup>
+            <label>
+                Correo: 
+            </label>
+            <input
+                className="form-control"
+                name="pass"
+                type="text"
+                onChange={props.this.handleChange}
+            />
+            </FormGroup>
+            <FormGroup>
+            <label>
+                Direccion 
+            </label>
+            <input
+                className="form-control"
+                name="pass"
+                type="text"
+                onChange={props.this.handleChange}
+            />
+            <FormGroup>
+            <label>
+                Telefono: 
+            </label>
+            <input
+                className="form-control"
+                name="pass"
+                type="text"
+                onChange={props.this.handleChange}
+            />
+            </FormGroup>
+            <FormGroup>
+            <label>
+                CV: 
+            </label>
+            <input
+                className="form-control"
+                name="pass"
+                type="file"
+                onChange={props.this.handleChange}
+            />
+            </FormGroup>
+            </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+            <Button
+            color="primary"
+            onClick={() => props.this.aplicar()}
+            >
+            Aplicar
+            </Button>
+            <Button
+            className="btn btn-danger"
+            onClick={() => props.this.cerrarModalSelect()}
+            >
+            Cancelar
+            </Button>
+        </ModalFooter>
+        </Modal>
     );
 }
 
