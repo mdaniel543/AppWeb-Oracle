@@ -35,6 +35,7 @@ class guest extends Component{
                 telefono: '',
                 cv: ''
             },
+            file: '',
             depa: '',
             puesto: '',
             date : getCurrentDate()
@@ -104,7 +105,7 @@ class guest extends Component{
         this.setState({modalBuscar: false})
         //this.fetchTasks();
     }
-    aplicar(){
+    async aplicar(){
         const formData = new FormData();
         formData.append(
             "file",
@@ -112,15 +113,37 @@ class guest extends Component{
         );
         console.log(this.state.form.cv);
         axios.post("/upload",formData, {})
-            .then(res => {
-                console.log(res.data.msg)
-            })
-
-        console.log(this.state.depa);
-        console.log(this.state.form);
-        
+        .then(res => {
+            console.log(res.data.msg);
+            fetch('/insertAp', {
+                method: 'POST',
+                body: JSON.stringify({
+                    cui: this.state.form.cui,
+                    nombre: this.state.form.nombre,
+                    apellido: this.state.form.apellido,
+                    correo: this.state.form.correo,
+                    direccion: this.state.form.direccion,
+                    telefono:this.state.form.telefono,
+                    cv: res.data.msg,
+                    postu:this.state.date,
+                    depa:this.state.depa,
+                    puesto:this.state.puesto,
+                }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    window.alert(data.msg);
+                })
+                .catch(err => console.error(err));
+        })
         this.cerrarModalSelect();
     }
+
+
     mostrarModalSelect(dato){
         this.setState({
             depa: dato.idD,

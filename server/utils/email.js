@@ -1,17 +1,17 @@
 var nodemailer = require('nodemailer');
 
-async function send(email, subject, text) {
+async function sende(email, subject, text) {
         
     let transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: 'outlook',
         auth: {
-            user: 'rodriguezmarvindaniel@gmail.com', 
-            pass: '4321710911', 
+            user: 'mdaniel_cool@hotmail.com', 
+            pass: 'COOL710911', 
         },
     });
   
     let info = {
-      from: 'rodriguezmarvindaniel@gmail.com', // sender address
+      from: '"Totonet S.A" <mdaniel_cool@hotmail.com>', // sender address
       to: email, // list of receivers
       subject: subject, // Subject line
       html: `<b>${text}</b>`, // html body
@@ -27,5 +27,5 @@ async function send(email, subject, text) {
     
 }
 
-exports.send = send;
+exports.sende = sende;
   

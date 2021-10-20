@@ -199,6 +199,8 @@ Select p.PersonalID, Count(*) FROM Personal p Inner Join Departamento d ON d.Dep
 Select Nombre From Departamento;
 Select Nombre From Categoria;
 
-Select p.PersonalID, p.Correo, Count(*) as Conteo FROM Personal p Inner Join Aplicante ap ON ap.PersonalID = p.PersonalID Inner Join Departamento d ON d.DepaID = p.DepartamentoID AND d.DepaID = :depa Inner Join Rol r ON r.RolID = p.RolID AND r.Nombre = 'Revisor' GROUP BY p.PersonalID ORDER BY conteo ASC FETCH NEXT 1 ROWS ONLY; 
+Insert Into Aplicante(CUI, Nombre, Apellido, Correo, Direccion, Telefono, CV, Apto, Fecha_Postulacion, Estado_Expediente, Planilla, Depa_Puesto_ID, PersonalID) Select :cui, :nombre, :apellido, :correo, :direccion, :telefono, :cv, '0', :postu, '0', '2', Depa_Puesto_ID, :revisor FROM Depa_Puesto WHERE DepartamentoID = :depa AND PuestoID = :puesto;
 
-Insert Into Aplicante(CUI, Nombrem Apellido, Correo, Direccion, Telefono, CV, Apto, Fecha_Postulacion, Estado_Expediente, Planilla, Depa_Puesto_ID, PersonalID) Select :cui, :nombre, :apellido, :correo, :direccion, :telefono, :cv, '0', :postu, '0', '2', Depa_Puesto_ID, :revisor FROM Depa_Puesto WHERE DepartamentoID = :depa AND PuestoID = :puesto;
+SELECT    n.id, n.us, n.correo, NVL(Conteo, 0) as nv
+FROM      (Select ap.personalID AS id, count(*) as Conteo from Aplicante ap GROUP BY ap.PersonalID) rn
+RIGHT JOIN (Select p.PersonalID as id, p.usuario as us, p.Correo as correo FROM Personal p Inner Join Departamento d ON d.DepaID = p.DepartamentoID AND d.DepaID = :depa Inner Join Rol r ON r.RolID = p.RolID AND r.Nombre = 'Revisor') n ON n.id = rn.id Group BY n.id, n.us, n.correo, rn.id  ORDER BY Conteo ASC FETCH NEXT 1 ROWS ONLY;
