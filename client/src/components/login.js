@@ -46,11 +46,11 @@ class login extends Component{
                 switch(data.Rol){
                     case "Admin Sistema":
                         cookies.set('Rol', data.Rol, {path: "/"});
-                        window.location.href="./Asystem";
+                        window.location.href="./AdminSystem";
                         break;
                     case "Admin Usuario":
                         cookies.set('Rol', data.Rol, {path: "/"});
-                        window.location.href="./userA";
+                        window.location.href="./AdminUser";
                         break;
                     case undefined:
                         console.log("NADA")

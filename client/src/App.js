@@ -5,8 +5,8 @@ import {
 } from "react-router-dom";
 import Guest from './components/guest';
 import Login from './components/login';
-import AdminSystem from "./components/Asys";
-import AdminUser from "./components/Auser";
+import AdminSystem from "./components/AdminSystem";
+import AdminUser from "./components/AdminUser";
 
 function App() {
   return( 
@@ -15,10 +15,10 @@ function App() {
         <Route path= "/login">
           <Login/>
         </Route>
-        <Route path="/Asystem">
+        <Route path="/AdminSystem">
           <AdminSystem/>
         </Route>
-        <Route path="/userA">
+        <Route path="/AdminUser">
           <AdminUser/>
         </Route>
         <Route path="/">

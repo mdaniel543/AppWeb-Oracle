@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import {getCurrentDate} from '../utils/date'
+import axios from 'axios';
 
 import {
     Table,
@@ -23,9 +24,23 @@ class guest extends Component{
             tasks: [],
             modalBuscar: false,
             modalSelect: false,
+            depas: [],
+            catego: [],
+            form:{
+                cui:'',
+                nombre: '',
+                apellido: '',
+                correo: '',
+                direccion: '',
+                telefono: '',
+                cv: ''
+            },
+            depa: '',
+            puesto: '',
             date : getCurrentDate()
         };
-
+        this.handleChange = this.handleChange.bind(this);
+        this.handleChangeF = this.handleChangeF.bind(this);
         this.fetchTasks()
     }
     fetchTasks() {
@@ -36,6 +51,47 @@ class guest extends Component{
             console.log(this.state.tasks)
         });
         
+    }
+    fetchdepa() {
+        fetch('/depas')
+          .then(res => res.json())
+          .then(data => {
+            const aux = [];
+            for(const i of data){
+                aux.push(i.nombre)    
+            }
+            this.setState({depas: aux});
+        });
+    }
+    fetchCategorias() {
+        fetch('/catego')
+          .then(res => res.json())
+          .then(data => {
+            /*const aux = [];
+            for(const i of data){
+                aux.push(i.nombre)    
+            }*/
+            this.setState({depas: data});
+        });
+    }
+
+    handleChange(e) {
+        const { name, value } = e.target;
+        this.setState({
+          form:{
+              ...this.state.form,
+              [name]: value
+          },
+        });
+    }
+
+    handleChangeF(e) {
+        this.setState({
+          form:{
+              ...this.state.form,
+              cv: e.target.files[0]
+          },
+        });
     }
 
     buscar(){
@@ -49,10 +105,28 @@ class guest extends Component{
         //this.fetchTasks();
     }
     aplicar(){
+        const formData = new FormData();
+        formData.append(
+            "file",
+            this.state.form.cv
+        );
+        console.log(this.state.form.cv);
+        axios.post("/upload",formData, {})
+            .then(res => {
+                console.log(res.data.msg)
+            })
 
+        console.log(this.state.depa);
+        console.log(this.state.form);
+        
+        this.cerrarModalSelect();
     }
     mostrarModalSelect(dato){
-        this.setState({modalSelect: true})
+        this.setState({
+            depa: dato.idD,
+            puesto: dato.idP,
+            modalSelect: true
+        })
     }
     cerrarModalSelect(){
         this.setState({modalSelect: false})
@@ -69,7 +143,7 @@ class guest extends Component{
         </div>
         <Search this = {this}/>    
         <Select this = {this}/>    
-        <Carrousel tasks = {this.state.tasks} this = {this} />
+        <Carrousel this = {this} />
         </div>
     }
 }
@@ -114,7 +188,7 @@ function Ifblock(props){
             </ul>
             </ul>
         </div>
-        <a onClick={()=>props.this.mostrarModalSelect()}>Seleccionar</a>
+        <a onClick={()=>props.this.mostrarModalSelect(props.e)}>Seleccionar</a>
 
         </div>
     );
@@ -155,12 +229,11 @@ function Carrousel(props){
                 <div class="container">
                 <div class="row">
                 {               
-                    props.tasks.map((e, index) => 
+                    props.this.state.tasks.map((e, index) => 
                         <div>
                         {
                             <div class="col-sm-4">
                             {(() => {
-                                console.log(index);
                                 if(e.Imagen != null){
                                     return <Ifblock e = {e} this = {props.this}/>
                                 }else{
@@ -257,7 +330,7 @@ function Select(props){
             </label>
             <input
                 className="form-control"
-                name="user"
+                name="cui"
                 type="text"
                 onChange={props.this.handleChange}
             />
@@ -268,7 +341,7 @@ function Select(props){
             </label>
             <input
                 className="form-control"
-                name="pass"
+                name="nombre"
                 type="text"
                 onChange={props.this.handleChange}
             />
@@ -279,7 +352,7 @@ function Select(props){
             </label>
             <input
                 className="form-control"
-                name="pass"
+                name="apellido"
                 type="text"
                 onChange={props.this.handleChange}
             />
@@ -290,7 +363,7 @@ function Select(props){
             </label>
             <input
                 className="form-control"
-                name="pass"
+                name="correo"
                 type="text"
                 onChange={props.this.handleChange}
             />
@@ -301,7 +374,7 @@ function Select(props){
             </label>
             <input
                 className="form-control"
-                name="pass"
+                name="direccion"
                 type="text"
                 onChange={props.this.handleChange}
             />
@@ -311,7 +384,7 @@ function Select(props){
             </label>
             <input
                 className="form-control"
-                name="pass"
+                name="telefono"
                 type="text"
                 onChange={props.this.handleChange}
             />
@@ -322,9 +395,11 @@ function Select(props){
             </label>
             <input
                 className="form-control"
-                name="pass"
+                name="cv"
                 type="file"
-                onChange={props.this.handleChange}
+                multiple={false}
+                accept=".pdf"
+                onChange={props.this.handleChangeF}
             />
             </FormGroup>
             </FormGroup>
