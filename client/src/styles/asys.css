@@ -179,6 +179,19 @@
      -moz-animation-iteration-count: infinite;
      animation-iteration-count: infinite;
  }
+ .xml h2{
+  text-align:center;
+  font-size:2.5em;
+  margin-top:5%;
+font-family: 'Source Code Pro';
+text-shadow: 0px 2px 3px #C0C0C0;
+  -webkit-animation: colorFadese 7s;
+  -moz-animation: colorFadese 7s;
+  animation: colorFadese 7s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
  .xml h3{
   text-align:center;
   font-size:2em;
@@ -216,7 +229,18 @@ text-shadow: 0px 2px 3px #C0C0C0;
   0%   {color:#e491e0;}
   50%  {color: #ca1038;}
 }
-
+@-webkit-keyframes colorFadese {
+  0%   {color:#91e4b4;}
+  50%  {color: #126b37c0;;}
+}
+@-moz-keyframes colorFadese{
+  0%   {color:#91e4b4;}
+  50%  {color: #126b37c0;}
+}
+@keyframes colorFadese{
+  0%   {color:#91e4b4;}
+  50%  {color: #126b37c0;;}
+}
 
 .load{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);
   /*change these sizes to fit into your project*/

@@ -217,4 +217,14 @@ Select c.Nombre From Puesto_Cate pc Inner Join Puesto p ON p.PuestoID = pc.Puest
 
 Select PersonalID, Usuario, Contraseña, Estado, TO_CHAR(Fecha_Inicio, 'DD/MM/YYYY' ) Fecha_Inicio, TO_CHAR(Fecha_Fin, 'DD/MM/YYYY' ) Fecha_Fin, r.Nombre, d.Nombre, Correo From Personal p Inner Join Rol r ON r.RolID = p.RolID Inner Join Departamento d ON d.DepaID = p.DepartamentoID WHERE (p.Usuario = :usuario OR :usuario is null) AND (p.Estado = :estado OR :estado is null) AND (p.Fecha_Inicio = TO_DATE(:incio, 'YYYY-MM-DD') OR :inicio is null) AND (p.Fecha_Fin = TO_DATE(:final, 'YYYY-MM-DD') OR :final is null) AND (r.Nombre = :rol OR :rol is null);
 
- 
+Select r.Nombre, p.PersonalID From Personal p Inner Join Rol r ON r.RolID p.RolID AND Where Usuario = :usuario AND Contrasenia = :pass; 
+
+Select d.DepaID FROM Personal p Inner JOin Departamento d ON d.DepaID = p.DepartamentoID Where p.PersonalID = :per;
+
+Select p.Nombre From Puesto p Inner Join Depa_Puesto dp ON dp.PuestoID = p.PuestoID Inner Join Departamento d ON d.DepaID = dp.DepartamentoID AND d.DepaID = :depa ;
+
+Select ap.Nombre, p.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Postulacion, ap.CUI, ap.Apellido, ap.Correo, ap.Direccion, ap.Telefono, ap.CV, ap.Apto From Aplicante ap Inner Join Depa_Puesto dp On dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner Join Puesto p ON p.PuestoID = dp.PuestoID Inner Join Departamento d ON d.DepaID = dp.DepartamentoID AND d.DepaID = :depa;
+
+Update Aplicante SET Apto = :apto WHERE CUI = :cui;
+
+Select ap.Nombre, p.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Postulacion, ap.CUI, ap.Apellido, ap.Correo, ap.Direccion, ap.Telefono, ap.CV, ap.Apto From Aplicante ap Inner Join Depa_Puesto dp On dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner Join Puesto p ON p.PuestoID = dp.PuestoID Inner Join Departamento d ON d.DepaID = dp.DepartamentoID AND d.DepaID = :depa WHERE (ap.Nombre = :nombre OR :nombre is null) AND (ap.Fecha_Postulacion = TO_DATE(:fecha, 'YYYY-MM-DD') OR :fecha is null) AND (p.Nombre = :puesto OR :puesto is null);

@@ -40,26 +40,36 @@ class login extends Component{
         .then(res => res.json())
         .then(data => {
             console.log(data)
-            if(data === undefined){
-                window.alert("Usuario y/o Contraseña incorrecta");
-            }else{
-                switch(data.Rol){
-                    case "Admin Sistema":
-                        cookies.set('Rol', data.Rol, {path: "/"});
-                        window.location.href="./AdminSystem";
-                        break;
-                    case "Admin Usuario":
-                        cookies.set('Rol', data.Rol, {path: "/"});
-                        window.location.href="./AdminUser";
-                        break;
-                    case undefined:
-                        console.log("NADA")
-                        window.alert("Usuario y/o Contraseña incorrecta");
-                        break;
-                    default:
-                        break;
-                }    
-            }
+            switch(data.Rol){
+                case "Admin Sistema":
+                    cookies.set('Rol', data.Rol, {path: "/"});
+                    window.location.href="./AdminSystem";
+                    break;
+                case "Admin Usuario":
+                    cookies.set('Rol', data.Rol, {path: "/"});
+                    window.location.href="./AdminUser";
+                    break;
+                case "Coordinador":
+                    cookies.set('id', data.id, {path: "/"});
+                    window.location.href="./AdminUser";
+                    break;
+                case "Reclutador":
+                    console.log(data.id)
+                    cookies.set('id', data.id, {path: "/"});
+                    window.location.href="./reclutar";
+                    break;
+                case "Revisor":
+                    cookies.set('id', data.id, {path: "/"});
+                    window.location.href="./AdminUser";
+                    break;
+                case undefined:
+                    console.log("NADA")
+                    window.alert("Usuario y/o Contraseña incorrecta");
+                    break;
+                default:
+                    break;
+            }    
+            
             this.setState({user: '', pass: ''});
         })
         .catch(err => console.error(err));

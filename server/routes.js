@@ -19,6 +19,13 @@ const deleteU = require('./routes/user/delete');
 const searchU = require('./routes/user/search');
 
 const insertAp = require('./routes/applicant/insert');
+const selectAp = require('./routes/applicant/select');
+const depas = require('./routes/recruiter/depa');
+const puestos = require('./routes/recruiter/puesto');
+
+Router.post('/depasr', depas);
+Router.post('/puestos', puestos);
+Router.post('/selectAp', selectAp);
 
 
 Router.post('/loginn', login);

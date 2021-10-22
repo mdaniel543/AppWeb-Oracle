@@ -523,7 +523,7 @@ function Ifyes(props) {
             onClick={() => props.this.mostrarModalActualizar(dato)}
             >
             Editar
-            </Button>{" "}
+            </Button>
             <Button color="danger" onClick={()=> props.this.eliminar(dato)}>Eliminar</Button>
         </td>
         </tr>
@@ -581,7 +581,9 @@ function SearchU(props) {
                 </label>
                 <DatePicker
                     name = "inicio"
-                    dateFormat="yyyy-MM-dd"
+                    dateFormat="dd/MM/yyyy"
+                    isClearable
+                    placeholderText="Selecciona Fecha"    
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
                     fixedHeight
@@ -595,8 +597,10 @@ function SearchU(props) {
                 </label>
                 <DatePicker
                     name = "fin"
-                    dateFormat="yyyy-MM-dd"
+                    dateFormat="dd/MM/yyyy"
                     selected={startDateF}
+                    isClearable
+                     placeholderText="Selecciona Fecha"
                     onChange={(date) => setStartDateF(date)}
                     fixedHeight
                     //withPortal
