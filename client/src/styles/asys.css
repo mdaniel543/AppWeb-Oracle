@@ -179,6 +179,19 @@
      -moz-animation-iteration-count: infinite;
      animation-iteration-count: infinite;
  }
+ .xml h3{
+  text-align:center;
+  font-size:2em;
+  margin-top:5%;
+font-family: 'Source Code Pro';
+text-shadow: 0px 2px 3px #C0C0C0;
+  -webkit-animation: colorFades 5s;
+  -moz-animation: colorFades 5s;
+  animation: colorFades 5s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
  @-webkit-keyframes colorFade {
      0%   {color:#ffffff;}
      50%  {color: #10c4ca;}
@@ -191,6 +204,49 @@
      0%   {color:#ffffff;}
      50%  {color: #10c4ca;}
  }
+ @-webkit-keyframes colorFades {
+  0%   {color:#e491e0;}
+  50%  {color: #ca1038;}
+}
+@-moz-keyframes colorFades{
+  0%   {color:#e491e0;}
+  50%  {color: #ca1038;}
+}
+@keyframes colorFades{
+  0%   {color:#e491e0;}
+  50%  {color: #ca1038;}
+}
+
+
+.load{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);
+  /*change these sizes to fit into your project*/
+  width:100px;
+  height:100px;
+}
+.load hr{border:0;margin:0;width:40%;height:40%;position:absolute;border-radius:50%;animation:spin 2s ease infinite}
+
+.load :first-child{background:#10c4ca;animation-delay:-1.5s}
+.load :nth-child(2){background:#F63D3A;animation-delay:-1s}
+.load :nth-child(3){background:#FDA543;animation-delay:-0.5s}
+.load :last-child{background:#193B48}
+
+@keyframes spin{
+  0%,100%{transform:translate(0)}
+  25%{transform:translate(160%)}
+  50%{transform:translate(160%, 160%)}
+  75%{transform:translate(0, 160%)}
+}
+.input-container .react-datepicker {
+  margin: 12px 0;
+  width: 100%;
+}
+
+.input-container .react-datepicker input {
+  padding: 4px 12px;
+}
+
+
+
  .xml section{
      width:100%;
      margin:1% 1% 0 10%;

@@ -22,6 +22,7 @@ class guest extends Component{
         super();
         this.state = {
             tasks: [],
+            copy: [],
             modalBuscar: false,
             modalSelect: false,
             depas: [],
@@ -35,6 +36,14 @@ class guest extends Component{
                 telefono: '',
                 cv: ''
             },
+            search: {
+                puesto: null,
+                salario: null,
+                categoria: null,
+                depa: null
+            },
+            load: true,
+            bus: false,
             file: '',
             depa: '',
             puesto: '',
@@ -42,13 +51,19 @@ class guest extends Component{
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeF = this.handleChangeF.bind(this);
+        this.handleChangeS = this.handleChangeS.bind(this);
+        this.handleChangeD = this.handleChangeD.bind(this);
+        this.handleChangeC = this.handleChangeC.bind(this);
         this.fetchTasks()
+        this.fetchdepa()
+        this.fetchCategorias()
     }
     fetchTasks() {
         fetch('/guest')
           .then(res => res.json())
           .then(data => {
-            this.setState({tasks: data});
+            this.setState({tasks: data, copy: data});
+            this.setState({load: false})
             console.log(this.state.tasks)
         });
         
@@ -72,7 +87,7 @@ class guest extends Component{
             for(const i of data){
                 aux.push(i.nombre)    
             }*/
-            this.setState({depas: data});
+            this.setState({catego: data});
         });
     }
 
@@ -95,7 +110,65 @@ class guest extends Component{
         });
     }
 
+    handleChangeD(e) {
+        this.setState({
+          search:{
+              ...this.state.search,
+              depa: e.value
+          },
+        });
+    }
+    handleChangeC(e) {
+        this.setState({
+          search:{
+              ...this.state.search,
+              categoria: e.value
+          },
+        });
+    }
+
+    handleChangeS(e) {
+        const { name, value } = e.target;
+        this.setState({
+          search:{
+              ...this.state.search,
+              [name]: value
+          },
+        });
+    }
+
     buscar(){
+        console.log(this.state.search)
+        this.setState({load: true})
+        fetch('/searchGuest', {
+            method: 'POST',
+            body: JSON.stringify({
+                puesto: this.state.search.puesto,
+                salario: this.state.search.salario,
+                categoria: this.state.search.categoria,
+                depa: this.state.search.depa
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({tasks: data});
+                this.setState({load: false});
+            })
+            .catch(err => console.error(err));
+        this.setState({bus: true, modalBuscar: false})
+        this.setState({
+            search:{
+                ...this.state.search,
+                puesto: null,
+                salario: null,
+                depa: null,
+                categoria: null
+            },
+          });
 
     }
     mostrarModalBuscar(){
@@ -105,6 +178,10 @@ class guest extends Component{
         this.setState({modalBuscar: false})
         //this.fetchTasks();
     }
+    cerrarBusqueda(){
+        this.setState({tasks: this.state.copy, bus: false})
+    }
+
     async aplicar(){
         const formData = new FormData();
         formData.append(
@@ -165,8 +242,20 @@ class guest extends Component{
             <h1>Puestos</h1>
         </div>
         <Search this = {this}/>    
-        <Select this = {this}/>    
-        <Carrousel this = {this} />
+        <Select this = {this}/> 
+        {(() => {
+            if(this.state.load == true){
+                return<Container>
+                <div class="load">
+                <hr/><hr/><hr/><hr/>
+                </div>
+                </Container>
+                
+            }else{
+                return <Carrousel this = {this} />
+            }
+        })()}
+       
         </div>
     }
 }
@@ -248,6 +337,20 @@ function Carrousel(props){
     return(
         <body>
             <section>
+                {(() => {
+                    if(props.this.state.bus === true){
+                        return<Container>
+                        <Button
+                        className="btn btn-danger"
+                        onClick={() => props.this.cerrarBusqueda()}
+                        >
+                        X
+                        </Button>
+                        <div class = "box"></div>
+                        </Container>
+                        
+                    }
+                })()}
                 <div class="container-fluid">
                 <div class="container">
                 <div class="row">
@@ -292,9 +395,9 @@ function Search(props){
                 </label>
                 <input
                     className="form-control"
-                    name="user"
+                    name="puesto"
                     type="text"
-                    onChange={props.this.handleChange}
+                    onChange={props.this.handleChangeS}
                 />
                 </FormGroup>
                 <FormGroup>
@@ -303,28 +406,37 @@ function Search(props){
                 </label>
                 <input
                     className="form-control"
-                    name="pass"
+                    name="salario"
                     type="text"
-                    onChange={props.this.handleChange}
+                    onChange={props.this.handleChangeS}
                 />
                 </FormGroup>
                 <FormGroup>
                 <label>
                     Categoria
                 </label>
-                <Dropdown name = "rol" placeholder="Selecciona Categoria" />
+                <Dropdown 
+                name = "rol" 
+                options = {props.this.state.catego}
+                onChange={props.this.handleChangeC}
+                placeholder="--" 
+                />
                 </FormGroup>
                 <FormGroup>
                 <label>
                     Departamento
                 </label>
-                <Dropdown name = "depa"  placeholder="Selecciona Departamento" />
+                <Dropdown 
+                name = "depa" 
+                options={props.this.state.depas}
+                onChange={props.this.handleChangeD}
+                placeholder="--" />
                 </FormGroup>
             </ModalBody>
             <ModalFooter>
                 <Button
                 color="primary"
-                onClick={() => props.this.Buscar()}
+                onClick={() => props.this.buscar()}
                 >
                 Buscar
                 </Button>

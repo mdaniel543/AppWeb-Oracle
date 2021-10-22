@@ -204,3 +204,17 @@ Insert Into Aplicante(CUI, Nombre, Apellido, Correo, Direccion, Telefono, CV, Ap
 SELECT    n.id, n.us, n.correo, NVL(Conteo, 0) as nv
 FROM      (Select ap.personalID AS id, count(*) as Conteo from Aplicante ap GROUP BY ap.PersonalID) rn
 RIGHT JOIN (Select p.PersonalID as id, p.usuario as us, p.Correo as correo FROM Personal p Inner Join Departamento d ON d.DepaID = p.DepartamentoID AND d.DepaID = :depa Inner Join Rol r ON r.RolID = p.RolID AND r.Nombre = 'Revisor') n ON n.id = rn.id Group BY n.id, n.us, n.correo, rn.id  ORDER BY Conteo ASC FETCH NEXT 1 ROWS ONLY;
+
+Select * From Puesto p WHERE p.Nombre = :puesto;
+Select * From Puesto p WHERE p.Salario >= :salario;
+Select * From Departamento d WHere d.Nombre = :depa;
+Select * From Categoria c Where c.Nombre = :categoria;
+
+Select d.Nombre, p.Nombre, p.salario, p.imagen, d.DepaID, p.PuestoID From Depa_Puesto dp Inner Join Departamento d ON d.DepaID = dp.DepartamentoID Inner Join Puesto p ON p.PuestoID = dp.PuestoID Inner Join Puesto_Cate pc ON pc.PuestoID = p.PuestoID Inner Join Categoria c ON c.CategoriaID = pc.CategoriaID 
+WHERE (p.nombre = :puesto OR :puesto is null) AND (p.Salario >= :salario OR :salario is null) AND (d.Nombre = :depa OR :depa is null) AND (c.Nombre = :categoria OR :categoria is null);
+
+Select c.Nombre From Puesto_Cate pc Inner Join Puesto p ON p.PuestoID = pc.PuestoID AND p.Nombre = '' Inner Join Categoria c On C.CategoriaID = pc.CategoriaID;
+
+Select PersonalID, Usuario, Contraseña, Estado, TO_CHAR(Fecha_Inicio, 'DD/MM/YYYY' ) Fecha_Inicio, TO_CHAR(Fecha_Fin, 'DD/MM/YYYY' ) Fecha_Fin, r.Nombre, d.Nombre, Correo From Personal p Inner Join Rol r ON r.RolID = p.RolID Inner Join Departamento d ON d.DepaID = p.DepartamentoID WHERE (p.Usuario = :usuario OR :usuario is null) AND (p.Estado = :estado OR :estado is null) AND (p.Fecha_Inicio = TO_DATE(:incio, 'YYYY-MM-DD') OR :inicio is null) AND (p.Fecha_Fin = TO_DATE(:final, 'YYYY-MM-DD') OR :final is null) AND (r.Nombre = :rol OR :rol is null);
+
+ 

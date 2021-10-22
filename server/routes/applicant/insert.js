@@ -25,11 +25,4 @@ async function insertAp(req, res) {
     res.send({"msg": "Aplicante registrado correctamente"});
 }
 
-
-  
-
-
-
-
-
 module.exports = insertAp;
