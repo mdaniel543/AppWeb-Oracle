@@ -1,7 +1,8 @@
 const BD = require('../../dbconfig');
 
 async function user(req, res) {
-    const {depa, nombre, fecha, puesto} = req.body
+    console.log(req.body);
+    var {depa, nombre, fecha, puesto} = req.body
     if(fecha != null) fecha = `'${fecha}'`
     if(nombre != null) nombre = `'${nombre}'`
     if(puesto != null) puesto = `'${puesto}'`

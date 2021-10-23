@@ -182,7 +182,7 @@ class guest extends Component{
         this.setState({tasks: this.state.copy, bus: false})
     }
 
-    async aplicar(){
+    aplicar(){
         const formData = new FormData();
         formData.append(
             "file",
@@ -216,7 +216,7 @@ class guest extends Component{
                     window.alert(data.msg);
                 })
                 .catch(err => console.error(err));
-        })
+            })
         this.cerrarModalSelect();
     }
 

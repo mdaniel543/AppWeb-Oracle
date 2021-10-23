@@ -5,6 +5,8 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from 'axios';
+import fileDownload from 'js-file-download'
 
 import {
     Table,
@@ -106,7 +108,6 @@ class Reclutador extends Component{
             .then(res => res.json())
             .then(data => {
                 this.setState({tasks: data, copy:data, load:false});
-                
                 console.log(data);
             })
             .catch(err => console.error(err));
@@ -141,8 +142,38 @@ class Reclutador extends Component{
         });
     }
 
-    buscar(){
-
+    buscar(Ffinal){
+        console.log(this.state.search)
+        let final = null;
+        if(Ffinal != null) final = `${Ffinal.getFullYear()}-${Ffinal.getMonth()+1}-${Ffinal.getDate()}`
+        console.log(final)
+        fetch('/searchAp', {
+            method: 'POST',
+            body: JSON.stringify({
+                depa: this.state.depa.id,
+                nombre: this.state.search.nombre,
+                fecha: final,
+                puesto: this.state.search.puesto,
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({tasks: data});
+            })
+            .catch(err => console.error(err));
+        this.setState({bus: true, modalBuscar: false})
+        this.setState({
+            search:{
+                ...this.state.search,
+                nombre: null,
+                puesto: null,
+                fecha: null
+            },
+        });
     }
 
     cerrarModalBuscar(){
@@ -160,19 +191,60 @@ class Reclutador extends Component{
         this.setState({modalVer: false})
     }
 
-    decargarCV(){
-        console.log('hola')
-    }
-
-    Aceptar(){
+    decargarCV(cv){
 
     }
-
-    rechazar(){
-
+    handleDownload = (url, filename) => {
+        axios.get(require(url), {
+          responseType: 'blob',
+        })
+        .then((res) => {
+          fileDownload(res.data, filename)
+        })
     }
 
+    Aceptar(cui){
+        console.log(cui);
+        fetch('/apto', {
+            method: 'PUT',
+            body: JSON.stringify({
+                apto: '1',
+                cui: cui
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                window.alert(data.msg);
+                this.fetchSelect(this.state.depa.id); 
+            })
+            .catch(err => console.error(err));
+        this.fetchSelect(this.state.depa.id);    
+    }
 
+    rechazar(cui){
+        fetch('/apto', {
+            method: 'PUT',
+            body: JSON.stringify({
+                apto: '0',
+                cui: cui
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                window.alert(data.msg);
+                this.fetchSelect(this.state.depa.id); 
+            })
+            .catch(err => console.error(err));
+        this.fetchSelect(this.state.depa.id);   
+    }
 
     render(){
         return <div>
@@ -237,7 +309,7 @@ function Search(props) {
                 </label>
                 <input
                     className="form-control"
-                    name="user"
+                    name="nombre"
                     type="text"
                     onChange={props.this.handleChangeS}
                 />
@@ -388,7 +460,7 @@ function Fethc(props) {
                     return<Container>
                     <Button style={{float: 'right'}}
                     className="btn btn-danger"
-                    onClick={() => this.cerrarBusqueda()}
+                    onClick={() => props.this.cerrarBusqueda()}
                     >
                     X
                     </Button>
@@ -405,6 +477,7 @@ function Fethc(props) {
                 <th>Fecha Postulacion</th>
                 <th>Datos Personales</th>
                 <th>CV</th>
+                <th>Reclutar</th>
             </tr>
             </thead>
 
@@ -442,14 +515,13 @@ function Ifyes(props) {
         </td>    
         <td>
             <Button
-            onClick={() => props.this.decargarCV(dato.cv)}
-            >
+            onClick={() => props.this.decargarCV(dato.cv)}>
             Descargar
             </Button>
         </td>
         <td>
             <Button color="danger" 
-            onClick={()=> props.this.rechazar(dato)}>
+            onClick={()=> props.this.rechazar(dato.cui)}>
             Rechazar</Button>
         </td>
         </tr>
@@ -474,15 +546,14 @@ function Elsen(props) {
         </td>    
         <td>
             <Button
-            onClick={() => props.this.decargarCV(dato.cv)}
-            >
+            onClick={() => props.this.decargarCV(dato.cv)}>
             Descargar
             </Button>
         </td>
         <td>
             <Button
             color="success"
-            onClick={() => props.this.Aceptar(dato)}
+            onClick={() => props.this.Aceptar(dato.cui)}
             >
             Aceptar
             </Button>
@@ -508,20 +579,19 @@ function Nothing(props) {
         </td>    
         <td>
             <Button
-            onClick={() => props.this.decargarCV(dato.cv)}
-            >
+            onClick={() => props.this.decargarCV(dato.cv)}>
             Descargar
             </Button>
         </td>
         <td>
             <Button
             color="success"
-            onClick={() => props.this.Aceptar(dato)}
+            onClick={() => props.this.Aceptar(dato.cui)}
             >
             Aceptar
             </Button>
             <Button color="danger" 
-            onClick={()=> props.this.rechazar(dato)}>
+            onClick={()=> props.this.rechazar(dato.cui)}>
             Rechazar</Button>
         </td>
         </tr>

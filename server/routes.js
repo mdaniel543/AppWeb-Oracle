@@ -22,11 +22,18 @@ const insertAp = require('./routes/applicant/insert');
 const selectAp = require('./routes/applicant/select');
 const depas = require('./routes/recruiter/depa');
 const puestos = require('./routes/recruiter/puesto');
+const searchAp = require('./routes/applicant/search');
+const apto = require('./routes/applicant/apto');
+
+const controller = require('./upload/cv');
+
 
 Router.post('/depasr', depas);
 Router.post('/puestos', puestos);
 Router.post('/selectAp', selectAp);
 
+Router.post('/searchAp', searchAp);
+Router.put('/apto', apto);
 
 Router.post('/loginn', login);
 Router.post('/carga', carga); //revisar
