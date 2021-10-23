@@ -1,11 +1,10 @@
 import React, { Component, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from 'react-dropdown';
-import 'react-dropdown/style.css';
 import {getCurrentDate} from '../utils/date'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import 'react-dropdown/style.css';
 import {
     Table,
     Button,

@@ -14,7 +14,7 @@ async function sende(email, subject, text) {
       from: '"Totonet S.A" <mdaniel_cool@hotmail.com>', // sender address
       to: email, // list of receivers
       subject: subject, // Subject line
-      html: `<b>${text}</b>`, // html body
+      html: `<body>${text}</body>`, // html body
     };
 
     transporter.sendMail(info, function(error, info){

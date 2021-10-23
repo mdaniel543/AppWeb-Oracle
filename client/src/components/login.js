@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import '../styles/login.css'
 import Cookies from 'universal-cookie';
+import {
+    Modal,
+} from "reactstrap";
 
 const cookies = new Cookies();
 
@@ -42,7 +45,6 @@ class login extends Component{
         .then(res => res.json())
         .then(data => {
             console.log(data)
-            this.setState({load2: false})
             switch(data.Rol){
                 case "Admin Sistema":
                     cookies.set('Rol', data.Rol, {path: "/"});
@@ -68,12 +70,14 @@ class login extends Component{
                 case undefined:
                     console.log("NADA")
                     window.alert("Usuario y/o Contraseña incorrecta");
+                    this.setState({user: '', pass: ''});
+                    break;
+                case "Aplicante":
+                    console.log("Hola aplicante");
                     break;
                 default:
                     break;
             }    
-            
-            this.setState({user: '', pass: ''});
         })
         .catch(err => console.error(err));
     }

@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import Cookies from 'universal-cookie';
 import '../styles/asys.css'
+import {
+    Modal,
+} from "reactstrap";
 
 
 const cookies = new Cookies();

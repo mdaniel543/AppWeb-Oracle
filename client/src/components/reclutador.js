@@ -5,8 +5,6 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from 'axios';
-import download from 'js-file-download'
 
 import {
     Table,
@@ -228,15 +226,16 @@ class Reclutador extends Component{
             });
     }
 
-    Aceptar(cui){
+    Aceptar(data){
         this.setState({load2: true})
-
-        console.log(cui);
         fetch('/apto', {
             method: 'PUT',
             body: JSON.stringify({
                 apto: '1',
-                cui: cui
+                cui: data.cui, 
+                correo: data.correo, 
+                puesto: data.puesto,
+                nombre: data.nombre
             }),
             headers: {
                 'Accept': 'application/json',
@@ -253,14 +252,16 @@ class Reclutador extends Component{
         this.fetchSelect(this.state.depa.id);    
     }
 
-    rechazar(cui){
+    rechazar(data){
         this.setState({load2: true})
-
         fetch('/apto', {
             method: 'PUT',
             body: JSON.stringify({
                 apto: '0',
-                cui: cui
+                cui: data.cui,
+                correo: data.correo,
+                puesto: data.puesto,
+                nombre: data.nombre
             }),
             headers: {
                 'Accept': 'application/json',
@@ -562,7 +563,7 @@ function Ifyes(props) {
         </td>
         <td>
             <Button color="danger" 
-            onClick={()=> props.this.rechazar(dato.cui)}>
+            onClick={()=> props.this.rechazar(dato)}>
             Rechazar</Button>
         </td>
         </tr>
@@ -594,7 +595,7 @@ function Elsen(props) {
         <td>
             <Button
             color="success"
-            onClick={() => props.this.Aceptar(dato.cui)}
+            onClick={() => props.this.Aceptar(dato)}
             >
             Aceptar
             </Button>
@@ -627,12 +628,12 @@ function Nothing(props) {
         <td>
             <Button
             color="success"
-            onClick={() => props.this.Aceptar(dato.cui)}
+            onClick={() => props.this.Aceptar(dato)}
             >
             Aceptar
             </Button>
             <Button color="danger" 
-            onClick={()=> props.this.rechazar(dato.cui)}>
+            onClick={()=> props.this.rechazar(dato)}>
             Rechazar</Button>
         </td>
         </tr>

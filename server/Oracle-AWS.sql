@@ -228,3 +228,7 @@ Select ap.Nombre, p.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Post
 Update Aplicante SET Apto = :apto WHERE CUI = :cui;
 
 Select ap.Nombre, p.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Postulacion, ap.CUI, ap.Apellido, ap.Correo, ap.Direccion, ap.Telefono, ap.CV, ap.Apto From Aplicante ap Inner Join Depa_Puesto dp On dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner Join Puesto p ON p.PuestoID = dp.PuestoID Inner Join Departamento d ON d.DepaID = dp.DepartamentoID AND d.DepaID = :depa WHERE (ap.Nombre = :nombre OR :nombre is null) AND (ap.Fecha_Postulacion = TO_DATE(:fecha, 'YYYY-MM-DD') OR :fecha is null) AND (p.Nombre = :puesto OR :puesto is null);
+
+Insert Into Rol(Nombre) Values ('Aplicante');
+
+Insert Into login(Usuario, Contrasenia, RolID, AplicanteCUI) Select :usuario, :pass, RolID, :usuario From Rol Where Nombre = 'Aplicante';
