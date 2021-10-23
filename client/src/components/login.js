@@ -11,6 +11,7 @@ class login extends Component{
         super();
         this.state = {
           user: '',
+          load2: false,
           pass: '',
           tasks: []
         };
@@ -25,6 +26,7 @@ class login extends Component{
     }
     
     prob(e) {
+        this.setState({load2: true})
         e.preventDefault();
         fetch('/loginn', {
         method: 'POST',
@@ -40,6 +42,7 @@ class login extends Component{
         .then(res => res.json())
         .then(data => {
             console.log(data)
+            this.setState({load2: false})
             switch(data.Rol){
                 case "Admin Sistema":
                     cookies.set('Rol', data.Rol, {path: "/"});
@@ -89,8 +92,18 @@ class login extends Component{
                 </form>
             </div>
             </div>
+            <Load this= {this}/>
         </div>
     }
+}
+function Load(props){
+    return (
+        <Modal isOpen={props.this.state.load2} fade={false}>
+        <div class="load">
+        <hr/><hr/><hr/><hr/>
+        </div>
+        </Modal>
+    );
 }
 
 export default login;

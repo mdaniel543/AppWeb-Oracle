@@ -26,6 +26,7 @@ class AdminUser extends Component{
         this.state = {
             modalActualizar: false,
             modalInsertar: false,
+            load2: false,
             tasks: [],
             copy:[],
             data :{
@@ -113,6 +114,7 @@ class AdminUser extends Component{
     }
 
     buscar(Finicio, Ffinal){
+        this.setState({load2: true})
         console.log(this.state.search)
         let inicio = null, final = null;
         if(Finicio != null) inicio =  `${Finicio.getFullYear()}-${Finicio.getMonth()+1}-${Finicio.getDate()}`
@@ -144,7 +146,7 @@ class AdminUser extends Component{
             .then(res => res.json())
             .then(data => {
                 this.setState({tasks: data});
-                this.setState({load: false});
+                this.setState({load2: false})
             })
             .catch(err => console.error(err));
 
@@ -191,6 +193,7 @@ class AdminUser extends Component{
     }
 
     editar(dato){
+        this.setState({load2: true})
         console.log(this.state.data)
         fetch('/updateU', {
             method: 'PUT',
@@ -211,12 +214,14 @@ class AdminUser extends Component{
             .then(data => {
                 window.alert(data.msg);
                 this.fetchTasks();
+                this.setState({load2: false})
             })
             .catch(err => console.error(err));
         this.cerrarModalActualizar();
         this.fetchTasks();
     }
     eliminar(dato){
+        this.setState({load2: true})
         console.log(this.state.data)
         fetch('/deleteU', {
             method: 'PUT',
@@ -233,11 +238,13 @@ class AdminUser extends Component{
             .then(data => {
                 window.alert(data.msg);
                 this.fetchTasks();
+                this.setState({load2: false})
             })
             .catch(err => console.error(err));
         this.fetchTasks();
     }
     insertar(){
+        this.setState({load2: true})
         console.log(this.state.data)
         fetch('/insertU', {
             method: 'POST',
@@ -258,6 +265,7 @@ class AdminUser extends Component{
             .then(data => {
                 window.alert(data.msg);
                 this.fetchTasks();
+                this.setState({load2: false})
             })
             .catch(err => console.error(err));
         this.cerrarModalInsertar()
@@ -298,6 +306,7 @@ class AdminUser extends Component{
     render (){
         return(
             <div className="crud">
+            <Load this= {this}/>
             <nav role="navigation">
             <div id="menuToggle">
             <input type="checkbox"/>
@@ -503,6 +512,15 @@ class AdminUser extends Component{
         </div>
         );
     }
+}
+function Load(props){
+    return (
+        <Modal isOpen={props.this.state.load2} fade={false}>
+        <div class="load">
+        <hr/><hr/><hr/><hr/>
+        </div>
+        </Modal>
+    );
 }
 
 function Ifyes(props) {

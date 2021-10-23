@@ -6,7 +6,7 @@ import 'react-dropdown/style.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios';
-import fileDownload from 'js-file-download'
+import download from 'js-file-download'
 
 import {
     Table,
@@ -30,6 +30,7 @@ class Reclutador extends Component{
             id: cookies.get('id'),
             tasks: [],
             copy: [],
+            load2: false,
             modalBuscar: false,
             modalVer: false,
             search:{
@@ -143,6 +144,7 @@ class Reclutador extends Component{
     }
 
     buscar(Ffinal){
+        this.setState({load2: true})
         console.log(this.state.search)
         let final = null;
         if(Ffinal != null) final = `${Ffinal.getFullYear()}-${Ffinal.getMonth()+1}-${Ffinal.getDate()}`
@@ -163,6 +165,7 @@ class Reclutador extends Component{
             .then(res => res.json())
             .then(data => {
                 this.setState({tasks: data});
+                this.setState({load2: false})
             })
             .catch(err => console.error(err));
         this.setState({bus: true, modalBuscar: false})
@@ -192,18 +195,42 @@ class Reclutador extends Component{
     }
 
     decargarCV(cv){
-
-    }
-    handleDownload = (url, filename) => {
-        axios.get(require(url), {
-          responseType: 'blob',
-        })
-        .then((res) => {
-          fileDownload(res.data, filename)
-        })
+        this.setState({load2: true})
+        fetch('/controller', {
+            method: 'POST',
+            body: JSON.stringify({
+                d:cv
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.blob())
+            .then((blob) => {
+                // Create blob link to download
+                const url = window.URL.createObjectURL(
+                  new Blob([blob]),
+                );
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute(
+                  'download',
+                  `${cv}`,
+                );
+                // Append to html link element page
+                document.body.appendChild(link);
+                // Start download
+                link.click();
+                this.setState({load2: false})
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+            });
     }
 
     Aceptar(cui){
+        this.setState({load2: true})
+
         console.log(cui);
         fetch('/apto', {
             method: 'PUT',
@@ -220,12 +247,15 @@ class Reclutador extends Component{
             .then(data => {
                 window.alert(data.msg);
                 this.fetchSelect(this.state.depa.id); 
+                this.setState({load2: false})
             })
             .catch(err => console.error(err));
         this.fetchSelect(this.state.depa.id);    
     }
 
     rechazar(cui){
+        this.setState({load2: true})
+
         fetch('/apto', {
             method: 'PUT',
             body: JSON.stringify({
@@ -241,6 +271,7 @@ class Reclutador extends Component{
             .then(data => {
                 window.alert(data.msg);
                 this.fetchSelect(this.state.depa.id); 
+                this.setState({load2: false})
             })
             .catch(err => console.error(err));
         this.fetchSelect(this.state.depa.id);   
@@ -267,10 +298,20 @@ class Reclutador extends Component{
                 ); 
             }
         })()}
-           
+           <Load this= {this}/>
         </div>
     }
 
+}
+
+function Load(props){
+    return (
+        <Modal isOpen={props.this.state.load2} fade={false}>
+        <div class="load">
+        <hr/><hr/><hr/><hr/>
+        </div>
+        </Modal>
+    );
 }
 
 function Menu(props){

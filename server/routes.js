@@ -25,8 +25,8 @@ const puestos = require('./routes/recruiter/puesto');
 const searchAp = require('./routes/applicant/search');
 const apto = require('./routes/applicant/apto');
 
-const controller = require('./upload/cv');
-
+const controller = require('./routes/recruiter/sendCV');
+Router.post('/controller', controller);
 
 Router.post('/depasr', depas);
 Router.post('/puestos', puestos);

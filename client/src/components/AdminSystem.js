@@ -8,6 +8,7 @@ class AdminSystem extends Component{
     constructor() {
         super();
         this.state = {
+            load2: false,
             value: ''
         };
         this.handleChange = this.handleChange.bind(this);
@@ -22,6 +23,7 @@ class AdminSystem extends Component{
         });
     }
     sendXml(){
+        this.setState({load2: true})
         fetch('/carga', {
             method: 'POST',
             body: JSON.stringify({"xml": this.state.value}),
@@ -33,6 +35,7 @@ class AdminSystem extends Component{
             .then(res => res.json())
             .then(data => { 
                 window.alert(data.msg);
+                this.setState({load2: false})
             })
             .catch(err => console.error(err));
             this.setState({value: ''});
@@ -92,8 +95,18 @@ class AdminSystem extends Component{
                     </p>
                 </section>
             </div>
+            <Load this= {this}/>
         </div>
     }
+}
+function Load(props){
+    return (
+        <Modal isOpen={props.this.state.load2} fade={false}>
+        <div class="load">
+        <hr/><hr/><hr/><hr/>
+        </div>
+        </Modal>
+    );
 }
 
 

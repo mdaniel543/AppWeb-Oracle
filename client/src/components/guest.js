@@ -43,6 +43,7 @@ class guest extends Component{
                 depa: null
             },
             load: true,
+            load2: false,
             bus: false,
             file: '',
             depa: '',
@@ -183,6 +184,8 @@ class guest extends Component{
     }
 
     aplicar(){
+        this.cerrarModalSelect();
+        this.setState({load2: true})
         const formData = new FormData();
         formData.append(
             "file",
@@ -214,10 +217,12 @@ class guest extends Component{
                 .then(res => res.json())
                 .then(data => {
                     window.alert(data.msg);
+                    this.setState({load2: false})
                 })
                 .catch(err => console.error(err));
             })
-        this.cerrarModalSelect();
+        
+    
     }
 
 
@@ -255,9 +260,19 @@ class guest extends Component{
                 return <Carrousel this = {this} />
             }
         })()}
-       
+        <Load this= {this}/>
         </div>
     }
+}
+
+function Load(props){
+    return (
+        <Modal isOpen={props.this.state.load2} fade={false}>
+        <div class="load">
+        <hr/><hr/><hr/><hr/>
+        </div>
+        </Modal>
+    );
 }
 
 function Main(props){
