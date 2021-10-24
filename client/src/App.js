@@ -8,6 +8,7 @@ import Login from './components/login';
 import AdminSystem from "./components/AdminSystem";
 import AdminUser from "./components/AdminUser";
 import Reclutador from "./components/reclutador";
+import Applicant from "./components/Applicant";
 
 function App() {
   return( 
@@ -15,6 +16,9 @@ function App() {
       <Switch>
         <Route path= "/login">
           <Login/>
+        </Route>
+        <Route path= "/Applicant">
+          <Applicant/>
         </Route>
         <Route path= "/reclutar">
           <Reclutador/>

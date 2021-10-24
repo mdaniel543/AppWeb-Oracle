@@ -19,11 +19,11 @@ const deleteU = require('./routes/user/delete');
 const searchU = require('./routes/user/search');
 
 const insertAp = require('./routes/applicant/insert');
-const selectAp = require('./routes/applicant/select');
+const selectAp = require('./routes/recruiter/select');
 const depas = require('./routes/recruiter/depa');
 const puestos = require('./routes/recruiter/puesto');
-const searchAp = require('./routes/applicant/search');
-const apto = require('./routes/applicant/apto');
+const searchAp = require('./routes/recruiter/search');
+const apto = require('./routes/recruiter/apto');
 
 const controller = require('./routes/recruiter/sendCV');
 Router.post('/controller', controller);

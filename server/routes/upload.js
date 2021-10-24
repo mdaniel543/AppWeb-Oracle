@@ -8,7 +8,7 @@ function cat(req, res) {
         cb(null, 'upload/cv')
       },
       filename: function (req, file, cb) {
-        cb(null,name + "-" + file.originalname)
+        cb(null, file.originalname + "-" + name)
       }
     });
     
@@ -20,7 +20,7 @@ function cat(req, res) {
         } else if (err) {
             return res.status(500).json(err)
         }
-        return res.send({"msg": name + "-" + req.file.originalname})
+        return res.send({"msg": req.file.originalname + "-" + name})
     })
 }
 

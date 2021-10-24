@@ -34,7 +34,7 @@ class login extends Component{
         fetch('/loginn', {
         method: 'POST',
         body: JSON.stringify({
-            user: this.state.user,
+            usuario: this.state.user,
             pass: this.state.pass
         }),
         headers: {
@@ -70,10 +70,12 @@ class login extends Component{
                 case undefined:
                     console.log("NADA")
                     window.alert("Usuario y/o Contraseña incorrecta");
-                    this.setState({user: '', pass: ''});
+                    this.setState({user: '', pass: '', load2:false});
                     break;
                 case "Aplicante":
                     console.log("Hola aplicante");
+                    cookies.set('id', data.id, {path: "/"});
+                    window.location.href="./Applicant";
                     break;
                 default:
                     break;

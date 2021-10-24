@@ -528,6 +528,7 @@ function Select(props){
                 type="text"
                 onChange={props.this.handleChange}
             />
+             </FormGroup>
             <FormGroup>
             <label>
                 Telefono: 
@@ -552,7 +553,7 @@ function Select(props){
                 onChange={props.this.handleChangeF}
             />
             </FormGroup>
-            </FormGroup>
+           
         </ModalBody>
         <ModalFooter>
             <Button

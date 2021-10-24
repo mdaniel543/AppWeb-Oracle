@@ -404,7 +404,7 @@ function Ver(props) {
     return(
         <Modal isOpen={props.this.state.modalVer} fade={false}>
             <ModalHeader>
-            <div><h3>Buscar Aplicante</h3></div>
+            <div><h3>Aplicante</h3></div>
             </ModalHeader>
             <ModalBody>
                 <FormGroup>

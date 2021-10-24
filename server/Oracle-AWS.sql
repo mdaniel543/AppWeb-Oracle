@@ -101,6 +101,7 @@ CREATE TABLE Aplicante (
     Telefono Number NOT NULL,
     CV Varchar(200) NOT NULL,
     Apto Char(2),
+    Primera_Vez Char(2),
     Fecha_Postulacion DATE,
     Estado_Expediente Char(2),
     Planilla Char(2),
@@ -128,7 +129,9 @@ CREATE TABLE Archivo(
     Motivo Varchar(250),
     Rechazado number,
     AplicanteCUI number, 
+    Puesto_Requi_ID number,
     PRIMARY KEY (ArchivoID),
+    FOREIGN KEY (Puesto_Requi_ID) REFERENCES Puesto_Requisito(Puesto_Requi_ID),
     FOREIGN KEY (AplicanteCUI) REFERENCES Aplicante(CUI)
 );
 
@@ -136,8 +139,8 @@ CREATE TABLE Archivo(
 Insert Into Rol(Nombre) Values ('Admin Sistema');
 Insert Into Rol(Nombre) Values ('Admin Usuario');
 
-Insert Into login(Usuario, Contrasenia, RolID) Select 'AS', 'S', RolID From Rol Where Nombre = 'Admin Sistema';
-Insert Into login(Usuario, Contrasenia, RolID) Select 'AU', 'U', RolID From Rol Where Nombre = 'Admin Usuario';
+Insert Into login(Usuario, Contrasenia, RolID) Select 'as', 's', RolID From Rol Where Nombre = 'Admin Sistema';
+Insert Into login(Usuario, Contrasenia, RolID) Select 'au', 'u', RolID From Rol Where Nombre = 'Admin Usuario';
 
 Select Usuario, Contrasenia, Nombre From login l, Rol r Where l.RolID = r.RolID;
 Select Nombre From login l Inner Join Rol r ON l.RolID = r.RolID Where l.Usuario = '' AND l.Contrasenia = '';
@@ -173,15 +176,20 @@ Select * From Requisito_Formato;
 Select * From Categoria;
 Select * From Puesto_Cate;
 
-Delete From Departamento;
-Delete From Puesto;
-Delete From Depa_Puesto;
-Delete From Requisito;
-Delete From Puesto_Requisito;
-Delete From Formato;
-Delete From Requisito_Formato;
-Delete From Categoria;
-Delete From Puesto_Cate;
+DELETE FROM Departamento CASCADE;
+DELETE FROM Puesto CASCADE;
+DELETE FROM Depa_Puesto CASCADE;
+DELETE FROM Requisito CASCADE;
+DELETE FROM Puesto_Requisito CASCADE;
+DELETE FROM Formato CASCADE;
+DELETE FROM Requisito_Formato CASCADE;
+DELETE FROM Categoria CASCADE;
+DELETE FROM Puesto_Cate CASCADE;
+DELETE FROM Personal CASCADE;
+DELETE FROM Aplicante CASCADE;
+DELETE FROM login CASCADE;
+DELETE FROM Archivo CASCADE;
+DELETE FROM Rol CASCADE;
 
 Select d.DepaID, p.PuestoID, d.Nombre, p.Nombre, p.Salario From Depa_Puesto dp Inner Join Departamento d ON d.DepaID = dp.DepartamentoID Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
 Select c.Nombre From Puesto_Cate pc Inner Join Puesto p ON p.PuestoID = pc.PuestoID AND p.Nombre = '' Inner Join Categoria c On C.CategoriaID = pc.CategoriaID;
@@ -232,3 +240,12 @@ Select ap.Nombre, p.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Post
 Insert Into Rol(Nombre) Values ('Aplicante');
 
 Insert Into login(Usuario, Contrasenia, RolID, AplicanteCUI) Select :usuario, :pass, RolID, :usuario From Rol Where Nombre = 'Aplicante';
+
+Select ap.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Postulacion, ap.Apellido, ap.Correo, ap.Direccion, ap.Telefono, ap.CV, ap.Primera_Vez, dp.DepartamentoID, dp.PuestoID From Aplicante ap Inner Join Depa_Puesto dp ON ap.Depa_Puesto_ID = dp.Depa_Puesto_ID WHERE ap.CUI = :cui;
+
+Select P.Nombre From Puesto Where PuestoID = :puesto
+
+Select pr.puesto_requi_id, r.requisitoid, r.nombre, r.tamanio, r.obligatorio From Puesto_Requisito pr Inner Join Puesto p On p.PuestoID = pr.PuestoID Inner Join Requisito r ON r.RequisitoID = pr.RequisitoID WHERE p.PuestoID
+
+Select rf.Requi_Forma_ID, f.FormatoID, f.Nombre From Requisito_Formato rf Inner Join Formato f ON f.FormatoID = rf.FormatoID Inner Join Requisito r ON r.RequisitoID = rf.RequisitoID AND r.RequisitoID = :requisito;
+
