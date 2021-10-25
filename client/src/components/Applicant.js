@@ -27,12 +27,11 @@ class Applicant extends Component{
             tasks: [],
             nombre: '',
             Requisitos: [],
-            load2: false,
+            load2: true,
             modalVer: false,
             modalCargar: false,
             load: true,
             data: {},
-            puesto: '',
             profile:{
                 nombre: '',
                 fecha: '',
@@ -41,36 +40,161 @@ class Applicant extends Component{
                 direccion: '',
                 telefono: '',
                 cv: '',
-                primera_vez: '',
+                primera: '',
                 depa: '',
-                puestoID: ''
-            }
-
+                puestoID: '',
+                puesto: ''
+            },
+            arreglo: ''
         }
+        this.fetchProfile();
+        
+    }
 
+    cerrarSesion(){
+        cookies.remove('id', {path: "/"});
+        window.location.href='./';
+    }
+
+    fetchProfile(){
+        fetch('/selectPr', {
+            method: 'POST',
+            body: JSON.stringify({
+                cui: this.state.id
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.setState({profile: data});
+                this.fetchRequisitos(data.puestoID);
+            })
+            .catch(err => console.error(err));
+    }
+
+    Comprobar(){
+        if(this.state.profile.primera == 1 ){
+            this.setState({modalCargar: true, load2: false});
+        }
+    }
+
+    fetchRequisitos(id){
+        fetch('/requisitos', {
+            method: 'POST',
+            body: JSON.stringify({
+                puesto: id
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.setState({Requisitos: data});
+                this.Comprobar()
+            })
+            .catch(err => console.error(err));
+    }
+    mostrarModalVer(){
+        this.setState({modalVer: true})
+    }
+    Cargar(){
+
+    }
+
+    cerrarModalCargar(){
+        this.setState({modalCargar: false})
+    }
+
+    handleChange(e) {
+        const { name, value } = e.target;
+        this.setState({
+          profile:{
+              ...this.state.data,
+              [name]: value
+          },
+        });
+    }
+    Editar(){
+
+    }
+    cerrarModalVer(){
+        this.setState({modalVer: false});
+    }
+    hacerArreglo(formatos){
+        var aux = ""
+        formatos.map((requi, index) =>
+            {
+                
+                if(index != 0){
+                    aux += ","
+                }
+                aux += "."
+                aux += requi.formato
+            })
+        console.log(aux)
+        return aux;
+    }
+    DescargarCV(cv){
+        this.setState({load2: true})
+        fetch('/controller', {
+            method: 'POST',
+            body: JSON.stringify({
+                d:cv
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.blob())
+            .then((blob) => {
+                // Create blob link to download
+                const url = window.URL.createObjectURL(
+                  new Blob([blob]),
+                );
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute(
+                  'download',
+                  `${cv}`,
+                );
+                // Append to html link element page
+                document.body.appendChild(link);
+                // Start download
+                link.click();
+                this.setState({load2: false})
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+            });
     }
 
     render(){
         return <div>
             {(() => {
-            if(this.state.load == true){
-                return<Container>
-                <div class="load">
-                <hr/><hr/><hr/><hr/>
-                </div>
-                </Container>
-                
-            }else{
-                return (
-                   <div>
-                       <Menu this = {this}/>
-                        <Fethc this = {this}/>
-                        <Ver this = {this}/>
-                        <Expediente this = {this} />     
-                   </div> 
-                ); 
-            }
-        })()}
+                if(this.state.load == true){
+                    return<Container>
+                    <div class="load">
+                    <hr/><hr/><hr/><hr/>
+                    </div>
+                    </Container>
+                }else{
+                    return (
+                    <div>
+                            
+                    </div> 
+                    ); 
+                }
+            })()}
+            <Menu this = {this}/>
+            <Ver this = {this}/>
+            <Expediente this = {this} /> 
            <Load this= {this}/>
         </div>
     }
@@ -79,39 +203,64 @@ class Applicant extends Component{
 
 function Expediente(props){
     return(
-        <Modal isOpen={props.this.state.modalExpediente} fade={false}>
+        <Modal isOpen={props.this.state.modalCargar} fade={false}>
             <ModalHeader>
-            <div><h3>Cargar Expediente</h3></div>
+            <div><h3>Cargar Expediente para el puesto {props.this.state.profile.puesto}</h3></div>
             </ModalHeader>
             <ModalBody>
                 <FormGroup>
                 <label>
                     DATOS 
                 </label>
-                <Button
+                <Button style={{float: 'right'}}
                 color="primary"
                 onClick={() => props.this.mostrarModalVer()}
                 >
                 Ver
                 </Button>  
                 </FormGroup>
-               
-                
-
-
+                {
+                    props.this.state.Requisitos.map(requi =>
+                        <div>
+                        {
+                            <FormGroup>
+                            <label>
+                                {(() => {
+                                    if(requi.obligatorio == 1){
+                                        return<text>*</text>
+                                    }
+                                })()}
+                                {requi.requisito}({props.this.hacerArreglo(requi.formatos)}): 
+                            </label>
+                            <input
+                                className="form-control"
+                                name={requi.requisito}
+                                type="file"
+                                max-size={requi.tamanio * 1024}
+                                multiple={false}
+                                accept={props.this.hacerArreglo(requi.formatos)}
+                                onChange={props.this.handleChangeF}
+                                required
+                            />
+                            </FormGroup>
+                        }
+                        </div>
+                    )
+                }
+                <i>* Obligatorio cargar archivo</i>
             </ModalBody>
             <ModalFooter>  
             <Button
-                color="primary"
-                onClick={() => props.this.Editar()}
+                color="succes"
+                onClick={() => props.this.Cargar()}
                 >
-                Editar Datos
+                 Cargar Expediente
             </Button>      
             <Button
             color="danger"
-            onClick={() => props.this.cerrarModalVer()}
+            onClick={() => props.this.cerrarModalCargar()}
             >
-            Cancelar
+            Cerrar
             </Button>
             </ModalFooter>
         </Modal> 
@@ -144,7 +293,7 @@ function Menu(props){
         </div>
         </nav>
         <div className='xml'>
-        <h2>Expediente de: {props.this.state.nombre}</h2>
+        <h2>Expediente de: {props.this.state.profile.nombre}</h2>
         </div>
         </div>
     );
@@ -164,10 +313,10 @@ function Ver(props) {
                 </label>
                 <input
                     className="form-control"
-                    name="user"
+                    name="id"
                     type="text"
                     readOnly
-                    value = {props.this.state.data.cui}
+                    value = {props.this.state.id}
                 />
                 </FormGroup>
                 <FormGroup>
@@ -178,7 +327,8 @@ function Ver(props) {
                     className="form-control"
                     name="nombre"
                     type="text"
-                    value = {props.this.state.data.nombre}
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.nombre}
                 />
                 </FormGroup>
                 <FormGroup>
@@ -187,9 +337,10 @@ function Ver(props) {
                 </label>
                 <input
                     className="form-control"
-                    name="Apellido"
+                    name="apellido"
                     type="text"
-                    value = {props.this.state.data.apellido}
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.apellido}
                 />
                 </FormGroup>
                 <FormGroup>
@@ -198,9 +349,10 @@ function Ver(props) {
                 </label>
                 <input
                     className="form-control"
-                    name="user"
+                    name="correo"
                     type="text"
-                    value = {props.this.state.data.correo}
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.correo}
                 />
                 </FormGroup>
                 <FormGroup>
@@ -209,9 +361,10 @@ function Ver(props) {
                 </label>
                 <input
                     className="form-control"
-                    name="user"
+                    name="direccion"
                     type="text"
-                    value = {props.this.state.data.direccion}
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.direccion}
                 />
                 </FormGroup>
                 <FormGroup>
@@ -222,19 +375,33 @@ function Ver(props) {
                     className="form-control"
                     name="user"
                     type="text"
-                    value = {props.this.state.data.telefono}
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.telefono}
                 />
                 </FormGroup>
                 <FormGroup>
                 <label>
                     CV: 
                 </label>
-                <Button
+                <Button style={{float: 'right'}}
                 color="primary"
-                onClick={() => props.this.Editar()}
+                onClick={() => props.this.DescargarCV(props.this.state.profile.cv)}
                 >
                 Ver
                 </Button> 
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    Cargar nuevamente CV
+                </label>
+                <input
+                className="form-control"
+                name="cv"
+                type="file"
+                multiple={false}
+                accept=".pdf"
+                onChange={props.this.handleChangeF}
+                />
                 </FormGroup>
             </ModalBody>
             <ModalFooter>  
@@ -254,7 +421,7 @@ function Ver(props) {
         </Modal>   
     );
 }
-
+/*
 
 function Fethc(props) {
     return(
@@ -386,5 +553,5 @@ function Nothing(props) {
     );   
 }
 
-
+*/
 export default Applicant;

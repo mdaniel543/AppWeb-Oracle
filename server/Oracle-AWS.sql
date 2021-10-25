@@ -241,11 +241,9 @@ Insert Into Rol(Nombre) Values ('Aplicante');
 
 Insert Into login(Usuario, Contrasenia, RolID, AplicanteCUI) Select :usuario, :pass, RolID, :usuario From Rol Where Nombre = 'Aplicante';
 
-Select ap.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Postulacion, ap.Apellido, ap.Correo, ap.Direccion, ap.Telefono, ap.CV, ap.Primera_Vez, dp.DepartamentoID, dp.PuestoID From Aplicante ap Inner Join Depa_Puesto dp ON ap.Depa_Puesto_ID = dp.Depa_Puesto_ID WHERE ap.CUI = :cui;
+Select ap.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Postulacion, ap.Apellido, ap.Correo, ap.Direccion, ap.Telefono, ap.CV, ap.Primera_Vez, dp.DepartamentoID, dp.PuestoID, p.Nombre From Aplicante ap Inner Join Depa_Puesto dp ON ap.Depa_Puesto_ID = dp.Depa_Puesto_ID Inner Join Puesto p ON p.PuestoID = dp.PuestoID WHERE ap.CUI = :cui;
 
-Select P.Nombre From Puesto Where PuestoID = :puesto
-
-Select pr.puesto_requi_id, r.requisitoid, r.nombre, r.tamanio, r.obligatorio From Puesto_Requisito pr Inner Join Puesto p On p.PuestoID = pr.PuestoID Inner Join Requisito r ON r.RequisitoID = pr.RequisitoID WHERE p.PuestoID
+Select pr.puesto_requi_id, r.requisitoid, r.nombre, r.tamanio, r.obligatorio From Puesto_Requisito pr Inner Join Puesto p On p.PuestoID = pr.PuestoID Inner Join Requisito r ON r.RequisitoID = pr.RequisitoID WHERE p.PuestoID = :puesto
 
 Select rf.Requi_Forma_ID, f.FormatoID, f.Nombre From Requisito_Formato rf Inner Join Formato f ON f.FormatoID = rf.FormatoID Inner Join Requisito r ON r.RequisitoID = rf.RequisitoID AND r.RequisitoID = :requisito;
 
