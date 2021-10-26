@@ -247,3 +247,10 @@ Select pr.puesto_requi_id, r.requisitoid, r.nombre, r.tamanio, r.obligatorio Fro
 
 Select rf.Requi_Forma_ID, f.FormatoID, f.Nombre From Requisito_Formato rf Inner Join Formato f ON f.FormatoID = rf.FormatoID Inner Join Requisito r ON r.RequisitoID = rf.RequisitoID AND r.RequisitoID = :requisito;
 
+Update Aplicante SET Nombre = :nombre, Apellido = :apellido, Correo = :correo, Direccion = :direccion, Telefono = :telefono, CV = NVL(:cv, CV) WHERE CUI = :cui
+
+Insert Archivo(Ruta, Aceptado, AplicanteCUI, Puesto_Requi_ID) VALUES (:ruta, '2', :cui, :prid);
+
+Select a.ArchivoID, a.ruta, a.Aceptado, r.nombre From Archivo a Inner Join Aplicante ap ON ap.CUI = a.AplicanteCUI Inner Join Puesto_Requisito pr ON pr.Puesto_Requi_ID = a.Puesto_Requi_ID Inner Join Requisito r ON r.RequisitoID = pr.RequisitoID WHERE a.AplicanteCUI = :cui;
+
+UPDATE Aplicante SET Primera_Vez = '0' WHERE CUI = :cui

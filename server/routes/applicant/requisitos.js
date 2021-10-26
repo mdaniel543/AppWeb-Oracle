@@ -29,7 +29,8 @@ async function requisitos(req, res){
             "requisito": requisito,
             "tamanio": tamanio,
             "obligatorio": obligatorio,
-            "formatos": formatos
+            "formatos": formatos,
+            "util": null
         }
         Requis.push(userSchema);
     }

@@ -549,11 +549,9 @@ function Select(props){
                 name="cv"
                 type="file"
                 multiple={false}
-                accept=".pdf"
                 onChange={props.this.handleChangeF}
             />
             </FormGroup>
-           
         </ModalBody>
         <ModalFooter>
             <Button
