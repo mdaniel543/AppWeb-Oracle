@@ -281,7 +281,7 @@ class Reclutador extends Component{
     render(){
         return <div>
             {(() => {
-            if(this.state.load == true){
+            if(this.state.load === true){
                 return<Container>
                 <div class="load">
                 <hr/><hr/><hr/><hr/>
@@ -519,17 +519,17 @@ function Fethc(props) {
                 <th>Fecha Postulacion</th>
                 <th>Datos Personales</th>
                 <th>CV</th>
-                <th>Reclutar</th>
+                <th></th>
             </tr>
             </thead>
 
             {props.this.state.tasks.map((dato) => (
                 (() => {
-                    if(dato.apto == 1){
+                    if(dato.apto === '1'){
                         return <Ifyes dato = {dato} this= {props.this}/>
-                    }else if(dato.apto == 0){
+                    }else if(dato.apto === '0'){
                         return <Elsen dato = {dato} this = {props.this}/>
-                    }else if(dato.apto == 2){
+                    }else if(dato.apto === '2'){
                         return <Nothing dato = {dato} this = {props.this}/>
                     }
                 })()
@@ -561,11 +561,6 @@ function Ifyes(props) {
             Descargar
             </Button>
         </td>
-        <td>
-            <Button color="danger" 
-            onClick={()=> props.this.rechazar(dato)}>
-            Rechazar</Button>
-        </td>
         </tr>
         </tbody>
     );    
@@ -590,14 +585,6 @@ function Elsen(props) {
             <Button
             onClick={() => props.this.decargarCV(dato.cv)}>
             Descargar
-            </Button>
-        </td>
-        <td>
-            <Button
-            color="success"
-            onClick={() => props.this.Aceptar(dato)}
-            >
-            Aceptar
             </Button>
         </td>
         </tr>

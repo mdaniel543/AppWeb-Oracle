@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component} from "react";
 import Cookies from 'universal-cookie';
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -7,7 +7,6 @@ import '../styles/asys.css'
 import {
     Container,
     Modal,
-    TabPane
 } from "reactstrap";
 
 

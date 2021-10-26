@@ -16,6 +16,7 @@ async function user(req, res) {
         }
         Users.push(userSchema);
     })
+    console.log(Users)
     res.json(Users);
 }
 

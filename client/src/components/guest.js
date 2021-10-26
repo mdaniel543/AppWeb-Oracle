@@ -7,7 +7,6 @@ import {getCurrentDate} from '../utils/date'
 import axios from 'axios';
 
 import {
-    Table,
     Button,
     Container,
     Modal,
@@ -249,7 +248,7 @@ class guest extends Component{
         <Search this = {this}/>    
         <Select this = {this}/> 
         {(() => {
-            if(this.state.load == true){
+            if(this.state.load === true){
                 return<Container>
                 <div class="load">
                 <hr/><hr/><hr/><hr/>

@@ -28,7 +28,7 @@ async function requisitos(req, res){
             "requisitoid": requisitoid,
             "requisito": requisito,
             "tamanio": tamanio,
-            "obligatorio": obligatorio,
+            "obligatorio": obligatorio[0],
             "formatos": formatos,
             "util": null
         }

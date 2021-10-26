@@ -123,9 +123,9 @@ class AdminUser extends Component{
         this.setState({load: true})
 
         let estado = null;
-        if(this.state.search.estado == 'Activo'){
+        if(this.state.search.estado === 'Activo'){
             estado = '1'
-        }else if(this.state.search.estado == 'Inactivo'){
+        }else if(this.state.search.estado === 'Inactivo'){
             estado = '0'
         }
         fetch('/searchU', {
@@ -356,7 +356,7 @@ class AdminUser extends Component{
 
                 {this.state.tasks.map((dato) => (
                     (() => {
-                        if(dato.estado == 1){
+                        if(dato.estado === '1'){
                             return <Ifyes dato = {dato} this= {this}/>
                         }else{
                             return <Elsen dato = {dato} this = {this}/>

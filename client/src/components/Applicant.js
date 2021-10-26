@@ -1,7 +1,6 @@
-import React, { Component, useState } from "react";
+import React, { Component} from "react";
 import Cookies from 'universal-cookie';
 import "bootstrap/dist/css/bootstrap.min.css";
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -35,6 +34,7 @@ class Applicant extends Component{
             modalVer: false,
             modalCargar: false,
             modalCorregir: false,
+            modalVer2:false,
             load: true,
             data: {},
             profile:{
@@ -105,7 +105,7 @@ class Applicant extends Component{
 
     Comprobar(){
         console.log('KHE')
-        if(this.state.profile.primera == 1){
+        if(this.state.profile.primera === '1'){
             this.setState({modalCargar: true, load2: false});
         }else{
             this.setState({load2:false});
@@ -184,15 +184,15 @@ class Applicant extends Component{
 
     hacerArreglo(formatos){
         var aux = ""
-        formatos.map((requi, index) =>
-            {
-                
-                if(index != 0){
-                    aux += ","
-                }
-                aux += "."
-                aux += requi.formato
-            })
+        var index = -1;
+        for(const requi of formatos){
+            index ++;
+            if(index !== 0){
+                aux += ","
+            }
+            aux += "."
+            aux += requi.formato
+        }
         console.log(aux)
         return aux;
     }
@@ -266,7 +266,7 @@ class Applicant extends Component{
         this.setState({load2: true})
         console.log(this.state.Requisitos);
         for (const requi of this.state.Requisitos){
-            if(requi.obligatorio == 1 && requi.util == null){
+            if(requi.obligatorio === '1' && requi.util == null){
                 window.alert("Requisitos obligatorios SIN CARGAR");
                 this.setState({load2: false})
                 return;
@@ -371,6 +371,13 @@ class Applicant extends Component{
             });
     }
 
+    mostrarmodalVer2(){
+        this.setState({modalVer2: true});
+    }
+    cerrarModalVer2(){
+        this.setState({modalVer2: false})
+    }
+
     mostrarModalCorregir(){
 
     }
@@ -378,6 +385,7 @@ class Applicant extends Component{
     render(){
         return <div>
             <Menu this = {this}/>
+            <Ver2 this = {this}/>
             <Ver this = {this}/>
             <Expediente this = {this} /> 
             <Load this= {this}/>
@@ -386,11 +394,12 @@ class Applicant extends Component{
                <Tabs>
                    <TabList>
                        <Tab>Expediente</Tab>
+                       <Tab>Historial</Tab>
                        <Tab>CHAT</Tab>
                    </TabList>
                    <TabPanel>
                    {(() => {
-                        if(this.state.load == true){
+                        if(this.state.load === true){
                             return<Container>
                             <div class="load">
                             <hr/><hr/><hr/><hr/>
@@ -402,6 +411,9 @@ class Applicant extends Component{
                             ); 
                         }
                     })()}
+                   </TabPanel>
+                   <TabPanel>
+                       <h2>Hola</h2>
                    </TabPanel>
                    <TabPanel>
                        <h2>CHAT xD</h2>
@@ -439,7 +451,7 @@ function Expediente(props){
                             <FormGroup>
                             <label>
                                 {(() => {
-                                    if(requi.obligatorio == 1){
+                                    if(requi.obligatorio === '1'){
                                         return<text style={{ color: 'red' }}>* </text>
                                     }
                                 })()}
@@ -473,7 +485,6 @@ function Expediente(props){
             </ModalFooter>
         </Modal> 
     );
-
 }
 
 function Load(props){
@@ -496,6 +507,8 @@ function Menu(props){
         <span></span>
         <span></span>
         <ul id="menu">
+        <button onClick={()=>props.this.mostrarmodalVer2()}><li>Mis Datos</li></button>
+        <div className="boxer"></div>
         <button onClick={()=>props.this.cerrarSesion()}><li>Cerrar Sesion</li></button>
         </ul>
         </div>
@@ -648,11 +661,11 @@ function Fethc(props) {
             </thead>
             {props.this.state.tasks.map((dato) => (
                 (() => {
-                    if(dato.aceptado == 1){
+                    if(dato.aceptado === '1'){
                         return <Ifyes dato = {dato} this= {props.this}/>
-                    }else if(dato.aceptado == 0){
+                    }else if(dato.aceptado === '0'){
                         return <Elsen dato = {dato} this = {props.this}/>
-                    }else if(dato.aceptado == 2){
+                    }else if(dato.aceptado === '2'){
                         return <Nothing dato = {dato} this = {props.this}/>
                     }
                 })()
@@ -722,5 +735,112 @@ function Nothing(props) {
     );   
 }
 
+function Ver2(props) {
+    return(
+        <Modal isOpen={props.this.state.modalVer2} fade={false}>
+            <ModalHeader>
+            <div><h3>Aplicante</h3></div>
+            </ModalHeader>
+            <ModalBody>
+                <FormGroup>
+                <label>
+                    CUI: 
+                </label>
+                <input
+                    className="form-control"
+                    name="id"
+                    type="text"
+                    readOnly
+                    value = {props.this.state.id}
+                />
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    Nombre: 
+                </label>
+                <input
+                    className="form-control"
+                    name="nombre"
+                    type="text"
+                    readOnly
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.nombre}
+                />
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    Apellido: 
+                </label>
+                <input
+                    className="form-control"
+                    name="apellido"
+                    type="text"
+                    readOnly
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.apellido}
+                />
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    Correo: 
+                </label>
+                <input
+                    className="form-control"
+                    name="correo"
+                    type="text"
+                    readOnly
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.correo}
+                />
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    Direccion: 
+                </label>
+                <input
+                    className="form-control"
+                    name="direccion"
+                    type="text"
+                    readOnly
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.direccion}
+                />
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    Telefono: 
+                </label>
+                <input
+                    className="form-control"
+                    name="user"
+                    type="text"
+                    readOnly
+                    onChange={props.this.handleChange}
+                    value = {props.this.state.profile.telefono}
+                />
+                </FormGroup>
+                <FormGroup>
+                <label>
+                    CV: 
+                </label>
+                <Button style={{float: 'right'}}
+                color="primary"
+                onClick={() => props.this.DescargarCV(props.this.state.profile.cv)}
+                >
+                    {props.this.state.profile.cv}
+                </Button> 
+                </FormGroup>
+            </ModalBody>
+            <ModalFooter>      
+            <Button
+            color="danger"
+            onClick={() => props.this.cerrarModalVer2()}
+            >
+            Cerrar
+            </Button>
+            </ModalFooter>
+        </Modal>   
+    );
+}
 
 export default Applicant;
