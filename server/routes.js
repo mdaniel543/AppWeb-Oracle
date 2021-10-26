@@ -28,6 +28,7 @@ const depas = require('./routes/recruiter/depa');
 const puestos = require('./routes/recruiter/puesto');
 const searchAp = require('./routes/recruiter/search');
 const apto = require('./routes/recruiter/apto');
+
 const controller = require('./routes/recruiter/sendCV');
 const controller2 = require('./routes/applicant/send');
 const uploadAr = require('./routes/applicant/uploadExp');
@@ -35,6 +36,12 @@ const uploadAr = require('./routes/applicant/uploadExp');
 const archivo = require('./routes/applicant/archivo');
 const selectExp = require('./routes/applicant/selectExp');
 const primera = require('./routes/applicant/primera')
+
+const selectre = require('./routes/reviewer/select');
+const searche = require('./routes/reviewer/search');
+
+Router.post('/selectre', selectre);
+Router.post('/searche', searche);
 
 Router.put('/primera', primera);
 Router.post('/archivo', archivo);

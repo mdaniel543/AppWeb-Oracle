@@ -56,7 +56,7 @@ class login extends Component{
                     break;
                 case "Coordinador":
                     cookies.set('id', data.id, {path: "/"});
-                    window.location.href="./AdminUser";
+                    window.location.href="./";
                     break;
                 case "Reclutador":
                     console.log(data.id)
@@ -65,7 +65,7 @@ class login extends Component{
                     break;
                 case "Revisor":
                     cookies.set('id', data.id, {path: "/"});
-                    window.location.href="./AdminUser";
+                    window.location.href="./reviewer";
                     break;
                 case undefined:
                     console.log("NADA")

@@ -9,6 +9,7 @@ import AdminSystem from "./components/AdminSystem";
 import AdminUser from "./components/AdminUser";
 import Reclutador from "./components/reclutador";
 import Applicant from "./components/Applicant";
+import Reviewer from "./components/reviewer";
 
 function App() {
   return( 
@@ -19,6 +20,9 @@ function App() {
         </Route>
         <Route path= "/Applicant">
           <Applicant/>
+        </Route>
+        <Route path= "/reviewer">
+          <Reviewer/>
         </Route>
         <Route path= "/reclutar">
           <Reclutador/>

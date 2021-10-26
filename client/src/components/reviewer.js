@@ -1,10 +1,8 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import Cookies from 'universal-cookie';
-import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from 'react-dropdown';
-import 'react-dropdown/style.css';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import axios from 'axios';
 import {
     Table,
     Button,
@@ -16,40 +14,42 @@ import {
     ModalFooter
 } from "reactstrap";
 
-
 const cookies = new Cookies();
 
-class Reclutador extends Component{
-    constructor() {
+class Reviewer extends Component{
+    constructor(){
         super();
         if(cookies.get('id') === undefined) window.location.href = "./login"
         this.state = {
             id: cookies.get('id'),
-            tasks: [],
-            copy: [],
-            load2: false,
-            modalBuscar: false,
+            load: true,
+            laod2: false, 
+            profile:{},
+            modalBuscar:false,
+            copy:[],
             modalVer: false,
             search:{
-                nombre: null,
-                puesto: null,
-                fecha: null
+                nombre: null, 
+                puesto: null, 
+                estado: null
             },
-            load: true,
-            depa:{
-                id: '',
-                nombre: ''
+            data: {
             },
-            data: {},
+            archivos: [],
+            bus:false,
+            expedientes:[],
             puestos:[],
-            bus: false,
+            estados:["Sin revisar", "Aceptado", "Correccion"],
+
+
         };
         this.handleChangeS = this.handleChangeS.bind(this);
         this.handleChangeP = this.handleChangeP.bind(this);
-        this.fetchDepas();
+        this.handleChangeE = this.handleChangeE.bind(this);
+        this.fetchDepa();
+        this.fetchTasks();
     }
-
-    fetchDepas(){
+    fetchDepa(){
         fetch('/depasr', {
             method: 'POST',
             body: JSON.stringify({
@@ -62,12 +62,7 @@ class Reclutador extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                this.setState({depa:{
-                    id: data.id,
-                    nombre : data.nombre
-                }});
                 this.fetchPuestos(data.id)
-                this.fetchSelect(data.id)
             })
             .catch(err => console.error(err));
     }
@@ -91,12 +86,11 @@ class Reclutador extends Component{
             .catch(err => console.error(err));
     }
 
-    fetchSelect(id){
-        console.log(this.state.depa)
-        fetch('/selectAp', {
+    fetchTasks(){
+        fetch('/selectre', {
             method: 'POST',
             body: JSON.stringify({
-                depa: id
+                personal: this.state.id,
             }),
             headers: {
                 'Accept': 'application/json',
@@ -105,12 +99,12 @@ class Reclutador extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                this.setState({tasks: data, copy:data, load:false});
-                console.log(data);
+                console.log(data)
+                this.setState({expedientes: data, copy:data});
+                this.setState({load: false})
             })
             .catch(err => console.error(err));
     }
-
 
     cerrarSesion(){
         cookies.remove('id', {path: "/"});
@@ -118,7 +112,7 @@ class Reclutador extends Component{
     }
 
     mostrarModalBuscar(){
-        this.setState({modalBuscar: true})
+        this.setState({modalBuscar:true})
     }
 
     handleChangeS(e){
@@ -140,19 +134,29 @@ class Reclutador extends Component{
         });
     }
 
-    buscar(Ffinal){
+    handleChangeE(e){
+        this.setState({
+          search:{
+              ...this.state.search,
+              estado: e.value
+          },
+        });
+    }
+    buscar(){
         this.setState({load2: true})
         console.log(this.state.search)
-        let final = null;
-        if(Ffinal != null) final = `${Ffinal.getFullYear()}-${Ffinal.getMonth()+1}-${Ffinal.getDate()}`
-        console.log(final)
-        fetch('/searchAp', {
+        var estado = null
+        if(this.state.search.estado === 'Sin Revisar') estado = '2';
+        if(this.state.search.estado === 'Aceptado') estado = '1';
+        if(this.state.search.estado === 'Correccion') estado = '0';
+
+        fetch('/searche', {
             method: 'POST',
             body: JSON.stringify({
-                depa: this.state.depa.id,
-                nombre: this.state.search.nombre,
-                fecha: final,
-                puesto: this.state.search.puesto,
+                personal: this.state.id,
+                pueston: this.state.search.puesto,
+                estado: estado,
+                nombree: this.state.search.nombre
             }),
             headers: {
                 'Accept': 'application/json',
@@ -161,7 +165,7 @@ class Reclutador extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                this.setState({tasks: data});
+                this.setState({expedientes: data});
                 this.setState({load2: false})
             })
             .catch(err => console.error(err));
@@ -175,23 +179,17 @@ class Reclutador extends Component{
             },
         });
     }
-
     cerrarModalBuscar(){
         this.setState({modalBuscar: false})
     }
+    enviar(){
 
-    cerrarBusqueda(){
-        this.setState({tasks: this.state.copy, bus: false})
     }   
-
-    mostrarModalVer(dato){
-        this.setState({modalVer: true, data:dato})
-    }
     cerrarModalVer(){
         this.setState({modalVer: false})
     }
 
-    decargarCV(cv){
+    decargarExp(cv){
         this.setState({load2: true})
         fetch('/controller', {
             method: 'POST',
@@ -224,85 +222,58 @@ class Reclutador extends Component{
                 link.parentNode.removeChild(link);
             });
     }
+    aceptar(){
 
-    Aceptar(data){
-        this.setState({load2: true})
-        fetch('/apto', {
-            method: 'PUT',
-            body: JSON.stringify({
-                apto: '1',
-                cui: data.cui, 
-                correo: data.correo, 
-                puesto: data.puesto,
-                nombre: data.nombre
-            }),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-            })
-            .then(res => res.json())
-            .then(data => {
-                window.alert(data.msg);
-                this.fetchSelect(this.state.depa.id); 
-                this.setState({load2: false})
-            })
-            .catch(err => console.error(err));
-        this.fetchSelect(this.state.depa.id);    
+    }
+    rechazar(){
+
+    }
+    cerrarBusqueda(){
+        this.setState({expedientes: this.state.copy, bus: false})
+    }
+    mostrarModalVer(dato){
+        this.setState({data: dato, modalVer: true})
+        this.setState({archivos: dato.archivos})
     }
 
-    rechazar(data){
-        this.setState({load2: true})
-        fetch('/apto', {
-            method: 'PUT',
-            body: JSON.stringify({
-                apto: '0',
-                cui: data.cui,
-                correo: data.correo,
-                puesto: data.puesto,
-                nombre: data.nombre
-            }),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-            })
-            .then(res => res.json())
-            .then(data => {
-                window.alert(data.msg);
-                this.fetchSelect(this.state.depa.id); 
-                this.setState({load2: false})
-            })
-            .catch(err => console.error(err));
-        this.fetchSelect(this.state.depa.id);   
+    render (){
+        return(
+            <div>
+                <Menu this = {this}/>
+                <Search this = {this}/>
+                <Ver this = {this}/>
+                <Load this = {this}/>
+                <Container>
+               <Tabs>
+                   <TabList>
+                       <Tab>Expedientes</Tab>
+                       <Tab>CHAT</Tab>
+                   </TabList>
+                   <TabPanel>
+                   {(() => {
+                        if(this.state.load === true){
+                            return<Container>
+                            <div class="load">
+                            <hr/><hr/><hr/><hr/>
+                            </div>
+                            </Container>
+                        }else{
+                            return (
+                                <Fethc this = {this}/>
+                            ); 
+                        }
+                    })()}
+                   </TabPanel>
+                   <TabPanel>
+                       <h2>CHAT xD</h2>
+                   </TabPanel>
+               </Tabs>
+            </Container>
+            </div>
+        );
     }
-
-    render(){
-        return <div>
-            {(() => {
-            if(this.state.load === true){
-                return<Container>
-                <div class="load">
-                <hr/><hr/><hr/><hr/>
-                </div>
-                </Container>
-                
-            }else{
-                return (
-                   <div>
-                       <Menu this = {this}/>
-                        <Search this = {this}/>
-                        <Fethc this = {this}/>
-                        <Ver this = {this}/>
-                   </div> 
-                ); 
-            }
-        })()}
-           <Load this= {this}/>
-        </div>
-    }
-
 }
+
 
 function Load(props){
     return (
@@ -323,25 +294,25 @@ function Menu(props){
         <span></span>
         <span></span>
         <ul id="menu">
-        <button onClick={()=>props.this.mostrarModalBuscar()}><li>Buscar Aplicante</li></button>
+        <button onClick={()=>props.this.mostrarModalBuscar()}><li>Buscar</li></button>
         <div className='boxer'/>
         <button onClick={()=>props.this.cerrarSesion()}><li>Cerrar Sesion</li></button>
         </ul>
         </div>
         </nav>
         <div className='xml'>
-        <h2>Aplicantes en el departamento: {props.this.state.depa.nombre}</h2>
+        <h2>Revisor {props.this.state.profile.nombre}</h2>
         </div>
+        <div className="box"></div>
         </div>
     );
 }
 
 function Search(props) {
-    var [startDateF, setStartDateF] = useState(null);
     return(
         <Modal isOpen={props.this.state.modalBuscar} fade={false}>
             <ModalHeader>
-            <div><h3>Buscar Aplicante</h3></div>
+            <div><h3>Buscar Expediente</h3></div>
             </ModalHeader>
             <ModalBody>
                 <FormGroup>
@@ -367,24 +338,20 @@ function Search(props) {
                 </FormGroup>
                 <FormGroup>
                 <label>
-                    Fecha Postulacion: 
+                    Estado
                 </label>
-                <DatePicker
-                    name = "fin"
-                    dateFormat="dd/MM/yyyy"
-                    selected={startDateF}
-                    isClearable
-                    placeholderText="Selecciona Fecha"
-                    onChange={(date) => setStartDateF(date)}
-                    fixedHeight
-                    //withPortal
-                />
+                <Dropdown name = "estado" 
+                options={props.this.state.estados} 
+                onChange={props.this.handleChangeE} 
+                value={props.this.state.search.estado}
+                 placeholder="--" />
                 </FormGroup>
+
             </ModalBody>
             <ModalFooter>
                 <Button
                 color="primary"
-                onClick={() => props.this.buscar(startDateF)}
+                onClick={() => props.this.buscar()}
                 >
                 Buscar
                 </Button>
@@ -403,84 +370,38 @@ function Ver(props) {
     return(
         <Modal isOpen={props.this.state.modalVer} fade={false}>
             <ModalHeader>
-            <div><h3>Aplicante</h3></div>
+            <div><h3>Archivos del expediente de {props.this.state.data.nombre}</h3></div>
             </ModalHeader>
             <ModalBody>
-                <FormGroup>
-                <label>
-                    CUI: 
-                </label>
-                <input
-                    className="form-control"
-                    name="user"
-                    type="text"
-                    readOnly
-                    value = {props.this.state.data.cui}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Nombre: 
-                </label>
-                <input
-                    className="form-control"
-                    name="nombre"
-                    type="text"
-                    readOnly
-                    value = {props.this.state.data.nombre}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Apellido: 
-                </label>
-                <input
-                    className="form-control"
-                    name="Apellido"
-                    type="text"
-                    readOnly
-                    value = {props.this.state.data.apellido}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Correo: 
-                </label>
-                <input
-                    className="form-control"
-                    name="user"
-                    type="text"
-                    readOnly
-                    value = {props.this.state.data.correo}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Direccion: 
-                </label>
-                <input
-                    className="form-control"
-                    name="user"
-                    type="text"
-                    readOnly
-                    value = {props.this.state.data.direccion}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Telefono: 
-                </label>
-                <input
-                    className="form-control"
-                    name="user"
-                    type="text"
-                    readOnly
-                    value = {props.this.state.data.telefono}
-                />
-                </FormGroup>
-
+            <Table>
+                <thead>
+                <tr>
+                    <th>Requisito</th>
+                    <th>Estado</th>
+                    <th>Ver</th>
+                    <th></th>
+                </tr>
+                </thead>
+                {props.this.state.archivos.map((dato) => (
+                    (() => {
+                        if(dato.aceptado === '1'){
+                            return <Ift dato = {dato} this= {props.this}/>
+                        }else if(dato.aceptado === '0'){
+                            return <Elset dato = {dato} this = {props.this}/>
+                        }else if(dato.aceptado === '2'){
+                            return <Nothingt dato = {dato} this = {props.this}/>
+                        }
+                    })()
+                ))}
+            </Table>
             </ModalBody>
             <ModalFooter>     
+            <Button
+            color="primary"
+            onClick={() => props.this.enviar()}
+            >
+            Enviar
+            </Button>
             <Button
             color="danger"
             onClick={() => props.this.cerrarModalVer()}
@@ -491,6 +412,75 @@ function Ver(props) {
         </Modal>   
     );
 }
+
+function Ift(props) {
+    var dato = props.dato;
+    return(
+        <tbody style={{backgroundColor : "#81C784"}}>
+        <tr key={dato.id} >
+        <td>{dato.requisito}</td>
+        <td>Aceptado</td>
+        <td>
+            <Button
+            onClick={() => props.this.decargarExp(dato.ruta)}>
+            Descargar
+            </Button>
+        </td>
+        </tr>
+        </tbody>
+    );    
+}
+
+function Elset(props) {
+    var dato = props.dato;
+    return(
+        <tbody style={{backgroundColor : "#F44336"}}>
+        <tr key={dato.id} >
+        <td>{dato.requisito}</td>
+        <td>Rechazado</td>
+        <td>
+            <Button
+            onClick={() => props.this.decargarExp(dato.ruta)}>
+            Descargar
+            </Button>
+        </td>
+        </tr>
+        </tbody>
+    );
+}
+
+function Nothingt(props) {
+    var dato = props.dato;
+    return(
+        <tbody >
+        <tr key={dato.id} >
+        <td>{dato.requisito}</td>
+        <td>Sin revisar</td>
+        <td>
+            <Button
+            onClick={() => props.this.decargarExp(dato.ruta)}>
+            Descargar
+            </Button>
+        </td>
+        <td>
+            <Button
+            color="success"
+            onClick={() => props.this.aceptar()}
+            >
+            Aceptar
+            </Button>
+            <Button
+            color="danger"
+            onClick={() => props.this.rechazar()}
+            >
+            Rechazar
+            </Button>
+        </td>
+        </tr>
+        </tbody>
+    );   
+}
+
 
 function Fethc(props) {
     return(
@@ -506,8 +496,7 @@ function Fethc(props) {
                     X
                     </Button>
                     <div class = "box"></div>
-                    </Container>
-                    
+                    </Container> 
                 }
         })()}
         <Table>
@@ -515,25 +504,22 @@ function Fethc(props) {
             <tr>
                 <th>Nombre</th>
                 <th>Puesto</th>
-                <th>Fecha Postulacion</th>
-                <th>Datos Personales</th>
-                <th>CV</th>
-                <th></th>
+                <th>Estado</th>
+                <th>Ver Expediente</th>
             </tr>
             </thead>
 
-            {props.this.state.tasks.map((dato) => (
+            {props.this.state.expedientes.map((dato) => (
                 (() => {
-                    if(dato.apto === '1'){
+                    if(dato.estado_e === '1'){
                         return <Ifyes dato = {dato} this= {props.this}/>
-                    }else if(dato.apto === '0'){
+                    }else if(dato.estado_e === '0'){
                         return <Elsen dato = {dato} this = {props.this}/>
-                    }else if(dato.apto === '2'){
+                    }else if(dato.estado_e === '2'){
                         return <Nothing dato = {dato} this = {props.this}/>
                     }
                 })()
             ))}
-
         </Table>
         </Container>
     );
@@ -546,7 +532,7 @@ function Ifyes(props) {
         <tr key={dato.id} >
         <td>{dato.nombre}</td>
         <td>{dato.puesto}</td>
-        <td>{dato.fecha}</td>
+        <td>Aceptado</td>
         <td>
             <Button
             onClick={() => props.this.mostrarModalVer(dato)}
@@ -554,12 +540,6 @@ function Ifyes(props) {
             Ver
             </Button>
         </td>    
-        <td>
-            <Button
-            onClick={() => props.this.decargarCV(dato.cv)}>
-            Descargar
-            </Button>
-        </td>
         </tr>
         </tbody>
     );    
@@ -568,11 +548,11 @@ function Ifyes(props) {
 function Elsen(props) {
     var dato = props.dato;
     return(
-        <tbody style={{backgroundColor : "#F44336"}}>
+        <tbody style={{backgroundColor : "#EAE718"}}>
         <tr key={dato.id}>
         <td>{dato.nombre}</td>
         <td>{dato.puesto}</td>
-        <td>{dato.fecha}</td>
+        <td>Enviado a Corregir</td>
         <td>
             <Button
             onClick={() => props.this.mostrarModalVer(dato)}
@@ -580,12 +560,6 @@ function Elsen(props) {
             Ver
             </Button>
         </td>    
-        <td>
-            <Button
-            onClick={() => props.this.decargarCV(dato.cv)}>
-            Descargar
-            </Button>
-        </td>
         </tr>
         </tbody>
     );
@@ -598,33 +572,16 @@ function Nothing(props) {
         <tr key={dato.id} >
         <td>{dato.nombre}</td>
         <td>{dato.puesto}</td>
-        <td>{dato.fecha}</td>
+        <td>Sin revisar</td>
         <td>
             <Button
             onClick={() => props.this.mostrarModalVer(dato)}>
             Ver
             </Button>
         </td>    
-        <td>
-            <Button
-            onClick={() => props.this.decargarCV(dato.cv)}>
-            Descargar
-            </Button>
-        </td>
-        <td>
-            <Button
-            color="success"
-            onClick={() => props.this.Aceptar(dato)}
-            >
-            Aceptar
-            </Button>
-            <Button color="danger" 
-            onClick={()=> props.this.rechazar(dato)}>
-            Rechazar</Button>
-        </td>
         </tr>
         </tbody>
     );   
 }
 
-export default Reclutador;
+export default Reviewer;

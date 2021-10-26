@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import {getCurrentDate} from '../utils/date'
+import Cookies from 'universal-cookie';
 import axios from 'axios';
 
 import {
@@ -15,10 +16,13 @@ import {
     FormGroup,
     ModalFooter
 } from "reactstrap";
+
+const cookies = new Cookies();
 class guest extends Component{
 
     constructor() {
         super();
+        cookies.remove('id', {path: "/"});
         this.state = {
             tasks: [],
             copy: [],
