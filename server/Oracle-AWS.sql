@@ -304,3 +304,11 @@ Select r.RequisitoID, r.Nombre, a.ArchivoID, a.Aceptado, a.Ruta FROM Archivo a I
 SELECT ap.CUI, ap.Nombre, p.Nombre, ap.Estado_Expediente FROM Aplicante ap INNER JOIN Depa_Puesto dp ON dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner JOin Puesto p ON p.PuestoID = dp.PuestoID WHERE ap.PersonalID = :personal AND (ap.Nombre = :nombre OR :nombre is null) AND (p.Nombre = :puesto OR :puesto is null) AND (ap.Estado_Expediente = :estado OR :estado is null); 
 
 Select r.RequisitoID, r.Nombre, a.ArchivoID, a.Aceptado, a.Ruta FROM Archivo a INNER JOIN Puesto_Requisito pr ON pr.Puesto_Requi_ID = a.Puesto_Requi_ID INNER JOIN Requisito r ON r.RequisitoID = pr.RequisitoID WHERE a.AplicanteCUI = :cui;
+
+Select Nombre From Personal WHERE PersonalID = :per;
+
+UPDATE Archivivo SET Aceptado = :estado WHERE ArchivoID = :id;
+
+Insert INTO Historial(Ruta, Motivo, Fecha_Rechazado, ArchivoID) VALUES (:ruta, :motivo, TO_DATE(:fecha, 'YYYY-MM-DD'), :ArchivoID);
+
+UPDATE Aplicante SET Estado_Expediente = :estado WHERE CUI = :cui;

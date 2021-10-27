@@ -39,6 +39,18 @@ const primera = require('./routes/applicant/primera')
 
 const selectre = require('./routes/reviewer/select');
 const searche = require('./routes/reviewer/search');
+const pers = require('./routes/reviewer/pers');
+
+const archivos = require('./routes/reviewer/archivo');
+const expedientes = require('./routes/reviewer/expediente');
+const historial = require('./routes/reviewer/historial');
+const correo = require('./routes/reviewer/correo');
+
+Router.post('/sendcorreo', correo);
+Router.post('/pers', pers);
+Router.put('/archivos', archivos);
+Router.put('/expedientes', expedientes);
+Router.post('/historial', historial);
 
 Router.post('/selectre', selectre);
 Router.post('/searche', searche);

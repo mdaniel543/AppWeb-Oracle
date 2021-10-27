@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import Cookies from 'universal-cookie';
 import Dropdown from 'react-dropdown';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import axios from 'axios';
+import {getCurrentDate} from '../utils/date'
+
 import {
     Table,
     Button,
@@ -24,7 +25,7 @@ class Reviewer extends Component{
             id: cookies.get('id'),
             load: true,
             laod2: false, 
-            profile:{},
+            nombre: '',
             modalBuscar:false,
             copy:[],
             modalVer: false,
@@ -33,19 +34,22 @@ class Reviewer extends Component{
                 puesto: null, 
                 estado: null
             },
-            data: {
-            },
+            data: {},
+            ar:{},
             archivos: [],
             bus:false,
             expedientes:[],
             puestos:[],
             estados:["Sin revisar", "Aceptado", "Correccion"],
-
-
+            motivo:'',
+            modalMotivo:false,
+            date : getCurrentDate()
         };
         this.handleChangeS = this.handleChangeS.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.handleChangeP = this.handleChangeP.bind(this);
         this.handleChangeE = this.handleChangeE.bind(this);
+        this.fetchProfile();
         this.fetchDepa();
         this.fetchTasks();
     }
@@ -63,6 +67,24 @@ class Reviewer extends Component{
             .then(res => res.json())
             .then(data => {
                 this.fetchPuestos(data.id)
+            })
+            .catch(err => console.error(err));
+    }
+
+    fetchProfile(){
+        fetch('/pers', {
+            method: 'POST',
+            body: JSON.stringify({
+                per: this.state.id
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({nombre: data.nombre})
             })
             .catch(err => console.error(err));
     }
@@ -106,6 +128,34 @@ class Reviewer extends Component{
             .catch(err => console.error(err));
     }
 
+    fetchTasks1(){
+        fetch('/selectre', {
+            method: 'POST',
+            body: JSON.stringify({
+                personal: this.state.id,
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.setState({expedientes: data, copy:data});
+                for (const exp of data){
+                    if(exp.cui === this.state.data.cui){
+                        this.setState({data: exp, archivos: exp.archivos})
+                        break;
+                    }
+                }
+                this.setState({modalVer: true});
+                this.setState({load2: false})
+                
+            })
+            .catch(err => console.error(err));
+    }
+
     cerrarSesion(){
         cookies.remove('id', {path: "/"});
         window.location.href='./';
@@ -124,7 +174,6 @@ class Reviewer extends Component{
           },
         });
     }
-
     handleChangeP(e){
         this.setState({
           search:{
@@ -133,7 +182,6 @@ class Reviewer extends Component{
           },
         });
     }
-
     handleChangeE(e){
         this.setState({
           search:{
@@ -141,6 +189,11 @@ class Reviewer extends Component{
               estado: e.value
           },
         });
+    }
+    handleChange(e){
+        this.setState({
+          motivo: e.target.value
+        })
     }
     buscar(){
         this.setState({load2: true})
@@ -166,10 +219,10 @@ class Reviewer extends Component{
             .then(res => res.json())
             .then(data => {
                 this.setState({expedientes: data});
-                this.setState({load2: false})
+                this.setState({load2: false, bus: true})
             })
             .catch(err => console.error(err));
-        this.setState({bus: true, modalBuscar: false})
+        this.setState({modalBuscar: false})
         this.setState({
             search:{
                 ...this.state.search,
@@ -182,16 +235,14 @@ class Reviewer extends Component{
     cerrarModalBuscar(){
         this.setState({modalBuscar: false})
     }
-    enviar(){
 
-    }   
     cerrarModalVer(){
         this.setState({modalVer: false})
     }
 
     decargarExp(cv){
         this.setState({load2: true})
-        fetch('/controller', {
+        fetch('/controller2', {
             method: 'POST',
             body: JSON.stringify({
                 d:cv
@@ -222,12 +273,131 @@ class Reviewer extends Component{
                 link.parentNode.removeChild(link);
             });
     }
-    aceptar(){
-
+    aceptar(dato){
+        this.setState({load2: true, modalVer:false})
+        this.setState({})
+        fetch('/archivos', {
+            method: 'PUT',
+            body: JSON.stringify({
+                ida: dato.archivoID,
+                estado: '1'
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.fetchTasks1();
+                
+            })
+            .catch(err => console.error(err));
     }
     rechazar(){
-
+        this.setState({load2: true, modalMotivo: false})
+        fetch('/archivos', {
+            method: 'PUT',
+            body: JSON.stringify({
+                ida: this.state.ar.archivoID,
+                estado: '0'
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.fetchTasks1();
+            })
+            .catch(err => console.error(err));
+    //------------------------------------------
+        fetch('/historial', {
+            method: 'POST',
+            body: JSON.stringify({
+                correo: this.state.data.correo,
+                nombre: this.state.data.nombre,
+                requisito: this.state.ar.requisito,
+                ruta: this.state.ar.ruta,
+                motivo: this.state.motivo,
+                fecha: this.state.date,
+                ida: this.state.ar.archivoID
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.setState({load2: false})
+            })
+            .catch(err => console.error(err));   
     }
+    mostrarModalMotivo(dato){
+        this.setState({modalMotivo:true, ar:dato})
+    }
+    cerrarModalMotivo(){
+        this.setState({modalMotivo:false})
+    }
+
+    enviar(){
+        this.setState({load: true})
+        this.cerrarModalVer();
+        var aux = '1';
+        for(const i of this.state.data.archivos){
+            if(i.aceptado === '0'){
+                aux = '0';
+            }
+            if(i.aceptado === '2'){
+                aux = '2';
+                break;
+            }
+        }
+        if(aux === '1'){
+            fetch('/sendcorreo', {
+                method: 'POST',
+                body: JSON.stringify({
+                    correo: this.state.data.correo,
+                    nombre: this.state.data.nombre
+                }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data.msg)
+                })
+                .catch(err => console.error(err));
+        }
+        fetch('/expedientes', {
+            method: 'PUT',
+            body: JSON.stringify({
+                cui: this.state.data.cui,
+                estado: aux
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.fetchTasks();
+            })
+            .catch(err => console.error(err));
+
+    }   
+
+
+
     cerrarBusqueda(){
         this.setState({expedientes: this.state.copy, bus: false})
     }
@@ -243,6 +413,7 @@ class Reviewer extends Component{
                 <Search this = {this}/>
                 <Ver this = {this}/>
                 <Load this = {this}/>
+                <Motivo this = {this}/>
                 <Container>
                <Tabs>
                    <TabList>
@@ -259,7 +430,14 @@ class Reviewer extends Component{
                             </Container>
                         }else{
                             return (
-                                <Fethc this = {this}/>
+                                <div>
+                                     <div className="xml">
+                                         <h3>Expedientes Asignados</h3>
+                                     </div>
+                                     <div className="box"></div>
+                                     <Fethc this = {this}/>
+                                </div>
+                               
                             ); 
                         }
                     })()}
@@ -301,7 +479,7 @@ function Menu(props){
         </div>
         </nav>
         <div className='xml'>
-        <h2>Revisor {props.this.state.profile.nombre}</h2>
+        <h2>Revisor {props.this.state.nombre}</h2>
         </div>
         <div className="box"></div>
         </div>
@@ -400,7 +578,7 @@ function Ver(props) {
             color="primary"
             onClick={() => props.this.enviar()}
             >
-            Enviar
+            Actualizar Expediente
             </Button>
             <Button
             color="danger"
@@ -465,13 +643,13 @@ function Nothingt(props) {
         <td>
             <Button
             color="success"
-            onClick={() => props.this.aceptar()}
+            onClick={() => props.this.aceptar(dato)}
             >
             Aceptar
             </Button>
             <Button
             color="danger"
-            onClick={() => props.this.rechazar()}
+            onClick={() => props.this.mostrarModalMotivo(dato)}
             >
             Rechazar
             </Button>
@@ -479,6 +657,43 @@ function Nothingt(props) {
         </tr>
         </tbody>
     );   
+}
+
+function Motivo(props) {
+    return(
+        <Modal isOpen={props.this.state.modalMotivo} fade={false}>
+            <ModalHeader>
+            <div><h3>Detalles de rechazo</h3></div>
+            </ModalHeader>
+            <ModalBody>
+            <FormGroup>
+                <label>
+                    Motivo
+                </label>
+                <textarea
+                    className="form-control"
+                    name="motivo"
+                    type="text"
+                    onChange={props.this.handleChange}
+                />
+                </FormGroup>
+            </ModalBody>
+            <ModalFooter>     
+            <Button
+            color="primary"
+            onClick={() => props.this.rechazar()}
+            >
+            Enviar Correccion
+            </Button>
+            <Button
+            color="danger"
+            onClick={() => props.this.cerrarModalMotivo()}
+            >
+            Cancelar
+            </Button>
+            </ModalFooter>
+        </Modal>  
+    );
 }
 
 

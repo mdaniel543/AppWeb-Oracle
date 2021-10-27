@@ -6,14 +6,15 @@ async function archivos(req, res){
     if(pueston != null) pueston = `'${pueston}'`;
     if(estado != null) estado = `'${estado}'`;
     if(nombree != null) nombree = `'${nombree}'`;
-    sql = `SELECT ap.CUI, ap.Nombre, p.Nombre, ap.Estado_Expediente FROM Aplicante ap INNER JOIN Depa_Puesto dp ON dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner JOin Puesto p ON p.PuestoID = dp.PuestoID WHERE ap.PersonalID = :personal AND (ap.Nombre = ${nombree} OR ${nombree} is null) AND (p.Nombre = ${pueston} OR ${pueston} is null) AND (ap.Estado_Expediente = ${estado} OR ${estado} is null)`
+    sql = `SELECT ap.CUI, ap.Nombre, ap.correo, p.Nombre, ap.Estado_Expediente FROM Aplicante ap INNER JOIN Depa_Puesto dp ON dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner JOin Puesto p ON p.PuestoID = dp.PuestoID WHERE ap.PersonalID = :personal AND (ap.Nombre = ${nombree} OR ${nombree} is null) AND (p.Nombre = ${pueston} OR ${pueston} is null) AND (ap.Estado_Expediente = ${estado} OR ${estado} is null)`
     var result = await BD.Open(sql, [personal], false);
     Aplicante = [];
     for(const requi of result.rows){
         var cui = requi[0];
         var nombre = requi[1];
-        var puesto = requi[2];
-        var estado_e = requi[3];
+        var correo = requi[2];
+        var puesto = requi[3];
+        var estado_e = requi[4];
         
         sql = "Select r.RequisitoID, r.Nombre, a.ArchivoID, a.Aceptado, a.Ruta FROM Archivo a INNER JOIN Puesto_Requisito pr ON pr.Puesto_Requi_ID = a.Puesto_Requi_ID INNER JOIN Requisito r ON r.RequisitoID = pr.RequisitoID WHERE a.AplicanteCUI = :cui"
         var result2 = await BD.Open(sql, [cui], false);
@@ -31,6 +32,7 @@ async function archivos(req, res){
         let userSchema = {
             "cui": cui,
             "nombre": nombre,
+            "correo": correo,
             "puesto": puesto,
             "estado_e": estado_e,
             "archivos": archivo
