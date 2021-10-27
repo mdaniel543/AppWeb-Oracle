@@ -28,6 +28,7 @@ class Applicant extends Component{
         this.state = {
             id: cookies.get('id'),
             tasks: [],
+            historial: [], 
             nombre: '',
             Requisitos: [],
             load2: true,
@@ -37,6 +38,8 @@ class Applicant extends Component{
             modalVer2:false,
             load: true,
             data: {},
+            extra:{ formatos: [] },
+            extra2:{},
             profile:{
                 nombre: '',
                 fecha: '',
@@ -54,9 +57,10 @@ class Applicant extends Component{
             arreglo: ''
         }
         this.handleChange = this.handleChange.bind(this);
-        //this.handleChangeF = this.handleChangeF.bind(this);
+        //this.handleChangeCo = this.handleChangeCo.bind(this);
         this.handleChangeC = this.handleChangeC.bind(this);
         this.fetchProfile();
+        this.fetchistorial();
     }
 
     cerrarSesion(){
@@ -337,6 +341,25 @@ class Applicant extends Component{
             .catch(err => console.error(err));
     }
 
+    fetchistorial(){
+        fetch('/selectHi', {
+            method: 'POST',
+            body: JSON.stringify({
+                cui: this.state.id
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.setState({historial: data});
+            })
+            .catch(err => console.error(err));
+    }
+
     descargarExp(cv){
         this.setState({load2: true})
         fetch('/controller2', {
@@ -378,8 +401,59 @@ class Applicant extends Component{
         this.setState({modalVer2: false})
     }
 
-    mostrarModalCorregir(){
+    handleChangeCo(e){
+        this.setState({load2: true})
+        console.log(e.size)
+        if(e.size > this.state.extra.tamanio * 1048576){
+            window.alert(`El archivo supera el limite del tamaño permitido (${this.state.extra.tamanio})MB`);
+            this.setState({load2: false})
+            return;
+        }
+        const formData = new FormData();
+        formData.append(
+            "file",
+            e
+        );
+        axios.post("/uploadExp",formData, {})
+        .then(res => {
+            this.state.extra.util = res.data.msg
+            this.setState({load2: false})
+        })
+    }
 
+    mostrarModalCorregir(dato){
+        for(const i of this.state.Requisitos){
+            if(dato.requisitoid === i.requisitoid){
+                this.setState({extra: i, extra2: dato, modalCorregir: true});
+                break;
+            }
+        }
+    }
+
+    cerrarModalCorregir(){
+        this.setState({modalCorregir: false});
+    }
+
+    Corregir(){
+        this.setState({modalCorregir: false, load:true})
+        fetch('/corregir', {
+            method: 'PUT',
+            body: JSON.stringify({
+                cui: this.state.id,
+                archivoid: this.state.extra2.id,
+                ruta: this.state.extra.util
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.Archivos();
+            })
+            .catch(err => console.error(err));
     }
 
     render(){
@@ -389,6 +463,7 @@ class Applicant extends Component{
             <Ver this = {this}/>
             <Expediente this = {this} /> 
             <Load this= {this}/>
+            <Corregir this = {this}/>
             <div className="box"></div>
             <Container>
                <Tabs>
@@ -413,7 +488,7 @@ class Applicant extends Component{
                     })()}
                    </TabPanel>
                    <TabPanel>
-                       <h2>Hola</h2>
+                       <Historial this = {this}/>
                    </TabPanel>
                    <TabPanel>
                        <h2>CHAT xD</h2>
@@ -684,7 +759,7 @@ function Ifyes(props) {
         <td>Aceptado</td>
         <td>
             <Button
-            onClick={() => props.this.decargarExp(dato.archivo)}>
+            onClick={() => props.this.descargarExp(dato.archivo)}>
             Descargar
             </Button>
         </td>
@@ -702,7 +777,7 @@ function Elsen(props) {
         <td>Rechazado</td>
         <td>
             <Button
-            onClick={() => props.this.decargarExp(dato.archivo)}>
+            onClick={() => props.this.descargarExp(dato.archivo)}>
             Descargar
             </Button>
         </td>
@@ -734,6 +809,82 @@ function Nothing(props) {
         </tbody>
     );   
 }
+
+function Corregir(props){
+    return(
+        <Modal isOpen={props.this.state.modalCorregir} fade={false}>
+            <ModalHeader>
+            <div><h3>Corregir </h3></div>
+            </ModalHeader>
+            <ModalBody>
+                    <FormGroup>
+                        <label>
+                            {props.this.state.extra.requisito}({props.this.hacerArreglo(props.this.state.extra.formatos)}): 
+                        </label>
+                        <input
+                            className="form-control"
+                            type="file"
+                            multiple={false}
+                            accept={props.this.hacerArreglo(props.this.state.extra.formatos)}
+                            onChange={e => props.this.handleChangeCo(e.target.files[0])}
+                        />
+                    </FormGroup>
+            </ModalBody>
+            <ModalFooter>     
+            <Button
+            color="success"
+            onClick={() => props.this.Corregir()}
+            >
+            Corregir
+            </Button> 
+            <Button
+            color="danger"
+            onClick={() => props.this.cerrarModalCorregir()}
+            >
+            Cerrar
+            </Button>
+            </ModalFooter>
+        </Modal> 
+    );
+}
+
+function Historial(props){
+    return (
+        <Container>
+        <div className='xml'>
+         <h3>Historial</h3>
+         </div>
+         <div className="box"></div>
+        <Table>
+            <thead>
+            <tr>
+                <th>Requisito</th>
+                <th>Motivo</th>
+                <th>Fecha de rechazo</th>
+                <th>Ver</th>
+            </tr>
+            </thead>
+            {props.this.state.historial.map((dato) => (
+
+                <tbody>
+                <tr key={dato.id} >
+                <td>{dato.requisito}</td>
+                <td>{dato.motivo}</td>
+                <td>{dato.fecha}</td>
+                <td>
+                    <Button
+                    onClick={() => props.this.descargarExp(dato.ruta)}>
+                    Descargar
+                    </Button>
+                </td>
+                </tr>
+                </tbody>
+            ))}
+        </Table>
+        </Container>  
+    );
+}
+
 
 function Ver2(props) {
     return(

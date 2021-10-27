@@ -151,7 +151,6 @@ class Reviewer extends Component{
                 }
                 this.setState({modalVer: true});
                 this.setState({load2: false})
-                
             })
             .catch(err => console.error(err));
     }

@@ -312,3 +312,8 @@ UPDATE Archivivo SET Aceptado = :estado WHERE ArchivoID = :id;
 Insert INTO Historial(Ruta, Motivo, Fecha_Rechazado, ArchivoID) VALUES (:ruta, :motivo, TO_DATE(:fecha, 'YYYY-MM-DD'), :ArchivoID);
 
 UPDATE Aplicante SET Estado_Expediente = :estado WHERE CUI = :cui;
+
+Select r.Nombre, h.historialid, h.ruta, h.motivo, TO_CHAR(h.Fecha_Rechazado, 'DD/MM/YYYY' ) Fecha_Rechazado From Historial h Inner Join Archivo a ON  a.ArchivoID = h.ArchivoID Inner Join Puesto_Requisito pr ON pr.Puesto_Requi_ID = a.Puesto_Requi_ID Inner Join Requisito r ON r.RequisitoID = pr.requisitoid WHERE a.AplicanteCUI = :cui;
+
+Update Archivo Set Ruta = :ruta, Aceptado = '2' WHERE ArchivoID = :id
+Update Aplicante Set Estado_Expediente = '2' WHERE CUI :cui;

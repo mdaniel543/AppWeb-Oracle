@@ -36,6 +36,7 @@ const uploadAr = require('./routes/applicant/uploadExp');
 const archivo = require('./routes/applicant/archivo');
 const selectExp = require('./routes/applicant/selectExp');
 const primera = require('./routes/applicant/primera')
+const selectHis = require('./routes/applicant/historial');
 
 const selectre = require('./routes/reviewer/select');
 const searche = require('./routes/reviewer/search');
@@ -46,12 +47,17 @@ const expedientes = require('./routes/reviewer/expediente');
 const historial = require('./routes/reviewer/historial');
 const correo = require('./routes/reviewer/correo');
 
+const corregir = require('./routes/applicant/corregir');
+
+Router.put('/corregir', corregir);
+
 Router.post('/sendcorreo', correo);
 Router.post('/pers', pers);
 Router.put('/archivos', archivos);
 Router.put('/expedientes', expedientes);
 Router.post('/historial', historial);
 
+Router.post('/selectHi', selectHis);
 Router.post('/selectre', selectre);
 Router.post('/searche', searche);
 
