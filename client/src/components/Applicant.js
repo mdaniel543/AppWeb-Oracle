@@ -5,7 +5,7 @@ import 'react-dropdown/style.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import axios from 'axios';
-
+import Swal from 'sweetalert2'
 
 import {
     Table,
@@ -174,7 +174,11 @@ class Applicant extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                window.alert(data.msg);
+                Swal.fire(
+                    'Hecho!',
+                    data.msg,
+                    'success'
+                )
                 this.fetchProfile2();
             })
             .catch(err => console.error(err));
@@ -271,7 +275,11 @@ class Applicant extends Component{
         console.log(this.state.Requisitos);
         for (const requi of this.state.Requisitos){
             if(requi.obligatorio === '1' && requi.util == null){
-                window.alert("Requisitos obligatorios SIN CARGAR");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Requisitos obligatorios SIN CARGAR',
+                  })
                 this.setState({load2: false})
                 return;
             }
@@ -296,7 +304,11 @@ class Applicant extends Component{
                 })
                 .catch(err => console.error(err));
         }
-        window.alert("Expediente enviado para revisar correctamente")
+        Swal.fire(
+            'Hecho!',
+            'Expediente enviado para revisar correctamente',
+            'success'
+        )
         this.primera();
         this.setState({modalCargar: false, load2:false})
     }
@@ -306,7 +318,11 @@ class Applicant extends Component{
         this.setState({load2: true})
         console.log(e.size)
         if(e.size > requi.tamanio * 1048576){
-            window.alert(`El archivo supera el limite del tamaño permitido (${requi.tamanio})MB`);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `El archivo supera el limite del tamaño permitido (${requi.tamanio})MB`,
+            })
             this.setState({load2: false})
             return;
         }
@@ -336,6 +352,18 @@ class Applicant extends Component{
             .then(res => res.json())
             .then(data => {
                 console.log(data)
+                for(const i of data){
+                    if(i.aceptado === '0'){
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'warning',
+                            title: 'Tiene documentos que corregir',
+                            showConfirmButton: false,
+                            timer: 4000
+                          })
+                        break;
+                    }
+                }
                 this.setState({tasks: data, load: false});
             })
             .catch(err => console.error(err));
@@ -405,7 +433,11 @@ class Applicant extends Component{
         this.setState({load2: true})
         console.log(e.size)
         if(e.size > this.state.extra.tamanio * 1048576){
-            window.alert(`El archivo supera el limite del tamaño permitido (${this.state.extra.tamanio})MB`);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `El archivo supera el limite del tamaño permitido (${this.state.extra.tamanio})MB`,
+            })
             this.setState({load2: false})
             return;
         }
@@ -450,7 +482,11 @@ class Applicant extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
+                Swal.fire(
+                    'Hecho!',
+                    'Correcion Subida',
+                    'success'
+                )
                 this.Archivos();
             })
             .catch(err => console.error(err));

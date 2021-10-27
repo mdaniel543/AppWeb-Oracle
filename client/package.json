@@ -20,6 +20,7 @@
     "react-tabs": "^3.2.2",
     "react-xml-parser": "^1.1.8",
     "reactstrap": "^8.10.0",
+    "sweetalert2": "^11.1.9",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^1.1.2"
   },

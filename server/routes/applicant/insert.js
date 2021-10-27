@@ -4,9 +4,11 @@ const emaile = require('../../utils/email');
 async function insertAp(req, res) {
     console.log(req.body)
     const { cui, nombre, apellido, correo, direccion, telefono, cv, postu, depa, puesto} = req.body;
-    sql = "SELECT  n.id, n.us, n.correo, NVL(Conteo, 0) as nv" + 
-    " FROM (Select ap.personalID AS id, count(*) as Conteo from Aplicante ap GROUP BY ap.PersonalID) rn" + 
-    " RIGHT JOIN (Select p.PersonalID as id, p.usuario as us, p.Correo as correo FROM Personal p Inner Join Departamento d ON d.DepaID = p.DepartamentoID AND d.DepaID = :depa Inner Join Rol r ON r.RolID = p.RolID AND r.Nombre = 'Revisor' WHERE p.Estado = '1') n ON n.id = rn.id Group BY n.id, n.us, n.correo, rn.id  ORDER BY Conteo ASC FETCH NEXT 1 ROWS ONLY"
+    sql = "SELECT n.id, n.us, n.correo, NVL(Conteo, 0) as nv FROM " + 
+    "(Select p.personalid as id, p.usuario as us, p.Correo as correo From Personal p " +
+    "Inner Join Rol r ON r.RolID = p.RolID AND r.Nombre = 'Revisor' WHERE p.departamentoid = :depa AND p.estado = '1') n Left JOIN " +  
+    "(Select ap.personalID as id, Count(ap.personalID) as conteo FROM Aplicante ap Group by ap.personalid)  rn "+
+    "ON n.id = rn.id ORDER BY nv ASC FETCH NEXT 1 ROWS ONLY"
     var result = await BD.Open(sql, [depa], false);
     if (result.rows[0] == null) {
         res.send({"msg": "No ha sido posible el registro en este puesto, por problemas con el departamento"})

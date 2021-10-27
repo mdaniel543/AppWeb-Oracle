@@ -15,7 +15,7 @@ import {
     FormGroup,
     ModalFooter
 } from "reactstrap";
-
+import Swal from 'sweetalert2'
 
 const cookies = new Cookies();
 
@@ -243,7 +243,11 @@ class Reclutador extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                window.alert(data.msg);
+                Swal.fire(
+                    'Hecho!',
+                    data.msg,
+                    'success'
+                )
                 this.fetchSelect(this.state.depa.id); 
                 this.setState({load2: false})
             })
@@ -269,7 +273,11 @@ class Reclutador extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                window.alert(data.msg);
+                Swal.fire(
+                    'Hecho!',
+                    data.msg,
+                    'success'
+                )
                 this.fetchSelect(this.state.depa.id); 
                 this.setState({load2: false})
             })
@@ -370,6 +378,7 @@ function Search(props) {
                     Fecha Postulacion: 
                 </label>
                 <DatePicker
+                    className="form-control" 
                     name = "fin"
                     dateFormat="dd/MM/yyyy"
                     selected={startDateF}
@@ -377,7 +386,7 @@ function Search(props) {
                     placeholderText="Selecciona Fecha"
                     onChange={(date) => setStartDateF(date)}
                     fixedHeight
-                    //withPortal
+                    withPortal
                 />
                 </FormGroup>
             </ModalBody>

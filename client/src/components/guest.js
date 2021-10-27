@@ -6,6 +6,7 @@ import 'react-dropdown/style.css';
 import {getCurrentDate} from '../utils/date'
 import Cookies from 'universal-cookie';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 import {
     Button,
@@ -219,7 +220,11 @@ class guest extends Component{
                 })
                 .then(res => res.json())
                 .then(data => {
-                    window.alert(data.msg);
+                    Swal.fire(
+                        'Hecho!',
+                        data.msg,
+                        'success'
+                    )
                     this.setState({load2: false})
                 })
                 .catch(err => console.error(err));
@@ -422,12 +427,13 @@ function Search(props){
                 <label>
                     Salario: 
                 </label>
-                <input
-                    className="form-control"
-                    name="salario"
-                    type="text"
-                    onChange={props.this.handleChangeS}
-                />
+                <input 
+                className="form-control" 
+                type="number" 
+                name="salario" 
+                onChange={props.this.handleChangeS} 
+                step="1000"></input>
+               
                 </FormGroup>
                 <FormGroup>
                 <label>

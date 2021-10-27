@@ -317,3 +317,11 @@ Select r.Nombre, h.historialid, h.ruta, h.motivo, TO_CHAR(h.Fecha_Rechazado, 'DD
 
 Update Archivo Set Ruta = :ruta, Aceptado = '2' WHERE ArchivoID = :id
 Update Aplicante Set Estado_Expediente = '2' WHERE CUI :cui;
+
+
+SELECT    n.id, n.us, n.correo, NVL(Conteo, 0) as nv
+FROM      (Select ap.personalID AS id, count(*) as Conteo from Aplicante ap GROUP BY ap.PersonalID) rn
+RIGHT JOIN (Select p.PersonalID as id, p.usuario as us, p.Correo as correo FROM Personal p Inner Join Departamento d ON d.DepaID = p.DepartamentoID AND d.DepaID = :depa Inner Join Rol r ON r.RolID = p.RolID AND r.Nombre = 'Revisor') n ON n.id = rn.id Group BY n.id, n.us, n.correo, rn.id  ORDER BY Conteo ASC FETCH NEXT 1 ROWS ONLY;
+
+
+SELECT Count(Distinct ap.PersonalID) as Conteo FROM Aplicante ap Group BY ap.CUI;

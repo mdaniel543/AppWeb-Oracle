@@ -1,6 +1,6 @@
 import React, { Component} from "react";
 import Cookies from 'universal-cookie';
-
+import Swal from 'sweetalert2'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import '../styles/asys.css'
@@ -41,7 +41,15 @@ class AdminSystem extends Component{
             })
             .then(res => res.json())
             .then(data => { 
-                window.alert(data.msg);
+                Swal.fire({
+                    title: data.msg,
+                    showClass: {
+                      popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                      popup: 'animate__animated animate__fadeOutUp'
+                    }
+                  })
                 this.setState({load2: false})
             })
             .catch(err => console.error(err));

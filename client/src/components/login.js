@@ -4,6 +4,8 @@ import Cookies from 'universal-cookie';
 import {
     Modal,
 } from "reactstrap";
+import Swal from 'sweetalert2'
+
 
 const cookies = new Cookies();
 
@@ -69,7 +71,11 @@ class login extends Component{
                     break;
                 case undefined:
                     console.log("NADA")
-                    window.alert("Usuario y/o Contraseña incorrecta");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Usuario y/o Contraseña incorrecta',
+                      })
                     this.setState({user: '', pass: '', load2:false});
                     break;
                 case "Aplicante":

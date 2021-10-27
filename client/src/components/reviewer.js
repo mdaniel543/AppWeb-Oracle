@@ -3,7 +3,7 @@ import Cookies from 'universal-cookie';
 import Dropdown from 'react-dropdown';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {getCurrentDate} from '../utils/date'
-
+import Swal from 'sweetalert2'
 import {
     Table,
     Button,
@@ -288,7 +288,11 @@ class Reviewer extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
+                Swal.fire(
+                    'Hecho!',
+                    'Archivo Aceptado Correctamente',
+                    'success'
+                )
                 this.fetchTasks1();
                 
             })
@@ -310,10 +314,16 @@ class Reviewer extends Component{
             .then(res => res.json())
             .then(data => {
                 console.log(data)
+                Swal.fire(
+                    'Hecho!',
+                    'Archivo rechazado correctamente',
+                    'success'
+                )
                 this.fetchTasks1();
             })
             .catch(err => console.error(err));
     //------------------------------------------
+    this.setState({load2: true})
         fetch('/historial', {
             method: 'POST',
             body: JSON.stringify({
@@ -389,13 +399,16 @@ class Reviewer extends Component{
             .then(res => res.json())
             .then(data => {
                 console.log(data)
+                Swal.fire(
+                    'Hecho!',
+                    'Expediente Revisado correctamente',
+                    'success'
+                )
                 this.fetchTasks();
             })
             .catch(err => console.error(err));
 
     }   
-
-
 
     cerrarBusqueda(){
         this.setState({expedientes: this.state.copy, bus: false})

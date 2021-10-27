@@ -5,6 +5,7 @@ import {getCurrentDate} from '../utils/date'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'react-dropdown/style.css';
+import Swal from 'sweetalert2'
 import {
     Table,
     Button,
@@ -211,7 +212,11 @@ class AdminUser extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                window.alert(data.msg);
+                Swal.fire(
+                    'Hecho!',
+                    data.msg,
+                    'info'
+                )
                 this.fetchTasks();
                 this.setState({load2: false})
             })
@@ -235,7 +240,11 @@ class AdminUser extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                window.alert(data.msg);
+                Swal.fire(
+                    'Hecho!',
+                    data.msg,
+                    'info'
+                )
                 this.fetchTasks();
                 this.setState({load2: false})
             })
@@ -262,7 +271,11 @@ class AdminUser extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                window.alert(data.msg);
+                Swal.fire(
+                    'Hecho!',
+                    data.msg,
+                    'info'
+                )
                 this.fetchTasks();
                 this.setState({load2: false})
             })
@@ -597,6 +610,7 @@ function SearchU(props) {
                     Fecha Inicio: 
                 </label>
                 <DatePicker
+                    className="form-control" 
                     name = "inicio"
                     dateFormat="dd/MM/yyyy"
                     isClearable
@@ -613,6 +627,7 @@ function SearchU(props) {
                     Fecha Final: 
                 </label>
                 <DatePicker
+                     className="form-control" 
                     name = "fin"
                     dateFormat="dd/MM/yyyy"
                     selected={startDateF}
