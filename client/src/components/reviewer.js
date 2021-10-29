@@ -36,7 +36,7 @@ class Reviewer extends Component{
             bus:false,
             expedientes:[],
             puestos:[],
-            estados:["Sin revisar", "Aceptado", "Correccion"],
+            estados:["Sin revisar", "Aceptado", "Correccion", "Corregido"],
             motivo:'',
             modalMotivo:false,
             bandera : false,
@@ -197,6 +197,7 @@ class Reviewer extends Component{
         if(this.state.search.estado === 'Sin Revisar') estado = '2';
         if(this.state.search.estado === 'Aceptado') estado = '1';
         if(this.state.search.estado === 'Correccion') estado = '0';
+        if(this.state.search.estado === 'Corregido') estado = '3';
 
         fetch('/searche', {
             method: 'POST',
@@ -744,6 +745,9 @@ function Fethc(props) {
                     }else if(dato.estado_e === '2'){
                         return <Nothing dato = {dato} this = {props.this}/>
                     }
+                    else if(dato.estado_e === '3'){
+                        return <Another dato = {dato} this = {props.this}/>
+                    }
                 })()
             ))}
         </Table>
@@ -794,11 +798,30 @@ function Elsen(props) {
 function Nothing(props) {
     var dato = props.dato;
     return(
-        <tbody >
+        <tbody>
         <tr key={dato.id} >
         <td>{dato.nombre}</td>
         <td>{dato.puesto}</td>
         <td>Sin revisar</td>
+        <td>
+            <Button
+            onClick={() => props.this.mostrarModalVer(dato)}>
+            Ver
+            </Button>
+        </td>    
+        </tr>
+        </tbody>
+    );   
+}
+
+function Another(props) {
+    var dato = props.dato;
+    return(
+        <tbody style={{backgroundColor : "#67A5DB"}} >
+        <tr key={dato.id} >
+        <td>{dato.nombre}</td>
+        <td>{dato.puesto}</td>
+        <td>Corregido (Sin Revisar)</td>
         <td>
             <Button
             onClick={() => props.this.mostrarModalVer(dato)}>

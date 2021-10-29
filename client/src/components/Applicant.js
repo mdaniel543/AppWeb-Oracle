@@ -771,7 +771,7 @@ function Fethc(props) {
                         return <Ifyes dato = {dato} this= {props.this}/>
                     }else if(dato.aceptado === '0'){
                         return <Elsen dato = {dato} this = {props.this}/>
-                    }else if(dato.aceptado === '2'){
+                    }else{
                         return <Nothing dato = {dato} this = {props.this}/>
                     }
                 })()
