@@ -12,8 +12,8 @@ const cookies = new Cookies();
 
 class login extends Component{
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
           user: '',
           load2: false,
@@ -49,25 +49,20 @@ class login extends Component{
             console.log(data)
             switch(data.Rol){
                 case "Admin Sistema":
-                    cookies.set('Rol', data.Rol, {path: "/"});
-                    window.location.href="./AdminSystem";
+                    window.location.href=`./AdminSystem`;
                     break;
                 case "Admin Usuario":
-                    cookies.set('Rol', data.Rol, {path: "/"});
                     window.location.href="./AdminUser";
                     break;
                 case "Coordinador":
-                    cookies.set('id', data.id, {path: "/"});
-                    window.location.href="./";
+                    window.location.href=`./Coordinador/${data.id}`;
                     break;
                 case "Reclutador":
                     console.log(data.id)
-                    cookies.set('id', data.id, {path: "/"});
-                    window.location.href="./reclutar";
+                    window.location.href=`./reclutar/${data.id}`;
                     break;
                 case "Revisor":
-                    cookies.set('id', data.id, {path: "/"});
-                    window.location.href="./reviewer";
+                    window.location.href=`./reviewer/${data.id}`;
                     break;
                 case undefined:
                     console.log("NADA")
@@ -79,9 +74,7 @@ class login extends Component{
                     this.setState({user: '', pass: '', load2:false});
                     break;
                 case "Aplicante":
-                    console.log("Hola aplicante");
-                    cookies.set('id', data.id, {path: "/"});
-                    window.location.href="./Applicant";
+                    window.location.href=`./Applicant/${data.id}`;
                     break;
                 default:
                     break;

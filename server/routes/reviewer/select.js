@@ -2,7 +2,7 @@ const BD = require('../../dbconfig');
 
 async function archivos(req, res){
     const {personal} = req.body;
-    sql = "SELECT ap.CUI, ap.Nombre, ap.correo, p.Nombre, ap.Estado_Expediente FROM Aplicante ap INNER JOIN Depa_Puesto dp ON dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner JOin Puesto p ON p.PuestoID = dp.PuestoID WHERE ap.PersonalID = :personal"
+    sql = "SELECT ap.CUI, ap.Nombre, ap.correo, p.Nombre, ap.Estado_Expediente FROM Aplicante ap INNER JOIN Depa_Puesto dp ON dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner JOin Puesto p ON p.PuestoID = dp.PuestoID WHERE ap.PersonalID = :personal AND ap.apto = '1'"
     var result = await BD.Open(sql, [personal], false);
     Aplicante = [];
     for(const requi of result.rows){

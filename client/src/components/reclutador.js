@@ -1,5 +1,4 @@
 import React, { Component, useState } from "react";
-import Cookies from 'universal-cookie';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
@@ -17,14 +16,13 @@ import {
 } from "reactstrap";
 import Swal from 'sweetalert2'
 
-const cookies = new Cookies();
 
 class Reclutador extends Component{
-    constructor() {
-        super();
-        if(cookies.get('id') === undefined) window.location.href = "./login"
+    constructor(props) {
+        super(props);
+       
         this.state = {
-            id: cookies.get('id'),
+            id: this.props.id,
             tasks: [],
             copy: [],
             load2: false,
@@ -113,8 +111,7 @@ class Reclutador extends Component{
 
 
     cerrarSesion(){
-        cookies.remove('id', {path: "/"});
-        window.location.href='./';
+        window.location.href='../';
     }
 
     mostrarModalBuscar(){

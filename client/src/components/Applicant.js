@@ -1,5 +1,4 @@
 import React, { Component} from "react";
-import Cookies from 'universal-cookie';
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'react-dropdown/style.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -18,15 +17,12 @@ import {
     ModalFooter
 } from "reactstrap";
 
-const cookies = new Cookies();
-
 class Applicant extends Component{
 
-    constructor(){
-        super();
-        if(cookies.get('id') === undefined) window.location.href = "./login"
+    constructor(props){
+        super(props);
         this.state = {
-            id: cookies.get('id'),
+            id: this.props.id,
             tasks: [],
             historial: [], 
             nombre: '',
@@ -64,8 +60,7 @@ class Applicant extends Component{
     }
 
     cerrarSesion(){
-        cookies.remove('id', {path: "/"});
-        window.location.href='./';
+        window.location.href='../';
     }
 
     fetchProfile(){

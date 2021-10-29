@@ -49,6 +49,18 @@ const correo = require('./routes/reviewer/correo');
 
 const corregir = require('./routes/applicant/corregir');
 
+const insertPl = require('./routes/coordinator/insert');
+const updatePl = require('./routes/coordinator/update');
+const selectPl = require('./routes/coordinator/select');
+const selectPl2 = require('./routes/coordinator/selectPlani');
+
+
+Router.post('/insertPl', insertPl);
+Router.put('/updatePl', updatePl);
+Router.post('/selectPl', selectPl);
+Router.post('/selectPl2', selectPl2);
+
+
 Router.put('/corregir', corregir);
 
 Router.post('/sendcorreo', correo);

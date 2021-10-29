@@ -16,6 +16,7 @@ async function login(req, res) {
             "id" : user[1]
         }
     }
+    console.log(userSchema)
     res.send(userSchema);
 }
 

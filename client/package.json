@@ -22,7 +22,8 @@
     "reactstrap": "^8.10.0",
     "sweetalert2": "^11.1.9",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "wouter": "^2.8.0-alpha.1"
   },
   "proxy": "http://192.168.1.16:5000",
   "scripts": {

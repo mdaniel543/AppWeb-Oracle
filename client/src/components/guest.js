@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import {getCurrentDate} from '../utils/date'
-import Cookies from 'universal-cookie';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 
@@ -18,12 +17,10 @@ import {
     ModalFooter
 } from "reactstrap";
 
-const cookies = new Cookies();
 class guest extends Component{
 
     constructor() {
         super();
-        cookies.remove('id', {path: "/"});
         this.state = {
             tasks: [],
             copy: [],
@@ -221,9 +218,7 @@ class guest extends Component{
                 .then(res => res.json())
                 .then(data => {
                     Swal.fire(
-                        'Hecho!',
-                        data.msg,
-                        'success'
+                        data.msg
                     )
                     this.setState({load2: false})
                 })

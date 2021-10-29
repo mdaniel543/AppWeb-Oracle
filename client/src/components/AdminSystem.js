@@ -1,5 +1,4 @@
 import React, { Component} from "react";
-import Cookies from 'universal-cookie';
 import Swal from 'sweetalert2'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -9,8 +8,6 @@ import {
     Modal,
 } from "reactstrap";
 
-
-const cookies = new Cookies();
 class AdminSystem extends Component{
     constructor() {
         super();
@@ -58,7 +55,6 @@ class AdminSystem extends Component{
     }
 
     cerrarSesion=()=>{
-        cookies.remove('rol', {path: "/"});
         window.location.href='./';
     }
 

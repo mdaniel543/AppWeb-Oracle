@@ -197,6 +197,7 @@ DELETE FROM Personal CASCADE;
 DELETE FROM Aplicante CASCADE;
 DELETE FROM login CASCADE;
 DELETE FROM Archivo CASCADE;
+DeLETE FROM Historial CASCADE;
 DELETE FROM Rol CASCADE;
 
 Select d.DepaID, p.PuestoID, d.Nombre, p.Nombre, p.Salario From Depa_Puesto dp Inner Join Departamento d ON d.DepaID = dp.DepartamentoID Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
@@ -325,3 +326,49 @@ RIGHT JOIN (Select p.PersonalID as id, p.usuario as us, p.Correo as correo FROM 
 
 
 SELECT Count(Distinct ap.PersonalID) as Conteo FROM Aplicante ap Group BY ap.CUI;
+
+Insert Into Rol(Nombre) Values ('Coordinador');
+Insert Into Rol(Nombre) Values ('Reclutador');
+Insert Into Rol(Nombre) Values ('Revisor');
+Insert Into Rol(Nombre) Values ('Admin Sistema');
+Insert Into Rol(Nombre) Values ('Admin Usuario');
+Insert Into Rol(Nombre) Values ('Aplicante');
+Insert Into login(Usuario, Contrasenia, RolID) Select 'as', 's', RolID From Rol Where Nombre = 'Admin Sistema';
+Insert Into login(Usuario, Contrasenia, RolID) Select 'au', 'u', RolID From Rol Where Nombre = 'Admin Usuario';
+
+
+SELECT d.CapitalTotal FROM Departamento d WHERE d.DepaID = :depa;
+--<
+Select Sum(Suma) From (
+SELECT Sum(P.Salario) as suma FROM Aplicante ap 
+Inner Join Depa_Puesto dp ON dp.Depa_Puesto_ID = ap.Depa_Puesto_ID
+Inner Join Departamento d ON dp.DepartamentoID = d.DepaID
+Inner Join Puesto p ON p.PuestoID = dp.PuestoID
+Where d.DepaID = :depa 
+AND ap.Planilla = '1' 
+UNION ALL
+Select p.salario as suma From Depa_Puesto dp 
+Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
+Inner Join Departamento d ON d.DepaID = dp.DepartamentoID
+WHERE dp.Depa_Puesto_ID = :dp
+) t 
+
+Update Aplicante SET Planilla = '1' WHERE Cui = :cui
+
+Update Aplicante SET Planilla = :estado WHERE Cui = :cui
+
+SELECT p.Nombre, ap.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Postulacion, ap.CUI, ap.Apellido, ap.Correo, ap.Direccion, ap.Telefono, ap.CV, ap.Planilla,
+dp.Depa_Puesto_ID 
+FROM APLICANTE ap 
+Inner Join Depa_Puesto dp ON ap.Depa_Puesto_ID = dp.Depa_Puesto_ID 
+AND dp.DepartamentoID = :depa 
+Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
+Where ap.Estado_Expediente = '1' AND (ap.Planilla = '2' OR ap.Planilla = '0')
+
+
+SELECT p.Nombre, ap.Nombre, TO_CHAR(Fecha_Postulacion, 'DD/MM/YYYY' ) Fecha_Postulacion, ap.CUI, ap.Apellido, ap.Correo, ap.Direccion, ap.Telefono, ap.CV, ap.Planilla
+FROM APLICANTE ap 
+Inner Join Depa_Puesto dp ON ap.Depa_Puesto_ID = dp.Depa_Puesto_ID 
+AND dp.DepartamentoID = :depa 
+Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
+Where ap.Estado_Expediente = '1' AND (ap.Planilla = '1' OR ap.Planilla = '3')

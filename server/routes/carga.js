@@ -76,7 +76,7 @@ async function puest(departamento, nombreDep) {
             sql = "Insert Into Puesto(Nombre, Salario) Select :nombre, :salario From dual Where NOT EXISTS (Select * From Puesto Where Nombre = :nombre AND Salario = :salario)";
             await BD.Open(sql, [nombre, salario], true);
         }
-        sql = "Insert Into Depa_Puesto(DepartamentoID, PuestoID) Select DepaID, PuestoID From Departamento d, Puesto p Where d.Nombre = :nombreDep AND p.Nombre = :nombre";
+        sql = "Insert Into Depa_Puesto(DepartamentoID, PuestoID) Select DepaID, PuestoID From Departamento d, Puesto p Where d.Nombre = :nombreDep AND p.Nombre = :nombre AND p.Salario = :salario";
         await BD.Open(sql, [nombreDep, nombre], true);
         if(puesto["categorias"] != undefined){
             catego(puesto, nombre);

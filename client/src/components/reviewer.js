@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Cookies from 'universal-cookie';
 import Dropdown from 'react-dropdown';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {getCurrentDate} from '../utils/date'
@@ -15,14 +14,11 @@ import {
     ModalFooter
 } from "reactstrap";
 
-const cookies = new Cookies();
-
 class Reviewer extends Component{
-    constructor(){
-        super();
-        if(cookies.get('id') === undefined) window.location.href = "./login"
+    constructor(props){
+        super(props);
         this.state = {
-            id: cookies.get('id'),
+            id: this.props.id,
             load: true,
             laod2: false, 
             nombre: '',
@@ -43,6 +39,7 @@ class Reviewer extends Component{
             estados:["Sin revisar", "Aceptado", "Correccion"],
             motivo:'',
             modalMotivo:false,
+            bandera : false,
             date : getCurrentDate()
         };
         this.handleChangeS = this.handleChangeS.bind(this);
@@ -156,8 +153,7 @@ class Reviewer extends Component{
     }
 
     cerrarSesion(){
-        cookies.remove('id', {path: "/"});
-        window.location.href='./';
+        window.location.href='../';
     }
 
     mostrarModalBuscar(){
@@ -273,8 +269,7 @@ class Reviewer extends Component{
             });
     }
     aceptar(dato){
-        this.setState({load2: true, modalVer:false})
-        this.setState({})
+        this.setState({load2: true, modalVer:false, bandera: true})
         fetch('/archivos', {
             method: 'PUT',
             body: JSON.stringify({
@@ -299,7 +294,7 @@ class Reviewer extends Component{
             .catch(err => console.error(err));
     }
     rechazar(){
-        this.setState({load2: true, modalMotivo: false})
+        this.setState({load2: true, modalMotivo: false, bandera: true})
         fetch('/archivos', {
             method: 'PUT',
             body: JSON.stringify({
@@ -407,7 +402,7 @@ class Reviewer extends Component{
                 this.fetchTasks();
             })
             .catch(err => console.error(err));
-
+        this.setState({bandera:false})
     }   
 
     cerrarBusqueda(){
@@ -592,12 +587,16 @@ function Ver(props) {
             >
             Actualizar Expediente
             </Button>
-            <Button
-            color="danger"
-            onClick={() => props.this.cerrarModalVer()}
-            >
-            Cerrar
-            </Button>
+            {(() => {
+                if(props.this.state.bandera === false){
+                    return<Button
+                    color="danger"
+                    onClick={() => props.this.cerrarModalVer()}
+                    >
+                    Cerrar
+                    </Button>
+                }
+            })()}
             </ModalFooter>
         </Modal>   
     );

@@ -6,7 +6,7 @@ async function archivos(req, res){
     if(pueston != null) pueston = `'${pueston}'`;
     if(estado != null) estado = `'${estado}'`;
     if(nombree != null) nombree = `'${nombree}'`;
-    sql = `SELECT ap.CUI, ap.Nombre, ap.correo, p.Nombre, ap.Estado_Expediente FROM Aplicante ap INNER JOIN Depa_Puesto dp ON dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner JOin Puesto p ON p.PuestoID = dp.PuestoID WHERE ap.PersonalID = :personal AND (ap.Nombre = ${nombree} OR ${nombree} is null) AND (p.Nombre = ${pueston} OR ${pueston} is null) AND (ap.Estado_Expediente = ${estado} OR ${estado} is null)`
+    sql = `SELECT ap.CUI, ap.Nombre, ap.correo, p.Nombre, ap.Estado_Expediente FROM Aplicante ap INNER JOIN Depa_Puesto dp ON dp.Depa_Puesto_ID = ap.Depa_Puesto_ID Inner JOin Puesto p ON p.PuestoID = dp.PuestoID WHERE ap.PersonalID = :personal AND ap.apto = '1' AND (ap.Nombre = ${nombree} OR ${nombree} is null) AND (p.Nombre = ${pueston} OR ${pueston} is null) AND (ap.Estado_Expediente = ${estado} OR ${estado} is null)`
     var result = await BD.Open(sql, [personal], false);
     Aplicante = [];
     for(const requi of result.rows){
