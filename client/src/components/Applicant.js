@@ -5,6 +5,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import axios from 'axios';
 import Swal from 'sweetalert2'
+import Chat from "./Chat";
 
 import {
     Table,
@@ -49,6 +50,7 @@ class Applicant extends Component{
                 puestoID: '',
                 puesto: ''
             },
+            chat: {},
             nuevoCV: null,
             arreglo: ''
         }
@@ -57,6 +59,26 @@ class Applicant extends Component{
         this.handleChangeC = this.handleChangeC.bind(this);
         this.fetchProfile();
         this.fetchistorial();
+        this.fetchper();
+    }
+
+    fetchper(){
+        fetch('/revi', {
+            method: 'POST',
+            body: JSON.stringify({
+                cui: this.state.id
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.setState({chat: data});
+            })
+            .catch(err => console.error(err));
     }
 
     cerrarSesion(){
@@ -522,7 +544,7 @@ class Applicant extends Component{
                        <Historial this = {this}/>
                    </TabPanel>
                    <TabPanel>
-                       <h2>CHAT xD</h2>
+                       <Chat nombre={this.state.profile.nombre} other = {this.state.chat.nombre}/>
                    </TabPanel>
                </Tabs>
             </Container>

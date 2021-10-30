@@ -205,6 +205,33 @@ text-shadow: 0px 2px 3px #C0C0C0;
   -moz-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
 }
+.xm text{
+  text-align:right;
+  font-size:1em;
+  margin-top:5%;
+ font-family: 'Source Code Pro';
+ text-shadow: 0px 2px 3px #C0C0C0;
+  -webkit-animation: colorFadesc 5s;
+  -moz-animation: colorFadesc 5s;
+  animation: colorFadesc 5s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+.xms text{
+  text-align:left;
+  font-size:1em;
+  margin-top:5%;
+ font-family: 'Source Code Pro';
+ text-shadow: 0px 2px 3px #C0C0C0;
+  -webkit-animation: colorFadesce 5s;
+  -moz-animation: colorFadesce 5s;
+  animation: colorFadesce 5s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+
  @-webkit-keyframes colorFade {
      0%   {color:#ffffff;}
      50%  {color: #10c4ca;}
@@ -240,6 +267,32 @@ text-shadow: 0px 2px 3px #C0C0C0;
 @keyframes colorFadese{
   0%   {color:#91e4b4;}
   50%  {color: #126b37c0;;}
+}
+
+@-webkit-keyframes colorFadesc {
+  0%   {color:#000000;}
+  50%  {color: #12476bc0;;}
+}
+@-moz-keyframes colorFadesc{
+  0%   {color:#000000;}
+  50%  {color: #12476bc0;}
+}
+@keyframes colorFadesc{
+  0%   {color:#000000;}
+  50%  {color: #12476bc0;;}
+}
+
+@-webkit-keyframes colorFadesce {
+  0%   {color:#000000;}
+  50%  {color: #61126bc0;;}
+}
+@-moz-keyframes colorFadesce{
+  0%   {color:#000000;}
+  50%  {color: #61126bc0;}
+}
+@keyframes colorFadesce{
+  0%   {color:#000000;}
+  50%  {color: #61126bc0;;}
 }
 
 .load{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);

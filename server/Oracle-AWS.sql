@@ -372,3 +372,6 @@ Inner Join Depa_Puesto dp ON ap.Depa_Puesto_ID = dp.Depa_Puesto_ID
 AND dp.DepartamentoID = :depa 
 Inner Join Puesto p ON p.PuestoID = dp.PuestoID 
 Where ap.Estado_Expediente = '1' AND (ap.Planilla = '1' OR ap.Planilla = '3')
+
+
+Select P.Nombre, P.PersonalID FROM Aplicante ap Inner Join Personal p ON p.PersonalID = ap.PersonalID WHERE ap.Cui = :cui

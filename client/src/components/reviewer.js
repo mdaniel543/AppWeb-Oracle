@@ -13,6 +13,8 @@ import {
     FormGroup,
     ModalFooter
 } from "reactstrap";
+import Chat from "./Chat";
+
 
 class Reviewer extends Component{
     constructor(props){
@@ -31,6 +33,8 @@ class Reviewer extends Component{
                 estado: null
             },
             data: {},
+            auth: false,
+            chatname:'',
             ar:{},
             archivos: [],
             bus:false,
@@ -413,6 +417,12 @@ class Reviewer extends Component{
         this.setState({data: dato, modalVer: true})
         this.setState({archivos: dato.archivos})
     }
+    chatear(nombre){
+        this.setState({auth: true, chatname: nombre})
+    }
+    regresa(){
+        this.setState({auth: false})
+    }
 
     render (){
         return(
@@ -451,7 +461,8 @@ class Reviewer extends Component{
                     })()}
                    </TabPanel>
                    <TabPanel>
-                       <h2>CHAT xD</h2>
+                       {!this.state.auth && <FChat this = {this}/>}
+                       {this.state.auth && <HChat this = {this}/>}
                    </TabPanel>
                </Tabs>
             </Container>
@@ -705,6 +716,52 @@ function Motivo(props) {
             </Button>
             </ModalFooter>
         </Modal>  
+    );
+}
+function HChat(props){
+    return<div>
+    
+    <div class = "box"></div>
+        <Button style={{float: 'left'}}
+        className="btn btn-danger"
+        onClick={() => props.this.regresa()}
+        >
+        X
+        </Button>
+
+    <Chat nombre={props.this.state.nombre} other = {props.this.state.chatname}/>
+    </div> 
+}
+
+function FChat(props) {
+    return(
+        <Container>
+        <br />
+        <Table>
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Puesto</th>
+                <th>Abrir Chat</th>
+            </tr>
+            </thead>
+
+            {props.this.state.expedientes.map((dato) => (
+                <tbody>
+                <tr key={dato.id} >
+                <td>{dato.nombre}</td>
+                <td>{dato.puesto}</td>
+                <td>
+                    <Button
+                    onClick={() => props.this.chatear(dato.nombre)}>
+                    Chatear
+                    </Button>
+                </td>    
+                </tr>
+                </tbody>
+            ))}
+        </Table>
+        </Container>
     );
 }
 

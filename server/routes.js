@@ -53,7 +53,9 @@ const insertPl = require('./routes/coordinator/insert');
 const updatePl = require('./routes/coordinator/update');
 const selectPl = require('./routes/coordinator/select');
 const selectPl2 = require('./routes/coordinator/selectPlani');
+const revi = require('./routes/applicant/revi')
 
+Router.post('/revi', revi);
 
 Router.post('/insertPl', insertPl);
 Router.put('/updatePl', updatePl);
