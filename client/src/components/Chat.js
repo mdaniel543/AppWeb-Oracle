@@ -76,6 +76,8 @@ const Chat = ({ nombre, other }) => {
       <div>
         <h2 class="active" > {other}</h2>
       <div>
+        <div className="boxer"></div>
+        <div className="boxer"></div>
         {renderChat()}
         <div ref={divRef}></div>
       </div>
@@ -85,6 +87,7 @@ const Chat = ({ nombre, other }) => {
           type="text"
           id="login"
           value={mensaje}
+          placeholder="Escibir mensaje"
           onChange={(e) => setMensaje(e.target.value)}
         />
         <input type="submit" class="fadeIn fourth" value="Enviar"/>
@@ -98,8 +101,5 @@ const Chat = ({ nombre, other }) => {
     </div>
   );
 };
-/*
-
- */
 
 export default Chat;

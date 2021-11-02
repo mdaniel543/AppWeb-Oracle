@@ -32,7 +32,7 @@ async function insert(req, res) {
     sql = "Update Aplicante SET Planilla = '1' WHERE Cui = :cui";
     await BD.Open(sql, [cui], true);
     var subject = 'Contratatado';
-    var text = `Felicidades ${nombre}.  ha sido contradado para el puesto que aplico. Porfavor presentese a las oficinas el siguiente dia habil <p> Feliz Dia </p>`;
+    var text = `Felicidades ${name}.  ha sido contradado para el puesto que aplico. Porfavor presentese a las oficinas el siguiente dia habil <p> Feliz Dia </p>`;
     emaile.sende(correo, subject, text);
     res.send({"msg": "Aplicante en planilla correctamente"});
 }

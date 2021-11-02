@@ -22,9 +22,11 @@ async function insertAp(req, res) {
     emaile.sende(email, subject, text);
 
     sql = "Insert Into Aplicante(CUI, Nombre, Apellido, Correo, Direccion, Telefono, CV, Apto, Fecha_Postulacion, Estado_Expediente, Planilla, Depa_Puesto_ID, PersonalID, Primera_Vez) Select :cui, :nombre, :apellido, :correo, :direccion, :telefono, :cv, '2', TO_DATE(:postu, 'YYYY/MM/DD'), '2', '2', Depa_Puesto_ID, :revisor, '1' FROM Depa_Puesto WHERE DepartamentoID = :depa AND PuestoID = :puesto";
-    await BD.Open(sql, [cui, nombre, apellido, correo, direccion, telefono, cv, postu, revisor, depa, puesto], true);
-
-    res.send({"msg": "Aplicante registrado correctamente"});
+    let resultado = await BD.Open(sql, [cui, nombre, apellido, correo, direccion, telefono, cv, postu, revisor, depa, puesto], true)
+        .then(resultado => res.send({"msg": "Aplicante registrado correctament"}))
+        .catch(err => {res.send({"msg": "Ya existe el usuario con una invitacion"})
+    });
+    
 }
 
 module.exports = insertAp;
