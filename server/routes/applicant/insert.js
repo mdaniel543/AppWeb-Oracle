@@ -15,18 +15,18 @@ async function insertAp(req, res) {
         return;
     }
     const revisor = result.rows[0][0];
+    sql = "Insert Into Aplicante(CUI, Nombre, Apellido, Correo, Direccion, Telefono, CV, Apto, Fecha_Postulacion, Estado_Expediente, Planilla, Depa_Puesto_ID, PersonalID, Primera_Vez) Select :cui, :nombre, :apellido, :correo, :direccion, :telefono, :cv, '2', TO_DATE(:postu, 'YYYY/MM/DD'), '2', '2', Depa_Puesto_ID, :revisor, '1' FROM Depa_Puesto WHERE DepartamentoID = :depa AND PuestoID = :puesto";
+    let resultado = await BD.Open(sql, [cui, nombre, apellido, correo, direccion, telefono, cv, postu, revisor, depa, puesto], true)
+        .then(resultado => res.send({"msg": "Aplicante registrado correctamente"}))
+        .catch(err => {res.send({"msg": "Ya existe el usuario con una invitacion"}); return;
+    });
+
+    
     var revisorN = result.rows[0][1];
     var email = result.rows[0][2];    
     var subject = "Nuevo expediente a Revisar";
     var text = `Saludos ${revisorN}. <p> Un aplicante se postulo para un puesto de su departamento. Se le asigno a usted su expediente para revision cuando sea subido. </p> Feliz dia Totonet S.A`;
     emaile.sende(email, subject, text);
-
-    sql = "Insert Into Aplicante(CUI, Nombre, Apellido, Correo, Direccion, Telefono, CV, Apto, Fecha_Postulacion, Estado_Expediente, Planilla, Depa_Puesto_ID, PersonalID, Primera_Vez) Select :cui, :nombre, :apellido, :correo, :direccion, :telefono, :cv, '2', TO_DATE(:postu, 'YYYY/MM/DD'), '2', '2', Depa_Puesto_ID, :revisor, '1' FROM Depa_Puesto WHERE DepartamentoID = :depa AND PuestoID = :puesto";
-    let resultado = await BD.Open(sql, [cui, nombre, apellido, correo, direccion, telefono, cv, postu, revisor, depa, puesto], true)
-        .then(resultado => res.send({"msg": "Aplicante registrado correctament"}))
-        .catch(err => {res.send({"msg": "Ya existe el usuario con una invitacion"})
-    });
-    
 }
 
 module.exports = insertAp;

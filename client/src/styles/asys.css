@@ -192,6 +192,19 @@ text-shadow: 0px 2px 3px #C0C0C0;
   -moz-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
 }
+ .xmt h2{
+  text-align:center;
+  font-size:3em;
+  margin-top:5%;
+font-family: 'Source Code Pro';
+text-shadow: 0px 2px 3px #C0C0C0;
+  -webkit-animation: colorFadeset 10s;
+  -moz-animation: colorFadeset 10s;
+  animation: colorFadeset 10s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
  .xml h3{
   text-align:center;
   font-size:2em;
@@ -267,6 +280,18 @@ text-shadow: 0px 2px 3px #C0C0C0;
 @keyframes colorFadese{
   0%   {color:#91e4b4;}
   50%  {color: #126b37c0;;}
+}
+@-webkit-keyframes colorFadeset {
+  0%   {color:#5a6d62;}
+  50%  {color: #ff002bc0;;}
+}
+@-moz-keyframes colorFadeset{
+  0%   {color:#5a6d62;}
+  50%  {color: #ff002bc0;}
+}
+@keyframes colorFadeset{
+  0%   {color:#5a6d62;}
+  50%  {color: #ff002bc0;}
 }
 
 @-webkit-keyframes colorFadesc {

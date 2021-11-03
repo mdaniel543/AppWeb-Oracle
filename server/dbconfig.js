@@ -15,4 +15,15 @@ async function Open(sql, binds, autoCommit) {
     return result;
 }
 
+async function SP(sql, binds) {
+    let cnn = await oracledb.getConnection(cns);
+    let result = await cnn.execute(sql, binds, {prefetchRows:1000, fetchArraySize: 100});
+    const SetResult = result.outBinds.salida;
+    const rows = await SetResult.getRows();
+    await SetResult.close();
+    cnn.release();
+    return rows;    
+}
+
 exports.Open = Open;
+exports.SP = SP;

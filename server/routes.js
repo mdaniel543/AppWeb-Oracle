@@ -55,6 +55,20 @@ const selectPl = require('./routes/coordinator/select');
 const selectPl2 = require('./routes/coordinator/selectPlani');
 const revi = require('./routes/applicant/revi')
 
+const Report_1 = require('./routes/reports/reporte1');
+const Report_2 = require('./routes/reports/reporte2');
+const Report_3 = require('./routes/reports/reporte3');
+const Report_4 = require('./routes/reports/reporte4');
+const Report_5 = require('./routes/reports/reporte5');
+const Report_6 = require('./routes/reports/reporte6');
+
+Router.post('/report1', Report_1);
+Router.post('/report2', Report_2);
+Router.get('/report3', Report_3);
+Router.get('/report4', Report_4);
+Router.get('/report5', Report_5);
+Router.get('/report6', Report_6);
+
 Router.post('/revi', revi);
 
 Router.post('/insertPl', insertPl);
