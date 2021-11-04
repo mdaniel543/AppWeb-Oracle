@@ -517,4 +517,15 @@ BEGIN
 END;
 
 
+Select d.Nombre, d.CapitalTotal, d.DepaID From Departamento d ;
+Select d.Nombre, d.CapitalTotal, d.DepaID From Departamento d WHERE d.Nombre = :depa; 
+ 
+Select p.Nombre, p.Salario, p.PuestoID FROM Puesto p INNER JOIN Depa_Puesto dp ON dp.PuestoID = p.PuestoID AND dp.DepartamentoID = :depa 
+
+SELECT c.Nombre FROM Categoria c INNER Join Puesto_Cate pc ON pc.CategoriaID = c.CategoriaID AND pc.PuestoID = :puesto;
+
+SELECT r.Nombre, r.RequisitoID FROM Requisito r INNER Join Puesto_Requisito pr ON pr.RequisitoID = r.RequisitoID AND pr.PuestoID = :puesto;
+
+SELECT f.Nombre FROM Formato f INNER Join Requisito_Formato rf ON rf.FormatoID = f.FormatoID AND rf.RequisitoID = :requisito
+
 

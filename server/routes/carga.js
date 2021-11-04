@@ -16,7 +16,6 @@ async function carga(req, res) {
         await BD.Open(sql, [nombre, capital], true);
         val(departamento, nombre);
     }
-    console.log(jsons)
     res.json({"msg": "datos cargados correctamente"})
 }
 

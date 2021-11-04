@@ -28,13 +28,11 @@ class AdminSystem extends Component{
             deps : [], 
             load2: false,
             value: '',
-            View1: false,
             View2: false,
             View3: false,
             View4: false,
             View5: false,
             View6: false,
-            tasks1: [],
             tasks2: [],
             tasks3: [],
             tasks4: [],
@@ -63,7 +61,43 @@ class AdminSystem extends Component{
             this.setState({deps: aux});
         });
     }
-
+    fetchtask1(){
+        this.setState({load2: true})
+        fetch('/report1', {
+            method: 'POST',
+            body: JSON.stringify(
+                {depa: this.state.dep}
+            ),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(res => res.blob())
+            .then((blob) => {
+                // Create blob link to download
+                const url = window.URL.createObjectURL(
+                  new Blob([blob]),
+                );
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute(
+                  'download',
+                  `report1.svg`,
+                );
+                // Append to html link element page
+                document.body.appendChild(link);
+                // Start download
+                link.click();
+                this.setState({load2: false})
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+                this.setState({load2:false})
+                Swal.fire({
+                    title: "Reporte Generado Exitosamente",
+                })
+            });
+    }
     fetchtask2(){
         this.setState({load2: true})
         fetch('/report2', {
