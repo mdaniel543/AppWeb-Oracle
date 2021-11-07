@@ -14,7 +14,7 @@ async function carga(req, res) {
         var capital = departamento["capital_total"]["$t"];
         sql = "Insert Into Departamento(Nombre, CapitalTotal) Values (:nombre, :capital)";
         await BD.Open(sql, [nombre, capital], true);
-        val(departamento, nombre);
+        await val(departamento, nombre);
     }
     res.json({"msg": "datos cargados correctamente"})
 }
@@ -22,10 +22,10 @@ async function carga(req, res) {
 
 async function val(departamento, nombreDep) {
     if(departamento["puestos"] != undefined){
-        puest(departamento, nombreDep)
+        await puest(departamento, nombreDep)
     }
     if(departamento["departamentos"] != undefined){
-        moreDep(departamento, nombreDep)
+        await moreDep(departamento, nombreDep)
     }
 }
 
@@ -47,7 +47,7 @@ async function moreDep(departamento, nombreDep) {
         var capital = depa["capital_total"]["$t"];
         sql = "Insert Into Departamento(Nombre, CapitalTotal, DepartamentoID) Select :nombre, :capital, DepaID From Departamento Where Nombre = :nombreDep"
         await BD.Open(sql, [nombre, capital, nombreDep], true);
-        val(depa, nombre);
+        await val(depa, nombre);
     }
 }
 
@@ -78,10 +78,10 @@ async function puest(departamento, nombreDep) {
         sql = "Insert Into Depa_Puesto(DepartamentoID, PuestoID) Select DepaID, PuestoID From Departamento d, Puesto p Where d.Nombre = :nombreDep AND p.Nombre = :nombre AND p.Salario = :salario";
         await BD.Open(sql, [nombreDep, nombre], true);
         if(puesto["categorias"] != undefined){
-            catego(puesto, nombre);
+            await catego(puesto, nombre);
         }
         if(puesto["requisitos"] != undefined){
-            requi(puesto, nombre);
+            await requi(puesto, nombre);
         }
     }
 }
@@ -130,7 +130,7 @@ async function requi(puesto, nombrePue) {
         sql = "Insert Into Puesto_Requisito(RequisitoID, PuestoID) Select RequisitoID, PuestoID From Puesto p, Requisito r WHERE  p.Nombre = :nombrePue AND r.Nombre = :nombre";
         await BD.Open(sql, [nombrePue, nombre], true);
         if(requisito["formatos"] != undefined){
-            format(requisito, nombre)
+            await format(requisito, nombre)
         }
     }
 }

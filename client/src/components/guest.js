@@ -3,10 +3,10 @@ import '../styles/guest.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import {getCurrentDate} from '../utils/date'
+import { getCurrentDate } from '../utils/date'
 import axios from 'axios';
 import Swal from 'sweetalert2'
-
+import Carousel from 'react-bootstrap/Carousel'
 import {
     Button,
     Container,
@@ -14,10 +14,16 @@ import {
     ModalHeader,
     ModalBody,
     FormGroup,
-    ModalFooter
+    ModalFooter,
+    /*CarouselControl,
+    Carousel,
+    CarouselItem,
+    CarouselIndicators,
+    CarouselCaption,
+    UncontrolledCarousel, Row, Col*/
 } from "reactstrap";
 
-class guest extends Component{
+class guest extends Component {
 
     constructor() {
         super();
@@ -28,8 +34,8 @@ class guest extends Component{
             modalSelect: false,
             depas: [],
             catego: [],
-            form:{
-                cui:'',
+            form: {
+                cui: '',
                 nombre: '',
                 apellido: '',
                 correo: '',
@@ -49,7 +55,7 @@ class guest extends Component{
             file: '',
             depa: '',
             puesto: '',
-            date : getCurrentDate()
+            date: getCurrentDate()
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeF = this.handleChangeF.bind(this);
@@ -62,86 +68,86 @@ class guest extends Component{
     }
     fetchTasks() {
         fetch('/guest')
-          .then(res => res.json())
-          .then(data => {
-            this.setState({tasks: data, copy: data});
-            this.setState({load: false})
-            console.log(this.state.tasks)
-        });
-        
+            .then(res => res.json())
+            .then(data => {
+                this.setState({ tasks: data, copy: data });
+                this.setState({ load: false })
+                console.log(this.state.tasks)
+            });
+
     }
     fetchdepa() {
         fetch('/depas')
-          .then(res => res.json())
-          .then(data => {
-            const aux = [];
-            for(const i of data){
-                aux.push(i.nombre)    
-            }
-            this.setState({depas: aux});
-        });
+            .then(res => res.json())
+            .then(data => {
+                const aux = [];
+                for (const i of data) {
+                    aux.push(i.nombre)
+                }
+                this.setState({ depas: aux });
+            });
     }
     fetchCategorias() {
         fetch('/catego')
-          .then(res => res.json())
-          .then(data => {
-            /*const aux = [];
-            for(const i of data){
-                aux.push(i.nombre)    
-            }*/
-            this.setState({catego: data});
-        });
+            .then(res => res.json())
+            .then(data => {
+                /*const aux = [];
+                for(const i of data){
+                    aux.push(i.nombre)    
+                }*/
+                this.setState({ catego: data });
+            });
     }
 
     handleChange(e) {
         const { name, value } = e.target;
         this.setState({
-          form:{
-              ...this.state.form,
-              [name]: value
-          },
+            form: {
+                ...this.state.form,
+                [name]: value
+            },
         });
     }
 
     handleChangeF(e) {
         this.setState({
-          form:{
-              ...this.state.form,
-              cv: e.target.files[0]
-          },
+            form: {
+                ...this.state.form,
+                cv: e.target.files[0]
+            },
         });
     }
 
     handleChangeD(e) {
         this.setState({
-          search:{
-              ...this.state.search,
-              depa: e.value
-          },
+            search: {
+                ...this.state.search,
+                depa: e.value
+            },
         });
     }
     handleChangeC(e) {
         this.setState({
-          search:{
-              ...this.state.search,
-              categoria: e.value
-          },
+            search: {
+                ...this.state.search,
+                categoria: e.value
+            },
         });
     }
 
     handleChangeS(e) {
         const { name, value } = e.target;
         this.setState({
-          search:{
-              ...this.state.search,
-              [name]: value
-          },
+            search: {
+                ...this.state.search,
+                [name]: value
+            },
         });
     }
 
-    buscar(){
+    buscar() {
         console.log(this.state.search)
-        this.setState({load: true})
+        this.setState({ load: true })
         fetch('/searchGuest', {
             method: 'POST',
             body: JSON.stringify({
@@ -154,426 +160,469 @@ class guest extends Component{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-            })
+        })
             .then(res => res.json())
             .then(data => {
-                this.setState({tasks: data});
-                this.setState({load: false});
+                this.setState({ tasks: data });
+                this.setState({ load: false });
             })
             .catch(err => console.error(err));
-        this.setState({bus: true, modalBuscar: false})
+        this.setState({ bus: true, modalBuscar: false })
         this.setState({
-            search:{
+            search: {
                 ...this.state.search,
                 puesto: null,
                 salario: null,
                 depa: null,
                 categoria: null
             },
-          });
+        });
 
     }
-    mostrarModalBuscar(){
-        this.setState({modalBuscar: true})
+    mostrarModalBuscar() {
+        this.setState({ modalBuscar: true })
     }
-    cerrarModalBuscar(){
-        this.setState({modalBuscar: false})
+    cerrarModalBuscar() {
+        this.setState({ modalBuscar: false })
         //this.fetchTasks();
     }
-    cerrarBusqueda(){
-        this.setState({tasks: this.state.copy, bus: false})
+    cerrarBusqueda() {
+        this.setState({ tasks: this.state.copy, bus: false })
     }
 
-    aplicar(){
+    aplicar() {
         this.cerrarModalSelect();
-        this.setState({load2: true})
+        this.setState({ load2: true })
         const formData = new FormData();
         formData.append(
             "file",
             this.state.form.cv
         );
         console.log(this.state.form.cv);
-        axios.post("/upload",formData, {})
-        .then(res => {
-            console.log(res.data.msg);
-            fetch('/insertAp', {
-                method: 'POST',
-                body: JSON.stringify({
-                    cui: this.state.form.cui,
-                    nombre: this.state.form.nombre,
-                    apellido: this.state.form.apellido,
-                    correo: this.state.form.correo,
-                    direccion: this.state.form.direccion,
-                    telefono:this.state.form.telefono,
-                    cv: res.data.msg,
-                    postu:this.state.date,
-                    depa:this.state.depa,
-                    puesto:this.state.puesto,
-                }),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
+        axios.post("/upload", formData, {})
+            .then(res => {
+                console.log(res.data.msg);
+                fetch('/insertAp', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        cui: this.state.form.cui,
+                        nombre: this.state.form.nombre,
+                        apellido: this.state.form.apellido,
+                        correo: this.state.form.correo,
+                        direccion: this.state.form.direccion,
+                        telefono: this.state.form.telefono,
+                        cv: res.data.msg,
+                        postu: this.state.date,
+                        depa: this.state.depa,
+                        puesto: this.state.puesto,
+                    }),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
                 })
-                .then(res => res.json())
-                .then(data => {
-                    Swal.fire(
-                        data.msg
-                    )
-                    this.setState({load2: false})
-                })
-                .catch(err => console.error(err));
+                    .then(res => res.json())
+                    .then(data => {
+                        Swal.fire(
+                            data.msg
+                        )
+                        this.setState({ load2: false })
+                    })
+                    .catch(err => console.error(err));
             })
-        
-    
+
+
     }
 
 
-    mostrarModalSelect(dato){
+    mostrarModalSelect(dato) {
         this.setState({
             depa: dato.idD,
             puesto: dato.idP,
             modalSelect: true
         })
     }
-    cerrarModalSelect(){
-        this.setState({modalSelect: false})
+    cerrarModalSelect() {
+        this.setState({ modalSelect: false })
     }
-    Sesion=()=>{
-        window.location.href='./login';
+    Sesion = () => {
+        window.location.href = './login';
     }
 
-    render(){
-        return <div> 
-        <Main this={this}/>
-        <div className='xml'>
-            <h1>Puestos</h1>
-        </div>
-        <Search this = {this}/>    
-        <Select this = {this}/> 
-        {(() => {
-            if(this.state.load === true){
-                return<Container>
-                <div class="load">
-                <hr/><hr/><hr/><hr/>
-                </div>
-                </Container>
-                
-            }else{
-                return <Carrousel this = {this} />
-            }
-        })()}
-        <Load this= {this}/>
+    render() {
+        return <div>
+            <Main this={this} />
+            <div className='xml'>
+                <h1>Puestos</h1>
+            </div>
+            <Search this={this} />
+            <Select this={this} />
+            <div className="box"></div>
+            {(() => {
+                if (this.state.load === true) {
+                    return <Container>
+                        <div class="load">
+                            <hr /><hr /><hr /><hr />
+                        </div>
+                    </Container>
+
+                } else {
+                    return <Contenedor this={this} />
+                }
+            })()}
+            <Load this={this} />
         </div>
     }
 }
 
-function Load(props){
+function Load(props) {
     return (
         <Modal isOpen={props.this.state.load2} fade={false}>
-        <div class="load">
-        <hr/><hr/><hr/><hr/>
-        </div>
+            <div class="load">
+                <hr /><hr /><hr /><hr />
+            </div>
         </Modal>
     );
 }
 
-function Main(props){
-    return(
+/*function Carrousel(props) {
+    return (
+        <Container>
+            <Carousel fade >
+                <Carousel.Item>
+                    <img
+                        className="d-block w-100"
+                        src="https://dev-to-uploads.s3.amazonaws.com/i/zki4ndggcept7aaxpo3w.jpg"
+                        alt="First slide"
+                    />
+                    <Carousel.Caption>
+                        <h3>First slide label</h3>
+                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                    </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                    <img
+                        className="d-block w-100"
+                        src="https://alternative-storage.s3.us-east-2.amazonaws.com/rapper.jpg"
+                        alt="Second slide"
+                    />
+                    <Carousel.Caption>
+                        <h1>Second slide label</h1>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                    <img
+                        className="d-block w-100"
+                        src="https://dev-to-uploads.s3.amazonaws.com/i/zki4ndggcept7aaxpo3w.jpg"
+                        alt="Third slide"
+                    />
+
+                    <Carousel.Caption>
+                        <h3>Third slide label</h3>
+                        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                    </Carousel.Caption>
+                </Carousel.Item>
+            </Carousel>
+        </Container>
+    );
+}*/
+
+function Main(props) {
+    return (
         <nav role="navigation">
             <div id="menuToggle">
-            <input type="checkbox"/>
-            <span></span>
-            <span></span>
-            <span></span>
-            <ul id="menu">
-            <button onClick={()=>props.this.mostrarModalBuscar()}><li>Buscar Puesto</li></button>
-            <div className='boxer'/>
-            <button onClick={()=>props.this.Sesion()}><li>Iniciar Sesion</li></button>
-            </ul>
+                <input type="checkbox" />
+                <span></span>
+                <span></span>
+                <span></span>
+                <ul id="menu">
+                    <button onClick={() => props.this.mostrarModalBuscar()}><li>Buscar Puesto</li></button>
+                    <div className='boxer' />
+                    <button onClick={() => props.this.Sesion()}><li>Iniciar Sesion</li></button>
+                </ul>
             </div>
         </nav>
-       
+
     );
 }
 
-function Ifblock(props){
+function Ifblock(props) {
     return (
-        <div class="card text-center" style={{backgroundImage: `url(${props.e.Imagen})`, backgroundSize: 'cover'}}>
-        <div class="title">
-        <h2>{props.e.Puesto}</h2>
-        </div>
-        <div class="option">
-            <ul>
-            <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>
-            <li> <i class="fa fa-check" aria-hidden="true"></i>Departamento: {props.e.Departamento} </li>                    
-            <li> <i class="fa fa-check" aria-hidden="true"></i>Categorias: </li>                    
-            <ul>
-                {
-                    props.e.Categorias.map(dsa =>
-                        <li> <i class="fa fa-times" aria-hidden="true"></i>{dsa.nombre} </li>
+        <div class="card text-center" style={{ backgroundImage: `url(${props.e.Imagen})`, backgroundSize: 'cover' }}>
+            <div class="title">
+                <h2>{props.e.Puesto}</h2>
+            </div>
+            <div class="option">
+                <ul>
+                    <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>
+                    <li> <i class="fa fa-check" aria-hidden="true"></i>Departamento: {props.e.Departamento} </li>
+                    <li> <i class="fa fa-check" aria-hidden="true"></i>Categorias: </li>
+                    <ul>
+                        {
+                            props.e.Categorias.map(dsa =>
+                                <li> <i class="fa fa-times" aria-hidden="true"></i>{dsa.nombre} </li>
 
-                    )
-                }
-            </ul>
-            </ul>
-        </div>
-        <a onClick={()=>props.this.mostrarModalSelect(props.e)}>Seleccionar</a>
+                            )
+                        }
+                    </ul>
+                </ul>
+            </div>
+            <a onClick={() => props.this.mostrarModalSelect(props.e)}>Seleccionar</a>
 
         </div>
     );
 }
 
-function Elseblock(props){
+function Elseblock(props) {
     return (
         <div class="card text-center">
-        <div class="title">
-        <h2>{props.e.Puesto}</h2>
-        </div>
-        <div class="option">
-            <ul>
-            <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>
-            <li> <i class="fa fa-check" aria-hidden="true"></i>Departamento: {props.e.Departamento} </li>                    
-            <li> <i class="fa fa-check" aria-hidden="true"></i>Categorias: </li>                    
-            <ul>
-                {
-                    props.e.Categorias.map(dsa =>
-                        <li> <i class="fa fa-times" aria-hidden="true"></i>{dsa.nombre} </li>
+            <div class="title">
+                <h2>{props.e.Puesto}</h2>
+            </div>
+            <div class="option">
+                <ul>
+                    <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>
+                    <li> <i class="fa fa-check" aria-hidden="true"></i>Departamento: {props.e.Departamento} </li>
+                    <li> <i class="fa fa-check" aria-hidden="true"></i>Categorias: </li>
+                    <ul>
+                        {
+                            props.e.Categorias.map(dsa =>
+                                <li> <i class="fa fa-times" aria-hidden="true"></i>{dsa.nombre} </li>
 
-                    )
-                }
-            </ul>
-            </ul>
-        </div>
-        <a onClick={()=>props.this.mostrarModalSelect(props.e)}>Seleccionar</a>
+                            )
+                        }
+                    </ul>
+                </ul>
+            </div>
+            <a onClick={() => props.this.mostrarModalSelect(props.e)}>Seleccionar</a>
 
         </div>
     );
 }
 
-function Carrousel(props){
-    return(
+function Contenedor(props) {
+    return (
         <body>
             <section>
                 {(() => {
-                    if(props.this.state.bus === true){
-                        return<Container>
-                        <Button
-                        className="btn btn-danger"
-                        onClick={() => props.this.cerrarBusqueda()}
-                        >
-                        X
-                        </Button>
-                        <div class = "box"></div>
+                    if (props.this.state.bus === true) {
+                        return <Container>
+                            <Button
+                                className="btn btn-danger"
+                                onClick={() => props.this.cerrarBusqueda()}
+                            >
+                                X
+                            </Button>
+                            <div class="box"></div>
                         </Container>
-                        
+
                     }
                 })()}
                 <div class="container-fluid">
-                <div class="container">
-                <div class="row">
-                {               
-                    props.this.state.tasks.map((e, index) => 
-                        <div>
-                        {
-                            <div class="col-sm-4">
-                            {(() => {
-                                if(e.Imagen != null){
-                                    return <Ifblock e = {e} this = {props.this}/>
-                                }else{
-                                    return <Elseblock e = {e} this = {props.this}/>
-                                }
-                            })()}
-                             <div class = "box"></div>
-                            </div>                
-                        } 
+                    <div class="container">
+                        <div class="row">
+                            {
+                                props.this.state.tasks.map((e, index) =>
+                                    <div>
+                                        {
+                                            <div class="col-sm-4">
+                                                {(() => {
+                                                    if (e.Imagen != null) {
+                                                        return <Ifblock e={e} this={props.this} />
+                                                    } else {
+                                                        return <Elseblock e={e} this={props.this} />
+                                                    }
+                                                })()}
+                                                <div class="box"></div>
+                                            </div>
+                                        }
+                                    </div>
+                                )
+                            }
                         </div>
-                    )   
-                }
+                    </div>
                 </div>
-                </div>
-                </div>   
-            </section> 
-        </body> 
+            </section>
+        </body>
     );
 
 }
 
 
-function Search(props){
-    return(
-        <Modal isOpen={props.this.state.modalBuscar} fade={false}>
+function Search(props) {
+    return (
+        <Modal isOpen={props.this.state.modalBuscar} fade={false} >
             <ModalHeader>
-            <div><h3>Buscar</h3></div>
+                <div><h3>Buscar</h3></div>
             </ModalHeader>
             <ModalBody>
                 <FormGroup>
-                <label>
-                    Nombre: 
-                </label>
-                <input
-                    className="form-control"
-                    name="puesto"
-                    type="text"
-                    onChange={props.this.handleChangeS}
-                />
+                    <label>
+                        Nombre:
+                    </label>
+                    <input
+                        className="form-control"
+                        name="puesto"
+                        type="text"
+                        onChange={props.this.handleChangeS}
+                    />
                 </FormGroup>
                 <FormGroup>
-                <label>
-                    Salario: 
-                </label>
-                <input 
-                className="form-control" 
-                type="number" 
-                name="salario" 
-                onChange={props.this.handleChangeS} 
-                step="1000"></input>
-               
+                    <label>
+                        Salario:
+                    </label>
+                    <input
+                        className="form-control"
+                        type="number"
+                        name="salario"
+                        onChange={props.this.handleChangeS}
+                        step="1000"></input>
+
                 </FormGroup>
                 <FormGroup>
-                <label>
-                    Categoria
-                </label>
-                <Dropdown 
-                name = "rol" 
-                options = {props.this.state.catego}
-                onChange={props.this.handleChangeC}
-                placeholder="--" 
-                />
+                    <label>
+                        Categoria
+                    </label>
+                    <Dropdown
+                        name="rol"
+                        options={props.this.state.catego}
+                        onChange={props.this.handleChangeC}
+                        placeholder="--"
+                    />
                 </FormGroup>
                 <FormGroup>
-                <label>
-                    Departamento
-                </label>
-                <Dropdown 
-                name = "depa" 
-                options={props.this.state.depas}
-                onChange={props.this.handleChangeD}
-                placeholder="--" />
+                    <label>
+                        Departamento
+                    </label>
+                    <Dropdown
+                        name="depa"
+                        options={props.this.state.depas}
+                        onChange={props.this.handleChangeD}
+                        placeholder="--" />
                 </FormGroup>
             </ModalBody>
             <ModalFooter>
                 <Button
-                color="primary"
-                onClick={() => props.this.buscar()}
+                    color="primary"
+                    onClick={() => props.this.buscar()}
                 >
-                Buscar
+                    Buscar
                 </Button>
                 <Button
-                className="btn btn-danger"
-                onClick={() => props.this.cerrarModalBuscar()}
+                    className="btn btn-danger"
+                    onClick={() => props.this.cerrarModalBuscar()}
                 >
-                Cancelar
+                    Cancelar
                 </Button>
             </ModalFooter>
-            </Modal>
-    );
-}
-
-
-function Select(props){
-    return(
-        <Modal isOpen={props.this.state.modalSelect} fade={false}>
-        <ModalHeader>
-        <div><h3>Aplicar para puesto</h3></div>
-        </ModalHeader>
-        <ModalBody>
-            <FormGroup>
-            <label>
-                CUI: 
-            </label>
-            <input
-                className="form-control"
-                name="cui"
-                type="text"
-                onChange={props.this.handleChange}
-            />
-            </FormGroup>
-            <FormGroup>
-            <label>
-                Nombres: 
-            </label>
-            <input
-                className="form-control"
-                name="nombre"
-                type="text"
-                onChange={props.this.handleChange}
-            />
-            </FormGroup>
-            <FormGroup>
-            <label>
-                Apellidos: 
-            </label>
-            <input
-                className="form-control"
-                name="apellido"
-                type="text"
-                onChange={props.this.handleChange}
-            />
-            </FormGroup>
-            <FormGroup>
-            <label>
-                Correo: 
-            </label>
-            <input
-                className="form-control"
-                name="correo"
-                type="text"
-                onChange={props.this.handleChange}
-            />
-            </FormGroup>
-            <FormGroup>
-            <label>
-                Direccion 
-            </label>
-            <input
-                className="form-control"
-                name="direccion"
-                type="text"
-                onChange={props.this.handleChange}
-            />
-             </FormGroup>
-            <FormGroup>
-            <label>
-                Telefono: 
-            </label>
-            <input
-                className="form-control"
-                name="telefono"
-                type="text"
-                onChange={props.this.handleChange}
-            />
-            </FormGroup>
-            <FormGroup>
-            <label>
-                CV: 
-            </label>
-            <input
-                className="form-control"
-                name="cv"
-                type="file"
-                multiple={false}
-                onChange={props.this.handleChangeF}
-            />
-            </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-            <Button
-            color="primary"
-            onClick={() => props.this.aplicar()}
-            >
-            Aplicar
-            </Button>
-            <Button
-            className="btn btn-danger"
-            onClick={() => props.this.cerrarModalSelect()}
-            >
-            Cancelar
-            </Button>
-        </ModalFooter>
         </Modal>
     );
 }
 
+
+function Select(props) {
+    return (
+        <Modal isOpen={props.this.state.modalSelect} fade={false}>
+            <ModalHeader>
+                <div><h3>Aplicar para puesto</h3></div>
+            </ModalHeader>
+            <ModalBody>
+                <FormGroup>
+                    <label>
+                        CUI:
+                    </label>
+                    <input
+                        className="form-control"
+                        name="cui"
+                        type="text"
+                        onChange={props.this.handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <label>
+                        Nombres:
+                    </label>
+                    <input
+                        className="form-control"
+                        name="nombre"
+                        type="text"
+                        onChange={props.this.handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <label>
+                        Apellidos:
+                    </label>
+                    <input
+                        className="form-control"
+                        name="apellido"
+                        type="text"
+                        onChange={props.this.handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <label>
+                        Correo:
+                    </label>
+                    <input
+                        className="form-control"
+                        name="correo"
+                        type="text"
+                        onChange={props.this.handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <label>
+                        Direccion
+                    </label>
+                    <input
+                        className="form-control"
+                        name="direccion"
+                        type="text"
+                        onChange={props.this.handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <label>
+                        Telefono:
+                    </label>
+                    <input
+                        className="form-control"
+                        name="telefono"
+                        type="text"
+                        onChange={props.this.handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <label>
+                        CV:
+                    </label>
+                    <input
+                        className="form-control"
+                        name="cv"
+                        type="file"
+                        multiple={false}
+                        onChange={props.this.handleChangeF}
+                    />
+                </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+                <Button
+                    color="primary"
+                    onClick={() => props.this.aplicar()}
+                >
+                    Aplicar
+                </Button>
+                <Button
+                    className="btn btn-danger"
+                    onClick={() => props.this.cerrarModalSelect()}
+                >
+                    Cancelar
+                </Button>
+            </ModalFooter>
+        </Modal>
+    );
+}
 
 export default guest;

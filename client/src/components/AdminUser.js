@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from 'react-dropdown';
-import {getCurrentDate} from '../utils/date'
+import { getCurrentDate } from '../utils/date'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'react-dropdown/style.css';
@@ -19,8 +19,8 @@ import {
 
 
 
-class AdminUser extends Component{
-    
+class AdminUser extends Component {
+
     constructor() {
         super();
         this.state = {
@@ -28,8 +28,8 @@ class AdminUser extends Component{
             modalInsertar: false,
             load2: false,
             tasks: [],
-            copy:[],
-            data :{
+            copy: [],
+            data: {
                 id: '',
                 user: '',
                 pass: '',
@@ -40,7 +40,7 @@ class AdminUser extends Component{
                 rol: '',
                 depa: ''
             },
-            search:{
+            search: {
                 user: null,
                 estado: null,
                 inicio: null,
@@ -48,12 +48,12 @@ class AdminUser extends Component{
                 rol: null
             },
             estado: ["Activo", "Inactivo"],
-            load : true,
+            load: true,
             bus: false,
             modalBuscar: false,
-            rols: ["Coordinador", "Reclutador", "Revisor"], 
+            rols: ["Coordinador", "Reclutador", "Revisor"],
             depas: [],
-            date : getCurrentDate()
+            date: getCurrentDate()
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeR = this.handleChangeR.bind(this);
@@ -65,40 +65,40 @@ class AdminUser extends Component{
         this.fetchTasks();
         this.fetchdepa();
     }
-    
+
     fetchTasks() {
         fetch('/selectU')
-          .then(res => res.json())
-          .then(data => {
-            console.log(data)
-            this.setState({tasks: data, load: false, copy: data});
-          });
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                this.setState({ tasks: data, load: false, copy: data });
+            });
     }
     fetchdepa() {
         fetch('/depas')
-          .then(res => res.json())
-          .then(data => {
-            const aux = [];
-            for(const i of data){
-                aux.push(i.nombre)    
-            }
-            this.setState({depas: aux});
-        });
+            .then(res => res.json())
+            .then(data => {
+                const aux = [];
+                for (const i of data) {
+                    aux.push(i.nombre)
+                }
+                this.setState({ depas: aux });
+            });
     }
     handleChangeES(e) {
         this.setState({
-          search:{
-              ...this.state.search,
-              estado: e.value
-          },
+            search: {
+                ...this.state.search,
+                estado: e.value
+            },
         });
-    } 
+    }
     handleChangeRS(e) {
         this.setState({
-          search:{
-              ...this.state.search,
-              rol: e.value
-          },
+            search: {
+                ...this.state.search,
+                rol: e.value
+            },
         });
     }
 
@@ -106,27 +106,27 @@ class AdminUser extends Component{
     handleChangeS(e) {
         const { name, value } = e.target;
         this.setState({
-          search:{
-              ...this.state.search,
-              [name]: value
-          },
+            search: {
+                ...this.state.search,
+                [name]: value
+            },
         });
     }
 
-    buscar(Finicio, Ffinal){
-        this.setState({load2: true})
+    buscar(Finicio, Ffinal) {
+        this.setState({ load2: true })
         console.log(this.state.search)
         let inicio = null, final = null;
-        if(Finicio != null) inicio =  `${Finicio.getFullYear()}-${Finicio.getMonth()+1}-${Finicio.getDate()}`
-        if(Ffinal != null) final = `${Ffinal.getFullYear()}-${Ffinal.getMonth()+1}-${Ffinal.getDate()}`
+        if (Finicio != null) inicio = `${Finicio.getFullYear()}-${Finicio.getMonth() + 1}-${Finicio.getDate()}`
+        if (Ffinal != null) final = `${Ffinal.getFullYear()}-${Ffinal.getMonth() + 1}-${Ffinal.getDate()}`
         console.log(inicio)
         console.log(final)
-        this.setState({load: true})
+        this.setState({ load: true })
 
         let estado = null;
-        if(this.state.search.estado === 'Activo'){
+        if (this.state.search.estado === 'Activo') {
             estado = '1'
-        }else if(this.state.search.estado === 'Inactivo'){
+        } else if (this.state.search.estado === 'Inactivo') {
             estado = '0'
         }
         fetch('/searchU', {
@@ -142,17 +142,17 @@ class AdminUser extends Component{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-            })
+        })
             .then(res => res.json())
             .then(data => {
-                this.setState({tasks: data});
-                this.setState({load2: false})
+                this.setState({ tasks: data });
+                this.setState({ load2: false })
             })
             .catch(err => console.error(err));
 
-        this.setState({bus: true, modalBuscar: false})
+        this.setState({ bus: true, modalBuscar: false })
         this.setState({
-            search:{
+            search: {
                 ...this.state.search,
                 user: null,
                 estado: null,
@@ -160,40 +160,40 @@ class AdminUser extends Component{
                 fin: null,
                 rol: null
             },
-          });
+        });
     }
 
-    mostrarModalBuscar(){
-        this.setState({modalBuscar: true})
+    mostrarModalBuscar() {
+        this.setState({ modalBuscar: true })
     }
-    cerrarModalBuscar(){
-        this.setState({modalBuscar: false})
+    cerrarModalBuscar() {
+        this.setState({ modalBuscar: false })
         //this.fetchTasks();
     }
-    cerrarBusqueda(){
-        this.setState({tasks: this.state.copy, bus: false})
+    cerrarBusqueda() {
+        this.setState({ tasks: this.state.copy, bus: false })
     }
 
 
-    mostrarModalInsertar(){
-        this.setState({modalInsertar: true})
+    mostrarModalInsertar() {
+        this.setState({ modalInsertar: true })
     }
-    cerrarModalInsertar(){
-        this.setState({modalInsertar: false})
+    cerrarModalInsertar() {
+        this.setState({ modalInsertar: false })
         this.fetchTasks();
     }
-    mostrarModalActualizar(dato){
+    mostrarModalActualizar(dato) {
         this.setState({
-            data : dato,
+            data: dato,
             modalActualizar: true
         })
     }
-    cerrarModalActualizar(){
-        this.setState({modalActualizar: false})
+    cerrarModalActualizar() {
+        this.setState({ modalActualizar: false })
     }
 
-    editar(dato){
-        this.setState({load2: true})
+    editar(dato) {
+        this.setState({ load2: true })
         console.log(this.state.data)
         fetch('/updateU', {
             method: 'PUT',
@@ -209,7 +209,7 @@ class AdminUser extends Component{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-            })
+        })
             .then(res => res.json())
             .then(data => {
                 Swal.fire(
@@ -218,14 +218,14 @@ class AdminUser extends Component{
                     'info'
                 )
                 this.fetchTasks();
-                this.setState({load2: false})
+                this.setState({ load2: false })
             })
             .catch(err => console.error(err));
         this.cerrarModalActualizar();
         this.fetchTasks();
     }
-    eliminar(dato){
-        this.setState({load2: true})
+    eliminar(dato) {
+        this.setState({ load2: true })
         console.log(this.state.data)
         fetch('/deleteU', {
             method: 'PUT',
@@ -237,7 +237,7 @@ class AdminUser extends Component{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-            })
+        })
             .then(res => res.json())
             .then(data => {
                 Swal.fire(
@@ -246,13 +246,13 @@ class AdminUser extends Component{
                     'info'
                 )
                 this.fetchTasks();
-                this.setState({load2: false})
+                this.setState({ load2: false })
             })
             .catch(err => console.error(err));
         this.fetchTasks();
     }
-    insertar(){
-        this.setState({load2: true})
+    insertar() {
+        this.setState({ load2: true })
         console.log(this.state.data)
         fetch('/insertU', {
             method: 'POST',
@@ -262,13 +262,13 @@ class AdminUser extends Component{
                 inicio: this.state.date,
                 rol: this.state.data.rol,
                 correo: this.state.data.correo,
-                depa:this.state.data.depa
+                depa: this.state.data.depa
             }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-            })
+        })
             .then(res => res.json())
             .then(data => {
                 Swal.fire(
@@ -277,7 +277,7 @@ class AdminUser extends Component{
                     'info'
                 )
                 this.fetchTasks();
-                this.setState({load2: false})
+                this.setState({ load2: false })
             })
             .catch(err => console.error(err));
         this.cerrarModalInsertar()
@@ -287,293 +287,293 @@ class AdminUser extends Component{
     handleChange(e) {
         const { name, value } = e.target;
         this.setState({
-          data:{
-              ...this.state.data,
-              [name]: value
-          },
+            data: {
+                ...this.state.data,
+                [name]: value
+            },
         });
     }
 
     handleChangeR(e) {
         this.setState({
-          data:{
-              ...this.state.data,
-              rol: e.value
-          },
+            data: {
+                ...this.state.data,
+                rol: e.value
+            },
         });
     }
     handleChangeD(e) {
         this.setState({
-          data:{
-              ...this.state.data,
-              depa: e.value
-          },
+            data: {
+                ...this.state.data,
+                depa: e.value
+            },
         });
     }
 
-    cerrarSesion=()=>{
-        window.location.href='./';
+    cerrarSesion = () => {
+        window.location.href = './';
     }
 
-    render (){
-        return(
+    render() {
+        return (
             <div className="crud">
-            <Load this= {this}/>
-            <nav role="navigation">
-            <div id="menuToggle">
-            <input type="checkbox"/>
-            <span></span>
-            <span></span>
-            <span></span>
-            <ul id="menu">
-            <button onClick={()=>this.mostrarModalBuscar()}><li>Buscar Usuario</li></button>
-            <div className='boxer'/>
-            <button onClick={()=>this.cerrarSesion()}><li>Cerrar Sesion</li></button>
-            </ul>
-            </div>
-            </nav>
-            <div className='xml'>
-            <h1>Usuarios</h1>
-            </div>
-            <Container>
-            <br />
-            <Button color="primary" onClick={()=>this.mostrarModalInsertar()}>Crear Usuario</Button>
-            <br />
-            <br />
-            {(() => {
-                    if(this.state.bus === true){
-                        return<Container>
-                        <Button style={{float: 'right'}}
-                        className="btn btn-danger"
-                        onClick={() => this.cerrarBusqueda()}
-                        >
-                        X
-                        </Button>
-                        <div class = "box"></div>
-                        </Container>
-                        
-                    }
-            })()}
-            <Table>
-                <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Contraseña</th>
-                    <th>Correo</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Fin</th>
-                    <th>Rol</th>
-                    <th>Departamento</th>
-                </tr>
-                </thead>
+                <Load this={this} />
+                <nav role="navigation">
+                    <div id="menuToggle">
+                        <input type="checkbox" />
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <ul id="menu">
+                            <button onClick={() => this.mostrarModalBuscar()}><li>Buscar Usuario</li></button>
+                            <div className='boxer' />
+                            <button onClick={() => this.cerrarSesion()}><li>Cerrar Sesion</li></button>
+                        </ul>
+                    </div>
+                </nav>
+                <div className='xml'>
+                    <h1>Usuarios</h1>
+                </div>
+                <Container>
+                    <br />
+                    <Button color="primary" onClick={() => this.mostrarModalInsertar()}>Crear Usuario</Button>
+                    <br />
+                    <br />
+                    {(() => {
+                        if (this.state.bus === true) {
+                            return <Container>
+                                <Button style={{ float: 'right' }}
+                                    className="btn btn-danger"
+                                    onClick={() => this.cerrarBusqueda()}
+                                >
+                                    X
+                                </Button>
+                                <div class="box"></div>
+                            </Container>
 
-                {this.state.tasks.map((dato) => (
-                    (() => {
-                        if(dato.estado === '1'){
-                            return <Ifyes dato = {dato} this= {this}/>
-                        }else{
-                            return <Elsen dato = {dato} this = {this}/>
                         }
-                    })()
-                ))}
+                    })()}
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Contraseña</th>
+                                <th>Correo</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Rol</th>
+                                <th>Departamento</th>
+                            </tr>
+                        </thead>
 
-            </Table>
-            </Container>
-            
-            <Modal isOpen={this.state.modalInsertar} fade={false}>
-            <ModalHeader>
-            <div><h3>Insertar Usuario</h3></div>
-            </ModalHeader>
-            <ModalBody>
-                <FormGroup>
-                <label>
-                    Usuario: 
-                </label>
-                <input
-                    className="form-control"
-                    name="user"
-                    type="text"
-                    onChange={this.handleChange}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    password: 
-                </label>
-                <input
-                    className="form-control"
-                    name="pass"
-                    type="text"
-                    onChange={this.handleChange}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Correo: 
-                </label>
-                <input
-                    className="form-control"
-                    name="correo"
-                    type="text"
-                    onChange={this.handleChange}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Rol
-                </label>
-                <Dropdown 
-                name = "rol" options={this.state.rols} 
-                onChange={this.handleChangeR} 
-                placeholder="Selecciona Rol" />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Departamento
-                </label>
-                <Dropdown name = "depa" options={this.state.depas} onChange={this.handleChangeD} placeholder="Selecciona Departamento" />
-                </FormGroup>
-            </ModalBody>
-            <ModalFooter>
-                <Button
-                color="primary"
-                onClick={() => this.insertar()}
-                >
-                Insertar
-                </Button>
-                <Button
-                className="btn btn-danger"
-                onClick={() => this.cerrarModalInsertar()}
-                >
-                Cancelar
-                </Button>
-            </ModalFooter>
-            </Modal>
+                        {this.state.tasks.map((dato) => (
+                            (() => {
+                                if (dato.estado === '1') {
+                                    return <Ifyes dato={dato} this={this} />
+                                } else {
+                                    return <Elsen dato={dato} this={this} />
+                                }
+                            })()
+                        ))}
 
-            <Modal isOpen={this.state.modalActualizar} fade={false}>
-            <ModalHeader>
-            <div><h3>Editar Usuario</h3></div>
-            </ModalHeader>
-            <ModalBody>
-                <FormGroup>
-                <label>
-                    Usuario: 
-                </label>
-                <input
-                    className="form-control"
-                    name="user"
-                    type="text"
-                    onChange={this.handleChange}
-                    value={this.state.data.user}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Contraseña: 
-                </label>
-                <input
-                    className="form-control"
-                    name="pass"
-                    type="text"
-                    onChange={this.handleChange}
-                    value={this.state.data.pass}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Correo: 
-                </label>
-                <input
-                    className="form-control"
-                    name="correo"
-                    type="text"
-                    onChange={this.handleChange}
-                    value={this.state.data.correo}
-                />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Rol
-                </label>
-                <Dropdown name = "rol" options={this.state.rols} onChange={this.handleChangeR} value={this.state.data.rol} placeholder="Selecciona Rol" />
-                </FormGroup>
-                <FormGroup>
-                <label>
-                    Departamento
-                </label>
-                <Dropdown name = "depa" options={this.state.depas} onChange={this.handleChangeD} value={this.state.data.depa} placeholder="Selecciona Departamento" />
-                </FormGroup>
-            </ModalBody>
-            <ModalFooter>
-                <Button
-                color="primary"
-                onClick={() => this.editar(this.state.data)}
-                >
-                Editar
-                </Button>
-                <Button
-                color="danger"
-                onClick={() => this.cerrarModalActualizar()}
-                >
-                Cancelar
-                </Button>
-            </ModalFooter>
-            </Modal>  
+                    </Table>
+                </Container>
 
-            <SearchU this={this}/>
-        </div>
+                <Modal isOpen={this.state.modalInsertar} fade={false}>
+                    <ModalHeader>
+                        <div><h3>Insertar Usuario</h3></div>
+                    </ModalHeader>
+                    <ModalBody>
+                        <FormGroup>
+                            <label>
+                                Usuario:
+                            </label>
+                            <input
+                                className="form-control"
+                                name="user"
+                                type="text"
+                                onChange={this.handleChange}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>
+                                password:
+                            </label>
+                            <input
+                                className="form-control"
+                                name="pass"
+                                type="text"
+                                onChange={this.handleChange}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>
+                                Correo:
+                            </label>
+                            <input
+                                className="form-control"
+                                name="correo"
+                                type="text"
+                                onChange={this.handleChange}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>
+                                Rol
+                            </label>
+                            <Dropdown
+                                name="rol" options={this.state.rols}
+                                onChange={this.handleChangeR}
+                                placeholder="Selecciona Rol" />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>
+                                Departamento
+                            </label>
+                            <Dropdown name="depa" options={this.state.depas} onChange={this.handleChangeD} placeholder="Selecciona Departamento" />
+                        </FormGroup>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            color="primary"
+                            onClick={() => this.insertar()}
+                        >
+                            Insertar
+                        </Button>
+                        <Button
+                            className="btn btn-danger"
+                            onClick={() => this.cerrarModalInsertar()}
+                        >
+                            Cancelar
+                        </Button>
+                    </ModalFooter>
+                </Modal>
+
+                <Modal isOpen={this.state.modalActualizar} fade={false}>
+                    <ModalHeader>
+                        <div><h3>Editar Usuario</h3></div>
+                    </ModalHeader>
+                    <ModalBody>
+                        <FormGroup>
+                            <label>
+                                Usuario:
+                            </label>
+                            <input
+                                className="form-control"
+                                name="user"
+                                type="text"
+                                onChange={this.handleChange}
+                                value={this.state.data.user}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>
+                                Contraseña:
+                            </label>
+                            <input
+                                className="form-control"
+                                name="pass"
+                                type="text"
+                                onChange={this.handleChange}
+                                value={this.state.data.pass}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>
+                                Correo:
+                            </label>
+                            <input
+                                className="form-control"
+                                name="correo"
+                                type="text"
+                                onChange={this.handleChange}
+                                value={this.state.data.correo}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>
+                                Rol
+                            </label>
+                            <Dropdown name="rol" options={this.state.rols} onChange={this.handleChangeR} value={this.state.data.rol} placeholder="Selecciona Rol" />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>
+                                Departamento
+                            </label>
+                            <Dropdown name="depa" options={this.state.depas} onChange={this.handleChangeD} value={this.state.data.depa} placeholder="Selecciona Departamento" />
+                        </FormGroup>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            color="primary"
+                            onClick={() => this.editar(this.state.data)}
+                        >
+                            Editar
+                        </Button>
+                        <Button
+                            color="danger"
+                            onClick={() => this.cerrarModalActualizar()}
+                        >
+                            Cancelar
+                        </Button>
+                    </ModalFooter>
+                </Modal>
+
+                <SearchU this={this} />
+            </div>
         );
     }
 }
-function Load(props){
+function Load(props) {
     return (
         <Modal isOpen={props.this.state.load2} fade={false}>
-        <div class="load">
-        <hr/><hr/><hr/><hr/>
-        </div>
+            <div class="load">
+                <hr /><hr /><hr /><hr />
+            </div>
         </Modal>
     );
 }
 
 function Ifyes(props) {
     var dato = props.dato;
-    return(
-        <tbody style={{backgroundColor : "#81C784"}}>
-        <tr key={dato.id} >
-        <td>{dato.user}</td>
-        <td>{dato.pass}</td>
-        <td>{dato.correo}</td>
-        <td>{dato.inicio}</td>
-        <td>{dato.fin}</td>
-        <td>{dato.rol}</td>
-        <td>{dato.depa}</td>
-        <td>
-            <Button
-            color="primary"
-            onClick={() => props.this.mostrarModalActualizar(dato)}
-            >
-            Editar
-            </Button>
-            <Button color="danger" onClick={()=> props.this.eliminar(dato)}>Eliminar</Button>
-        </td>
-        </tr>
+    return (
+        <tbody style={{ backgroundColor: "#81C784" }}>
+            <tr key={dato.id} >
+                <td>{dato.user}</td>
+                <td>{dato.pass}</td>
+                <td>{dato.correo}</td>
+                <td>{dato.inicio}</td>
+                <td>{dato.fin}</td>
+                <td>{dato.rol}</td>
+                <td>{dato.depa}</td>
+                <td>
+                    <Button
+                        color="primary"
+                        onClick={() => props.this.mostrarModalActualizar(dato)}
+                    >
+                        Editar
+                    </Button>
+                    <Button color="danger" onClick={() => props.this.eliminar(dato)}>Eliminar</Button>
+                </td>
+            </tr>
         </tbody>
-    );    
+    );
 }
 
 function Elsen(props) {
     var dato = props.dato;
-    return(
-        <tbody style={{backgroundColor : "#F44336"}}>
-        <tr key={dato.id}>
-        <td>{dato.user}</td>
-        <td>{dato.pass}</td>
-        <td>{dato.correo}</td>
-        <td>{dato.inicio}</td>
-        <td>{dato.fin}</td>
-        <td>{dato.rol}</td>
-        <td>{dato.depa}</td>
-        </tr>
+    return (
+        <tbody style={{ backgroundColor: "#F44336" }}>
+            <tr key={dato.id}>
+                <td>{dato.user}</td>
+                <td>{dato.pass}</td>
+                <td>{dato.correo}</td>
+                <td>{dato.inicio}</td>
+                <td>{dato.fin}</td>
+                <td>{dato.rol}</td>
+                <td>{dato.depa}</td>
+            </tr>
         </tbody>
     );
 }
@@ -581,87 +581,87 @@ function Elsen(props) {
 function SearchU(props) {
     var [startDate, setStartDate] = useState(null);
     var [startDateF, setStartDateF] = useState(null);
-    return(
+    return (
         <Modal isOpen={props.this.state.modalBuscar} fade={false}>
             <ModalHeader>
-            <div><h3>Buscar Usuario</h3></div>
+                <div><h3>Buscar Usuario</h3></div>
             </ModalHeader>
             <ModalBody>
                 <FormGroup>
-                <label>
-                    Usuario: 
-                </label>
-                <input
-                    className="form-control"
-                    name="user"
-                    type="text"
-                    onChange={props.this.handleChangeS}
-                />
+                    <label>
+                        Usuario:
+                    </label>
+                    <input
+                        className="form-control"
+                        name="user"
+                        type="text"
+                        onChange={props.this.handleChangeS}
+                    />
                 </FormGroup>
                 <FormGroup>
-                <label>
-                    Estado
-                </label>
-                <Dropdown name = "estado" options={props.this.state.estado} onChange={props.this.handleChangeES} value={props.this.state.search.estado} placeholder="--" />
+                    <label>
+                        Estado
+                    </label>
+                    <Dropdown name="estado" options={props.this.state.estado} onChange={props.this.handleChangeES} value={props.this.state.search.estado} placeholder="--" />
                 </FormGroup>
 
                 <FormGroup>
-                <label>
-                    Fecha Inicio: 
-                </label>
-                <DatePicker
-                    className="form-control" 
-                    name = "inicio"
-                    dateFormat="dd/MM/yyyy"
-                    isClearable
-                    placeholderText="Selecciona Fecha"    
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    fixedHeight
+                    <label>
+                        Fecha Inicio:
+                    </label>
+                    <DatePicker
+                        className="form-control"
+                        name="inicio"
+                        dateFormat="dd/MM/yyyy"
+                        isClearable
+                        placeholderText="Selecciona Fecha"
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        fixedHeight
                     //withPortal
-                />
+                    />
                 </FormGroup>
 
                 <FormGroup>
-                <label>
-                    Fecha Final: 
-                </label>
-                <DatePicker
-                     className="form-control" 
-                    name = "fin"
-                    dateFormat="dd/MM/yyyy"
-                    selected={startDateF}
-                    isClearable
-                     placeholderText="Selecciona Fecha"
-                    onChange={(date) => setStartDateF(date)}
-                    fixedHeight
+                    <label>
+                        Fecha Final:
+                    </label>
+                    <DatePicker
+                        className="form-control"
+                        name="fin"
+                        dateFormat="dd/MM/yyyy"
+                        selected={startDateF}
+                        isClearable
+                        placeholderText="Selecciona Fecha"
+                        onChange={(date) => setStartDateF(date)}
+                        fixedHeight
                     //withPortal
-                />
+                    />
                 </FormGroup>
 
                 <FormGroup>
-                <label>
-                    Rol
-                </label>
-                <Dropdown name = "rol" options={props.this.state.rols} onChange={props.this.handleChangeRS} value={props.this.state.search.rol} placeholder="--" />
+                    <label>
+                        Rol
+                    </label>
+                    <Dropdown name="rol" options={props.this.state.rols} onChange={props.this.handleChangeRS} value={props.this.state.search.rol} placeholder="--" />
                 </FormGroup>
 
             </ModalBody>
             <ModalFooter>
                 <Button
-                color="primary"
-                onClick={() => props.this.buscar(startDate, startDateF)}
+                    color="primary"
+                    onClick={() => props.this.buscar(startDate, startDateF)}
                 >
-                Buscar
+                    Buscar
                 </Button>
                 <Button
-                color="danger"
-                onClick={() => props.this.cerrarModalBuscar()}
+                    color="danger"
+                    onClick={() => props.this.cerrarModalBuscar()}
                 >
-                Cancelar
+                    Cancelar
                 </Button>
             </ModalFooter>
-        </Modal>   
+        </Modal>
     );
 }
 

@@ -32,72 +32,72 @@ const Chat = ({ nombre, other }) => {
     setMensaje("");
   };
 
-  const renderChat = () =>{
-      return mensajes.map((e, i) => (
-        <div key={i}>
-            {(() => {
-                if((e.nombre !== nombre && e.nombre !== other)) return;
-                if(e.other !== nombre && e.nombre !== nombre) return;
-                if(e.nombre === nombre){
-                    return<div className="xms" style={{float: 'right'}}>
-                             <text>{e.mensaje}</text>
-                    </div>
-                }else{
-                    return (
-                        <div className="xm" style={{float: 'left'}}>
-                             <text>{e.mensaje}</text>
-                        </div>
-                    ); 
-                }
-            })()}
-            {(() => {
-                if((e.nombre !== nombre && e.nombre !== other)) return;
-                if(e.other !== nombre && e.nombre !== nombre) return;
-                return(
-                  <div>
-                    <div className="boxer"></div>
-                    <div className="boxer"></div>
-                  </div>
-                );
-            })()}
+  const renderChat = () => {
+    return mensajes.map((e, i) => (
+      <div key={i}>
+        {(() => {
+          if ((e.nombre !== nombre && e.nombre !== other)) return;
+          if (e.other !== nombre && e.nombre !== nombre) return;
+          if (e.nombre === nombre) {
+            return <div className="xms" style={{ float: 'right' }}>
+              <text>{e.mensaje}</text>
+            </div>
+          } else {
+            return (
+              <div className="xm" style={{ float: 'left' }}>
+                <text>{e.mensaje}</text>
+              </div>
+            );
+          }
+        })()}
+        {(() => {
+          if ((e.nombre !== nombre && e.nombre !== other)) return;
+          if (e.other !== nombre && e.nombre !== nombre) return;
+          return (
+            <div>
+              <div className="boxer"></div>
+              <div className="boxer"></div>
+            </div>
+          );
+        })()}
 
-        </div>
-      ))
+      </div>
+    ))
   }
 
   return (
     <div>
-        <div className="xml">
-            <h3>CHAT</h3>
-        </div>
-        <div className="boxer"></div>
+      <div className="xml">
+        <h3>CHAT</h3>
+      </div>
+      <div className="boxer"></div>
       <div className="login">
-      <div class="wrapper fadeInDown">
-      <div>
-        <h2 class="active" > {other}</h2>
-      <div>
-        <div className="boxer"></div>
-        <div className="boxer"></div>
-        {renderChat()}
-        <div ref={divRef}></div>
+        <div class="wrapper fadeInDown">
+          <div>
+            <h2 class="active" > {other}</h2>
+            <div>
+              <div className="boxer"></div>
+              <div className="boxer"></div>
+              {renderChat()}
+              <div ref={divRef}></div>
+            </div>
+            <form onSubmit={submit}>
+              <input
+                class="fadeIn second"
+                type="text"
+                id="login"
+                value={mensaje}
+                placeholder="Escibir mensaje"
+                onChange={(e) => setMensaje(e.target.value)}
+              />
+              <input type="submit" class="fadeIn fourth" value="Enviar" />
+            </form>
+
+          </div>
+        </div>
+
       </div>
-      <form onSubmit={submit}>
-        <input
-          class="fadeIn second"
-          type="text"
-          id="login"
-          value={mensaje}
-          placeholder="Escibir mensaje"
-          onChange={(e) => setMensaje(e.target.value)}
-        />
-        <input type="submit" class="fadeIn fourth" value="Enviar"/>
-      </form>
-          
-      </div>
-      </div>
-     
-      </div>
-      
+
     </div>
   );
 };
