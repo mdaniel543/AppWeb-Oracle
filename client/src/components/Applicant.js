@@ -51,6 +51,10 @@ class Applicant extends Component {
                 puesto: ''
             },
             chat: {},
+            fileName: '',
+            file: '',
+            ReqFile: '',
+            ViewFile: false,
             nuevoCV: null,
             arreglo: ''
         }
@@ -103,6 +107,19 @@ class Applicant extends Component {
                 this.fetchRequisitos(data.puestoID);
             })
             .catch(err => console.error(err));
+    }
+    async abrir(exp, req) {
+        this.setState({file: `http://localhost:5000/static/expedientes/${exp}`})
+        this.setState({ ReqFile: req, fileName: exp, ViewFile: true });
+    }
+
+    async abrirCV(exp) {
+        this.setState({file: `http://localhost:5000/static/cv/${exp}`})
+        this.setState({ ReqFile: 'CV', fileName: exp, ViewFile: true });
+    }
+
+    cerrarModalViewFile() {
+        this.setState({ ViewFile: false });
     }
 
     fetchProfile2() {
@@ -517,6 +534,7 @@ class Applicant extends Component {
             <Expediente this={this} />
             <Load this={this} />
             <Corregir this={this} />
+            <ViewA this={this} />
             <div className="box"></div>
             <Container>
                 <Tabs>
@@ -552,6 +570,28 @@ class Applicant extends Component {
         </div>
     }
 
+}
+
+function ViewA(props) {
+    return (
+        <Modal isOpen={props.this.state.ViewFile} fade={false} size="lg" style={{ maxWidth: '700px', width: '100%' }}>
+            <ModalHeader>
+                <div><h3>{props.this.state.ReqFile}</h3></div>
+            </ModalHeader>
+            <ModalBody>
+                <embed src={props.this.state.file} alt="trial" width="650" height="500"></embed>
+            </ModalBody>
+            <ModalFooter>
+                <Button
+                    color="danger"
+                    onClick={() => props.this.cerrarModalViewFile()}
+                >
+                    Cerrar
+                </Button>
+            </ModalFooter>
+        </Modal>
+
+    );
 }
 
 function Expediente(props) {
@@ -734,7 +774,7 @@ function Ver(props) {
                     </label>
                     <Button style={{ float: 'right' }}
                         color="primary"
-                        onClick={() => props.this.DescargarCV(props.this.state.profile.cv)}
+                        onClick={() => props.this.abrirCV(props.this.state.profile.cv)}
                     >
                         {props.this.state.profile.cv}
                     </Button>
@@ -748,7 +788,6 @@ function Ver(props) {
                         name="cv"
                         type="file"
                         multiple={false}
-                        accept=".pdf"
                         onChange={props.this.handleChangeC}
                     />
                 </FormGroup>
@@ -812,8 +851,8 @@ function Ifyes(props) {
                 <td>Aceptado</td>
                 <td>
                     <Button
-                        onClick={() => props.this.descargarExp(dato.archivo)}>
-                        Descargar
+                        onClick={() => props.this.abrir(dato.archivo, dato.requisito)}>
+                        Ver
                     </Button>
                 </td>
             </tr>
@@ -830,8 +869,8 @@ function Elsen(props) {
                 <td>Rechazado</td>
                 <td>
                     <Button
-                        onClick={() => props.this.descargarExp(dato.archivo)}>
-                        Descargar
+                        onClick={() => props.this.abrir(dato.archivo, dato.requisito)}>
+                        Ver
                     </Button>
                 </td>
                 <td>
@@ -854,8 +893,8 @@ function Nothing(props) {
                 <td>Sin revisar</td>
                 <td>
                     <Button
-                        onClick={() => props.this.descargarExp(dato.archivo)}>
-                        Descargar
+                        onClick={() => props.this.abrir(dato.archivo, dato.requisito)}>
+                        Ver
                     </Button>
                 </td>
             </tr>
@@ -1029,7 +1068,7 @@ function Ver2(props) {
                     </label>
                     <Button style={{ float: 'right' }}
                         color="primary"
-                        onClick={() => props.this.DescargarCV(props.this.state.profile.cv)}
+                        onClick={() => props.this.abrirCV(props.this.state.profile.cv)}
                     >
                         {props.this.state.profile.cv}
                     </Button>

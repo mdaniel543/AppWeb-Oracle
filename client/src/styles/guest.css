@@ -29,7 +29,7 @@ li{
 	display: none;
 }
 
-@media (max-width: 670px){
+@media (max-width: 400px){
 
     header > .padre-sup{
         padding: 0 5px;
@@ -141,7 +141,7 @@ transition: .5s;
 }
 .col-sm-4:nth-child(1) .card ,
 .col-sm-4:nth-child(1) .card .title .fa{
-  background: linear-gradient(-45deg,#6a439e,#64b5f6);
+  background: linear-gradient(-45deg,#507c8d,#10c4ca);
 
 }
 .col-sm-4:nth-child(2) .card,
@@ -152,7 +152,6 @@ transition: .5s;
 .col-sm-4:nth-child(3) .card,
 .col-sm-4:nth-child(3) .card .title .fa{
   background: linear-gradient(-45deg,#1f4e69,#3b215e);
-
 }
 .card::before{
   content: '';

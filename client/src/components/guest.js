@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component} from 'react';
 import '../styles/guest.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dropdown from 'react-dropdown';
@@ -6,7 +6,6 @@ import 'react-dropdown/style.css';
 import { getCurrentDate } from '../utils/date'
 import axios from 'axios';
 import Swal from 'sweetalert2'
-import Carousel from 'react-bootstrap/Carousel'
 import {
     Button,
     Container,
@@ -253,7 +252,7 @@ class guest extends Component {
         return <div>
             <Main this={this} />
             <div className='xml'>
-                <h1>Puestos</h1>
+                <h1>TOTONET S.A.</h1>
             </div>
             <Search this={this} />
             <Select this={this} />
@@ -285,48 +284,6 @@ function Load(props) {
     );
 }
 
-/*function Carrousel(props) {
-    return (
-        <Container>
-            <Carousel fade >
-                <Carousel.Item>
-                    <img
-                        className="d-block w-100"
-                        src="https://dev-to-uploads.s3.amazonaws.com/i/zki4ndggcept7aaxpo3w.jpg"
-                        alt="First slide"
-                    />
-                    <Carousel.Caption>
-                        <h3>First slide label</h3>
-                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                    </Carousel.Caption>
-                </Carousel.Item>
-                <Carousel.Item>
-                    <img
-                        className="d-block w-100"
-                        src="https://alternative-storage.s3.us-east-2.amazonaws.com/rapper.jpg"
-                        alt="Second slide"
-                    />
-                    <Carousel.Caption>
-                        <h1>Second slide label</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    </Carousel.Caption>
-                </Carousel.Item>
-                <Carousel.Item>
-                    <img
-                        className="d-block w-100"
-                        src="https://dev-to-uploads.s3.amazonaws.com/i/zki4ndggcept7aaxpo3w.jpg"
-                        alt="Third slide"
-                    />
-
-                    <Carousel.Caption>
-                        <h3>Third slide label</h3>
-                        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-                    </Carousel.Caption>
-                </Carousel.Item>
-            </Carousel>
-        </Container>
-    );
-}*/
 
 function Main(props) {
     return (
@@ -351,8 +308,9 @@ function Ifblock(props) {
     return (
         <div class="card text-center" style={{ backgroundImage: `url(${props.e.Imagen})`, backgroundSize: 'cover' }}>
             <div class="title">
-                <h2>{props.e.Puesto}</h2>
+                <h2><b>{props.e.Puesto}</b></h2>
             </div>
+            <br/>
             <div class="option">
                 <ul>
                     <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>
@@ -378,8 +336,9 @@ function Elseblock(props) {
     return (
         <div class="card text-center">
             <div class="title">
-                <h2>{props.e.Puesto}</h2>
+                <h2><b>{props.e.Puesto}</b></h2>
             </div>
+            <br/>
             <div class="option">
                 <ul>
                     <li> <i class="fa fa-check" aria-hidden="true"></i>Salario: {props.e.Salario} </li>

@@ -44,6 +44,10 @@ class Reviewer extends Component {
             motivo: '',
             modalMotivo: false,
             bandera: false,
+            fileName: '',
+            file: '',
+            ReqFile: '',
+            ViewFile: false,
             date: getCurrentDate()
         };
         this.handleChangeS = this.handleChangeS.bind(this);
@@ -240,6 +244,15 @@ class Reviewer extends Component {
         this.setState({ modalVer: false })
     }
 
+    async abrir(exp, req) {
+        this.setState({file: `http://localhost:5000/static/expedientes/${exp}`})
+        this.setState({ ReqFile: req, fileName: exp, ViewFile: true });
+    }
+
+    cerrarModalViewFile() {
+        this.setState({ ViewFile: false });
+    }
+
     decargarExp(cv) {
         this.setState({ load2: true })
         fetch('/controller2', {
@@ -431,6 +444,7 @@ class Reviewer extends Component {
                 <Search this={this} />
                 <Ver this={this} />
                 <Load this={this} />
+                <ViewA this={this} />
                 <Motivo this={this} />
                 <Container>
                     <Tabs>
@@ -471,6 +485,27 @@ class Reviewer extends Component {
     }
 }
 
+function ViewA(props) {
+    return (
+        <Modal isOpen={props.this.state.ViewFile} fade={false} size="lg" style={{ maxWidth: '700px', width: '100%' }}>
+            <ModalHeader>
+                <div><h3>{props.this.state.ReqFile}</h3></div>
+            </ModalHeader>
+            <ModalBody>
+                <embed src={props.this.state.file} alt="trial" width="650" height="500"></embed>
+            </ModalBody>
+            <ModalFooter>
+                <Button
+                    color="danger"
+                    onClick={() => props.this.cerrarModalViewFile()}
+                >
+                    Cerrar
+                </Button>
+            </ModalFooter>
+        </Modal>
+
+    );
+}
 
 function Load(props) {
     return (
@@ -575,7 +610,7 @@ function Ver(props) {
                         <tr>
                             <th>Requisito</th>
                             <th>Estado</th>
-                            <th>Ver</th>
+                            <th>Visualizar</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -626,6 +661,11 @@ function Ift(props) {
                         onClick={() => props.this.decargarExp(dato.ruta)}>
                         Descargar
                     </Button>
+                    {"  "}
+                    <Button
+                        onClick={() => props.this.abrir(dato.ruta, dato.requisito)}>
+                        Ver
+                    </Button>
                 </td>
             </tr>
         </tbody>
@@ -644,6 +684,11 @@ function Elset(props) {
                         onClick={() => props.this.decargarExp(dato.ruta)}>
                         Descargar
                     </Button>
+                    {"  "}
+                    <Button
+                        onClick={() => props.this.abrir(dato.ruta, dato.requisito)}>
+                        Ver
+                    </Button>
                 </td>
             </tr>
         </tbody>
@@ -661,6 +706,11 @@ function Nothingt(props) {
                     <Button
                         onClick={() => props.this.decargarExp(dato.ruta)}>
                         Descargar
+                    </Button>
+                    {"  "}
+                    <Button
+                        onClick={() => props.this.abrir(dato.ruta, dato.requisito)}>
+                        Ver
                     </Button>
                 </td>
                 <td>

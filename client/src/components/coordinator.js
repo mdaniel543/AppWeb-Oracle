@@ -31,12 +31,24 @@ class Coordinador extends Component {
                 id: '',
                 nombre: ''
             },
+            fileName: '',
+            file: '',
+            ReqFile: '',
+            ViewFile: false,
             profile: {},
             data: {}
         };
         this.fetchDepas();
     }
 
+    async abrir(exp, req) {
+        this.setState({file: `http://localhost:5000/static/cv/${exp}`})
+        this.setState({ ReqFile: 'CV', fileName: exp, ViewFile: true });
+    }
+
+    cerrarModalViewFile() {
+        this.setState({ ViewFile: false });
+    }
 
     fetchDepas() {
         fetch('/depasr', {
@@ -234,6 +246,7 @@ class Coordinador extends Component {
         return <div>
             <Menu this={this} />
             <Ver this={this} />
+            <ViewA this={this} />
             <div className="box"></div>
             <Container>
                 <Tabs>
@@ -289,6 +302,28 @@ class Coordinador extends Component {
         </div>
     }
 
+}
+
+function ViewA(props) {
+    return (
+        <Modal isOpen={props.this.state.ViewFile} fade={false} size="lg" style={{ maxWidth: '700px', width: '100%' }}>
+            <ModalHeader>
+                <div><h3>{props.this.state.ReqFile}</h3></div>
+            </ModalHeader>
+            <ModalBody>
+                <embed src={props.this.state.file} alt="trial" width="650" height="500"></embed>
+            </ModalBody>
+            <ModalFooter>
+                <Button
+                    color="danger"
+                    onClick={() => props.this.cerrarModalViewFile()}
+                >
+                    Cerrar
+                </Button>
+            </ModalFooter>
+        </Modal>
+
+    );
 }
 
 function Load(props) {
@@ -406,7 +441,7 @@ function Ver(props) {
                     </label>
                     <Button style={{ float: 'right' }}
                         color="primary"
-                        onClick={() => props.this.DescargarCV(props.this.state.data.cv)}
+                        onClick={() => props.this.abrir(props.this.state.data.cv)}
                     >
                         {props.this.state.data.cv}
                     </Button>
