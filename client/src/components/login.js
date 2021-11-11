@@ -6,10 +6,6 @@ import {
 } from "reactstrap";
 import Swal from 'sweetalert2'
 
-
-const cookies = new Cookies();
-
-
 class login extends Component {
 
     constructor(props) {

@@ -141,7 +141,7 @@ transition: .5s;
 }
 .col-sm-4:nth-child(1) .card ,
 .col-sm-4:nth-child(1) .card .title .fa{
-  background: linear-gradient(-45deg,#507c8d,#10c4ca);
+  background: linear-gradient(-45deg,#10c4ca,#10c4ca);
 
 }
 .col-sm-4:nth-child(2) .card,

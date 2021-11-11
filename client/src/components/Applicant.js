@@ -109,12 +109,12 @@ class Applicant extends Component {
             .catch(err => console.error(err));
     }
     async abrir(exp, req) {
-        this.setState({file: `http://localhost:5000/static/expedientes/${exp}`})
+        this.setState({ file: `http://localhost:5000/static/expedientes/${exp}` })
         this.setState({ ReqFile: req, fileName: exp, ViewFile: true });
     }
 
     async abrirCV(exp) {
-        this.setState({file: `http://localhost:5000/static/cv/${exp}`})
+        this.setState({ file: `http://localhost:5000/static/cv/${exp}` })
         this.setState({ ReqFile: 'CV', fileName: exp, ViewFile: true });
     }
 
@@ -823,7 +823,7 @@ function Fethc(props) {
                     <tr>
                         <th>Requisito</th>
                         <th>Estado</th>
-                        <th>Ver</th>
+                        <th>Accion</th>
                     </tr>
                 </thead>
                 {props.this.state.tasks.map((dato) => (
@@ -967,6 +967,11 @@ function Historial(props) {
                                 <Button
                                     onClick={() => props.this.descargarExp(dato.ruta)}>
                                     Descargar
+                                </Button>
+                                {"  "}
+                                <Button
+                                    onClick={() => props.this.abrir(dato.ruta, dato.requisito)}>
+                                    Ver
                                 </Button>
                             </td>
                         </tr>

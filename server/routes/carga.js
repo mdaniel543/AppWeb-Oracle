@@ -6,25 +6,36 @@ const e = require('cors');
 
 async function carga(req, res) {
     var data = req.body.xml;
-    var jsons = JSON.parse(parser.toJson(data, {reversible: true}));
+    //console.log(data);
+    var jsons = JSON.parse(parser.toJson(data, { reversible: true }));
     var departamentos = jsons["departamentos"]["departamento"];
+    var aux = false;
+    if (departamentos.length == undefined) {
+        departamentos.length = 1;
+        aux = true;
+    }
     for (var i = 0; i < departamentos.length; i++) {
-        var departamento = departamentos[i];
-        var nombre = departamento["nombre"]["$t"]; 
+        var departamento;
+        if (aux) {
+            departamento = departamentos;
+        } else {
+            departamento = departamentos[i];
+        }
+        var nombre = departamento["nombre"]["$t"];
         var capital = departamento["capital_total"]["$t"];
         sql = "Insert Into Departamento(Nombre, CapitalTotal) Values (:nombre, :capital)";
         await BD.Open(sql, [nombre, capital], true);
         await val(departamento, nombre);
     }
-    res.json({"msg": "datos cargados correctamente"})
+    res.json({ "msg": "datos cargados correctamente" })
 }
 
 
 async function val(departamento, nombreDep) {
-    if(departamento["puestos"] != undefined){
+    if (departamento["puestos"] != undefined) {
         await puest(departamento, nombreDep)
     }
-    if(departamento["departamentos"] != undefined){
+    if (departamento["departamentos"] != undefined) {
         await moreDep(departamento, nombreDep)
     }
 }
@@ -32,17 +43,17 @@ async function val(departamento, nombreDep) {
 async function moreDep(departamento, nombreDep) {
     var masdepa = departamento["departamentos"]["departamento"];
     var aux = false;
-    if(masdepa.length == undefined){
+    if (masdepa.length == undefined) {
         masdepa.length = 1;
         aux = true;
     }
-    for(var t = 0; t < masdepa.length; t++){
+    for (var t = 0; t < masdepa.length; t++) {
         var depa
-        if(aux)  {
+        if (aux) {
             depa = masdepa
-        }else{
+        } else {
             depa = masdepa[t];
-        }    
+        }
         var nombre = depa["nombre"]["$t"];
         var capital = depa["capital_total"]["$t"];
         sql = "Insert Into Departamento(Nombre, CapitalTotal, DepartamentoID) Select :nombre, :capital, DepaID From Departamento Where Nombre = :nombreDep"
@@ -54,33 +65,43 @@ async function moreDep(departamento, nombreDep) {
 async function puest(departamento, nombreDep) {
     var puestos = departamento["puestos"]["puesto"];
     var aux = false;
-    if(puestos.length == undefined){
+    if (puestos.length == undefined) {
         puestos.length = 1;
         aux = true;
     }
-    for(var j = 0; j < puestos.length; j++){
+    for (var j = 0; j < puestos.length; j++) {
         var puesto
-        if(aux)  {
+        if (aux) {
             puesto = puestos
-        }else{
+        } else {
             puesto = puestos[j];
-        } 
+        }
         var nombre = puesto["nombre"]["$t"];
         var salario = puesto["salario"]["$t"];
-        if (puesto["imagen"] != undefined){
-            var imagen = puesto["imagen"]["$t"];
-            sql = "Insert Into Puesto(Nombre, Salario, Imagen) Select :nombre, :salario, :imagen From dual Where NOT EXISTS (Select * From Puesto Where Nombre = :nombre AND Salario = :salario)"
-            await BD.Open(sql, [nombre, salario, imagen], true);
-        }else{
-            sql = "Insert Into Puesto(Nombre, Salario) Select :nombre, :salario From dual Where NOT EXISTS (Select * From Puesto Where Nombre = :nombre AND Salario = :salario)";
-            await BD.Open(sql, [nombre, salario], true);
+
+        sql = "Select Count(*) From Puesto Where Nombre = :nombre AND Salario = :salario";
+        result = await BD.Open(sql, [nombre, salario], false);
+
+        if (result.rows[0][0] == 0) {
+            if (puesto["imagen"] != undefined) {
+                var imagen = puesto["imagen"]["$t"];
+                sql = "Insert Into Puesto(Nombre, Salario, Imagen) Select :nombre, :salario, :imagen From dual Where NOT EXISTS (Select * From Puesto Where Nombre = :nombre AND Salario = :salario)"
+                await BD.Open(sql, [nombre, salario, imagen], true);
+            } else {
+                sql = "Insert Into Puesto(Nombre, Salario) Select :nombre, :salario From dual Where NOT EXISTS (Select * From Puesto Where Nombre = :nombre AND Salario = :salario)";
+                await BD.Open(sql, [nombre, salario], true);
+            }
         }
+
         sql = "Insert Into Depa_Puesto(DepartamentoID, PuestoID) Select DepaID, PuestoID From Departamento d, Puesto p Where d.Nombre = :nombreDep AND p.Nombre = :nombre AND p.Salario = :salario";
-        await BD.Open(sql, [nombreDep, nombre], true);
-        if(puesto["categorias"] != undefined){
+        await BD.Open(sql, [nombreDep, nombre, salario], true);
+
+        if (result.rows[0][0] == 1) continue;
+
+        if (puesto["categorias"] != undefined) {
             await catego(puesto, nombre);
         }
-        if(puesto["requisitos"] != undefined){
+        if (puesto["requisitos"] != undefined) {
             await requi(puesto, nombre);
         }
     }
@@ -89,15 +110,15 @@ async function puest(departamento, nombreDep) {
 async function catego(puesto, nombrePue) {
     var categorias = puesto["categorias"]["categoria"];
     var aux = false;
-    if(categorias.length == undefined){
+    if (categorias.length == undefined) {
         categorias.length = 1;
         aux = true;
     }
-    for(var z = 0; z < categorias.length; z++){
+    for (var z = 0; z < categorias.length; z++) {
         var categoria
-        if(aux){
+        if (aux) {
             categoria = categorias;
-        }else{
+        } else {
             categoria = categorias[z];
         }
         var nombre = categoria["nombre"]["$t"];
@@ -111,25 +132,35 @@ async function catego(puesto, nombrePue) {
 async function requi(puesto, nombrePue) {
     var requisitos = puesto["requisitos"]["requisito"];
     var aux = false;
-    if(requisitos.length == undefined){
+    if (requisitos.length == undefined) {
         requisitos.length = 1;
         aux = true;
     }
-    for(var w = 0; w < requisitos.length; w++){
+    for (var w = 0; w < requisitos.length; w++) {
         var requisito;
-        if(aux){
+        if (aux) {
             requisito = requisitos;
-        }else{
+        } else {
             requisito = requisitos[w]
         }
         var nombre = requisito["nombre"]["$t"];
         var tamanio = requisito["tamaño"]["$t"];
-        var obli  = requisito["obligatorio"]["$t"];
-        sql = "Insert Into Requisito(Nombre, Tamanio, Obligatorio) Select :nombre, :tamanio, :obli From dual Where NOT EXISTS (Select * FROM Requisito Where Nombre = :nombre AND Tamanio = :tamanio AND Obligatorio = :obli)";
-        await BD.Open(sql, [nombre, tamanio, obli], true);
+        var obli = requisito["obligatorio"]["$t"];
+
+        sql = "Select Count(*) From Requisito Where Nombre = :nombre"
+        result = await BD.Open(sql, [nombre], false);
+
+        if (result.rows[0][0] == 0) {
+            sql = "Insert Into Requisito(Nombre, Tamanio, Obligatorio) Select :nombre, :tamanio, :obli From dual Where NOT EXISTS (Select * FROM Requisito Where Nombre = :nombre AND Tamanio = :tamanio AND Obligatorio = :obli)";
+            await BD.Open(sql, [nombre, tamanio, obli], true);
+        }
+
         sql = "Insert Into Puesto_Requisito(RequisitoID, PuestoID) Select RequisitoID, PuestoID From Puesto p, Requisito r WHERE  p.Nombre = :nombrePue AND r.Nombre = :nombre";
         await BD.Open(sql, [nombrePue, nombre], true);
-        if(requisito["formatos"] != undefined){
+
+        if (result.rows[0][0] == 1) continue;
+
+        if (requisito["formatos"] != undefined) {
             await format(requisito, nombre)
         }
     }
@@ -138,16 +169,16 @@ async function requi(puesto, nombrePue) {
 async function format(requisito, nombreForm) {
     var formatos = requisito["formatos"]["formato"]
     var aux = false;
-    if(formatos.length == undefined){
+    if (formatos.length == undefined) {
         aux = true;
         formatos.length = 1;
     }
-    for(var k = 0; k < formatos.length; k++){
+    for (var k = 0; k < formatos.length; k++) {
         var formato;
-        if(aux){
+        if (aux) {
             formato = formatos;
         }
-        else{
+        else {
             formato = formatos[k];
         }
         var nombre = formato["nombre"]["$t"];
@@ -155,7 +186,6 @@ async function format(requisito, nombreForm) {
         await BD.Open(sql, [nombre], true);
         sql = "Insert Into Requisito_Formato(FormatoID, RequisitoID) Select FormatoID, RequisitoID From Formato f, Requisito r Where f.Nombre = :nombreForm AND r.Nombre = :nombre";
         await BD.Open(sql, [nombre, nombreForm], true);
-
     }
 }
 

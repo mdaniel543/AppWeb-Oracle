@@ -14,9 +14,7 @@ import Reviewer from "./components/reviewer";
 import Coordinador from './components/coordinator';
 
 function App() {
-
-  const [auth, SetAuth] = useState();
-
+  
   return( 
     <Router>
       <Switch>

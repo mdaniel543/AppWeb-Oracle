@@ -38,6 +38,10 @@ class Reclutador extends Component {
                 id: '',
                 nombre: ''
             },
+            fileName: '',
+            file: '',
+            ReqFile: '',
+            ViewFile: false,
             data: {},
             puestos: [],
             bus: false,
@@ -137,6 +141,15 @@ class Reclutador extends Component {
                 puesto: e.value
             },
         });
+    }
+
+    abrir(exp) {
+        this.setState({file: `http://localhost:5000/static/cv/${exp}`})
+        this.setState({ ReqFile: 'CV', fileName: exp, ViewFile: true });
+    }
+
+    cerrarModalViewFile() {
+        this.setState({ ViewFile: false });
     }
 
     buscar(Ffinal) {
@@ -306,9 +319,32 @@ class Reclutador extends Component {
                 }
             })()}
             <Load this={this} />
+            <ViewA this={this} />
         </div>
     }
 
+}
+
+function ViewA(props) {
+    return (
+        <Modal isOpen={props.this.state.ViewFile} fade={false} size="lg" style={{ maxWidth: '700px', width: '100%' }}>
+            <ModalHeader>
+                <div><h3>{props.this.state.ReqFile}</h3></div>
+            </ModalHeader>
+            <ModalBody>
+                <embed src={props.this.state.file} alt="trial" width="650" height="500"></embed>
+            </ModalBody>
+            <ModalFooter>
+                <Button
+                    color="danger"
+                    onClick={() => props.this.cerrarModalViewFile()}
+                >
+                    Cerrar
+                </Button>
+            </ModalFooter>
+        </Modal>
+
+    );
 }
 
 function Load(props) {
@@ -567,6 +603,11 @@ function Ifyes(props) {
                         onClick={() => props.this.decargarCV(dato.cv)}>
                         Descargar
                     </Button>
+                    {"  "}
+                    <Button
+                        onClick={() => props.this.abrir(dato.cv)}>
+                        Visualizar
+                    </Button>
                 </td>
             </tr>
         </tbody>
@@ -593,6 +634,11 @@ function Elsen(props) {
                         onClick={() => props.this.decargarCV(dato.cv)}>
                         Descargar
                     </Button>
+                    {"  "}
+                    <Button
+                        onClick={() => props.this.abrir(dato.cv)}>
+                        Visualizar
+                    </Button>
                 </td>
             </tr>
         </tbody>
@@ -617,6 +663,11 @@ function Nothing(props) {
                     <Button
                         onClick={() => props.this.decargarCV(dato.cv)}>
                         Descargar
+                    </Button>
+                    {"  "}
+                    <Button
+                        onClick={() => props.this.abrir(dato.cv)}>
+                        Visualizar
                     </Button>
                 </td>
                 <td>

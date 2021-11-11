@@ -14,12 +14,6 @@ import {
     ModalBody,
     FormGroup,
     ModalFooter,
-    /*CarouselControl,
-    Carousel,
-    CarouselItem,
-    CarouselIndicators,
-    CarouselCaption,
-    UncontrolledCarousel, Row, Col*/
 } from "reactstrap";
 
 class guest extends Component {
