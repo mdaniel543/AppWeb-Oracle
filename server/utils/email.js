@@ -5,13 +5,13 @@ async function sende(email, subject, text) {
     let transporter = nodemailer.createTransport({
         service: 'outlook',
         auth: {
-            user: 'mdaniel_cool@hotmail.com', 
-            pass: 'COOL710911', 
+            user: '', 
+            pass: '', 
         },
     });
   
     let info = {
-      from: '"Totonet S.A" <mdaniel_cool@hotmail.com>', // sender address
+      from: '"Totonet S.A" ', // sender address
       to: email, // list of receivers
       subject: subject, // Subject line
       html: `<body>${text}</body>`, // html body
